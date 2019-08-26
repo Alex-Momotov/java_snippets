@@ -1,0 +1,101 @@
+import java.util.Map;
+import java.util.Properties;
+
+    static class Cat {
+//----------------------------------------------------------------------------------------------------------------------
+//  System methods cheatsheet
+
+// System.exit(1)               Terminates JVM. Nonzero status means abnormal termination.
+// System.currentTimeMillis()   Current time in milliseconds.
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get all env vars
+    void getAllEnvVars() {
+        Map<String, String> envs = System.getenv();
+        envs.forEach((k,v) -> System.out.println(k + "=" + v));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get specific env var
+    void getEnvVar() {
+        String var = System.getenv("JAVA_HOME");
+        System.out.println(var);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Never refer to an environment variable when the same value is available in a system property.
+// This is because different OS name env vars differently for the same thing (e.g. user).
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get all system properties
+    void getAllSysProperties() {
+        Properties props = System.getProperties();
+        props.list(System.err);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get specific system property
+    void getSysProperty() {
+        String classPath = System.getProperty("java.class.path");
+        System.out.println(classPath);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get specific system property with default
+    void getSysPropertyDefault() {
+        String something = System.getProperty("cat", "meow");
+        System.out.println(something);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Important system properties
+// "file.separator"	    Character that separates components of a file path. This is "/" on UNIX and "\" on Windows.
+// "java.class.path"	Path used to find directories and JAR archives containing class files.
+//                      Elements of the class path are separated by platform-specific path.separator.
+// "java.home"	        Installation directory for Java Runtime Environment (JRE)
+// "java.vendor"	    JRE vendor name
+// "java.vendor.url"	JRE vendor URL
+// "java.version"	    JRE version number
+// "line.separator"	    Sequence used by operating system to separate lines in text files
+// "os.arch"	        Operating system architecture
+// "os.name"	        Operating system name
+// "os.version"	        Operating system version
+// "path.separator"	    Path separator character used in java.class.path
+// "user.dir"	        User working directory
+// "user.home"	        User home directory
+// "user.name"	        User account name
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
