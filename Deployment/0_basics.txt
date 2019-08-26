@@ -1,21 +1,60 @@
 //----------------------------------------------------------------------------------------------------------------------
+    Fundamentals
 
+JRE - Java Runtime Environment. JVM, Java Class Library, the java command.
+JDK - Superset of JRE. Contains everything JRE does, plus Java SDK and compiler.
 
+Many programs written using Java use the JAVA_HOME environment variable to determine the Java installation location.
+On mac default jdk is determined by the value of JAVA_HOME env var.
 
+/Library/Java/JavaVirtualMachines/                                  - Where mac typically stores JDKs and JREs.
+/Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home    - Example value of $JAVA_HOME on mac.
 
-
-
-
-
+$JAVA_HOME/bin                  - Contains executables such as java and javac.
+$JAVA_HOME/lib/ext/             - add JAR files here for system wide extensions (not recommended for mac).
+/Library/Java/Extensions/       - add JAR files here for system wide extensions (recommended way for mac).
+~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (recommended way for mac).
 
 
 //----------------------------------------------------------------------------------------------------------------------
-PATH
-The bin directory within "Java/jdk-11.0.1/" contains both the compiler and the launcher.
+    java_home - Apple tool
 
-Setting up PATH variable is not necessary, but then you would have to specity full path to Java commands such as "java",
-"javac", "javadoc" every time you run them. This would look like: "C:\Java\jdk1.7.0\bin\javac MyClass.java" and it is
-not convenient.
+/usr/libexec/java_home          - A built-in macOs tool for locating java home. Simply executing it prints current location
+                                  of java home. On mac $JAVA_HOME points to this tool, which then gets executed and points
+                                  to current java home.
+/usr/libexec/java_home -V       - Lists all installed JDKs on mac
+
+/usr/libexec/java_home -v 1.6   - Prints location of specific version of JDK installation
+
+/usr/libexec/java_home --exec <command>         - Execute jdk bin command of default JDK version (e.g. java or javac)
+
+/usr/libexec/java_home -v 1.6 --exec <connamd>  - Execute jdk bin command of specidic JDK version (e.g. java or javac)
+
+    Proper way to set JAVA_HOME on mac:
+export JAVA_HOME=`/usr/libexec/java_home`           - Line in .bash_profile to set JAVA_HOME equal to default JDK (newest)
+export JAVA_HOME=`/usr/libexec/java_home -v 1.8`    - Line in .bash_profile to set JAVA_HOME equal to specific version of JDK
+
+//----------------------------------------------------------------------------------------------------------------------
+    Set up java on Liux
+
+1. First, install Openjava.
+2. sudo update-alternatives --config java          - command that lists java installations
+3. Add those lines to ~/.bashrc
+        PATH=/usr/local/jdk1.7.0/bin:$PATH
+        export PATH
+4. Alternatively set JAVA_HOME for all users by doing:
+        sudo nano /etc/environment
+    Then append as last line:
+        JAVA_HOME="path to jre"
+    Then source the file
+
+To change version of java on Linux, simply install different JDKs, then do:
+    sudo update-alternatives --config java
+And select desired JDK version.
+
+//----------------------------------------------------------------------------------------------------------------------
+    PATH - for Linux
+
 
 The PATH environment variable is a series of directories separated by semicolons (;). Microsoft Windows looks for
 programs in the PATH directories in order, from left to right. You should have only one bin directory for the JDK in the
