@@ -6,7 +6,7 @@ import java.util.Properties;
 //  System methods cheatsheet
 
 // System.exit(1)               Terminates JVM. Nonzero status means abnormal termination.
-// System.currentTimeMillis()   Current time in milliseconds.
+// System.currentTimeMillis()   Current time in milliseconds. Useful for measuring time taken for code execution
 
 //----------------------------------------------------------------------------------------------------------------------
 //  Get all env vars
@@ -65,6 +65,39 @@ import java.util.Properties;
 // "user.home"	        User home directory
 // "user.name"	        User account name
 
+//----------------------------------------------------------------------------------------------------------------------
+// Setting system properties
+// New Properties object becomes system properties, even if it's empty
+// Any change to system properties is not persistent across launches of JVM
+    void setSysProperties() {
+        System.setProperties(new Properties());
+        System.getProperties().list(System.err);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Adding a new system property
+// First, we need to read current properties in order to not delete them when using setProperties
+    void addSysProperty() {
+        Properties props = System.getProperties();
+        props.setProperty("kafkaHost", "localhost:9092");
+
+        System.setProperties(props);
+        System.getProperties().list(System.err);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Get security manager
+    void getSecurityManager() {
+        SecurityManager sm = System.getSecurityManager();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Check access to specific operation
+    void checkAccess() {
+        SecurityManager sm = System.getSecurityManager();
+        sm.checkExit(1);
+        sm.checkPropertiesAccess();
+    }
 }
 
 
