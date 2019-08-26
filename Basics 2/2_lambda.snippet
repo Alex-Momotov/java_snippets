@@ -1,0 +1,358 @@
+import java.util.Comparator;
+import java.util.function.Function;
+import java.util.function.Predicate;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.List;
+import java.util.ArrayList;
+
+//**********************************************************************************************************************
+// Story behind needing lambdas.
+// Say we have class person below.
+class Person {
+    String sex;
+    int age;
+    public Person(String sex, int age) {
+        this.sex = sex;
+        this.age = age;
+    }
+    public void printPerson() {System.out.println(sex + " " + age);}
+}
+
+// We have a list of people that contains all users of our platform.
+List<Person> roster = new ArrayList<Person>();
+roster.add(new Person("Male", 19));
+roster.add(new Person("Female", 23));
+roster.add(new Person("Male", 32));
+roster.add(new Person("Female", 45));
+
+// We want to write code to print persons that match specific criteria.
+// So we define a method for this.
+public void searchPeople(List<Person> roster, int age) {
+    for (Person p : roster) {
+        if (p.age > age) p.printPerson();
+    }
+}
+searchPeople(roster, 25);
+
+// However the above approach will make our web app brittle, because if structure of class Person is changed, we need
+// to change the search method. Search method itself also makes search criteria unnecessarily restrictive.
+
+// A better approach is to separate the code that specifies search criteria into a class that implements interface.
+// Having interface allows us to implement any combination of search criteria using a local class.
+interface CheckPerson {
+    boolean test(Person p);
+}
+class CheckIfYoungMale implements CheckPerson {         // local class
+    public boolean test(Person p) {
+        return p.age >= 18 && p.age <= 25 && p.sex == "Male";
+    }
+}
+public void searchPeople2(List<Person> roster, CheckPerson check) {
+    for (Person p : roster) {
+        if (check.test(p)) p.printPerson();
+    }
+}
+searchPeople2(roster, new CheckIfYoungMale());
+
+// However the above approach still requires you to write a new class for each search which is cumbersome.
+// We can use an anonymous class instead of a local class and bypass the need to declare a new class for each search.
+// The second argument to the below method invokation is an anonymous class that implements desired search criteria.
+searchPeople2(roster, new CheckPerson() {
+    public boolean test(Person p) {
+        return p.age >= 18 && p.age <= 25 && p.sex == "Male";
+    }}
+);
+
+// Above approach is better, since we don't have to create new class for each search, but the code is still bulcky.
+// This is where lambdas can help. Below, we are passing lambda expression as a parameter, specifying search criteria.
+searchPeople2(roster, p -> p.age >= 18 && p.age <= 25 && p.sex == "Male");
+
+// We can use standard functional interface instead of the one we defined ourselves, to reduce amount of code even more.
+// Notice import statement on top of this file. Predicate<T> is a generic interface that returns a boolean with test().
+// Therefore, without the need to define an own interface, we can rewrite the search function as follows.
+public void searchPeople3(List<Person> roster, Predicate<Person> check) {
+    for (Person p : roster) {
+        if (check.test(p)) p.printPerson();
+    }
+}
+searchPeople3(roster, p -> p.age >= 18 && p.age <= 25 && p.sex == "Male");
+
+// We can make the search method even more flexible by using second standard functional interface to specify action
+// to be performed once the search has found what we want. Consumer <T> is the generic interface that we want. It
+// accepts an object and returns nothing (since we just want to print out stuff).
+public void searchPeople4(List<Person> roster, Predicate<Person> check, Consumer<Person> action) {
+    for (Person p : roster) {
+        if (check.test(p)) action.accept(p);
+    }
+}
+searchPeople4(
+    roster,
+    p -> p.age > 20 && p.sex == "Female",
+    p -> p.printPerson()
+);
+
+// This example uses another standard functional interface Function to specify which data we want to do action with.
+public void searchPeople5(
+    List<Person> roster,
+    Predicate<Person> check,
+    Function<Person, String> mapper,
+    Consumer<String> action) {
+    for (Person p : roster) {
+        if (check.test(p)) {
+            String data = mapper.apply(p);
+            action.accept(data);
+        }
+    }
+}
+searchPeople5(
+    roster,
+    p -> p.age > 15,
+    p -> p.sex + " is " + p.age + " years old",
+    p -> System.out.println(p)
+);
+
+// Can improve search function even further by making a better use of generics.
+public static <X, Y> void searchPeople6(
+        Iterable<X> source,
+        Predicate<X> tester,
+        Function <X, Y> mapper,
+        Consumer<Y> block) {
+    for (X p : source) {
+        if (tester.test(p)) {
+            Y data = mapper.apply(p);
+            block.accept(data);
+        }
+    }
+}
+searchPeople6(
+    roster,
+    p -> p.age > 18,
+    p -> p.sex + " " + p.age,
+    p -> System.out.println(p)
+);
+
+// Can substitute search method altogether by using aggregate operations that accept lambda expressions as parameters
+// Aggregate operations process elements from a stream and typically accept lambda expressions as parameters, enabling
+// you to customize how they behave.
+roster
+    .stream()
+    .filter(p -> p.age > 10)
+    .map(p -> p.sex + " " + p.age)
+    .forEach(p -> System.out.println(p))
+
+
+//**********************************************************************************************************************
+// A functional interface is an interface that has just a single abstract method (it might contain one or more default
+// or static methods). Implementing functional interfaces with anonymous classes is cumbersome.
+
+// Therefore, a lambda expression is an anonymous implementation of a functional interface (single abstract method).
+// Lambdas let you express instances of single-method classes compactly. Think of lambdas as function objects.
+
+// Because functional interfaces contain only 1 abstract method, we can omit that method's name when implementing it.
+// If an interface has more than 1 abstract method, its no longer functional, and you cannot use lambda to implement it.
+
+// You would either have to make all-but-one methods of the interface non-abstract or use an anonymous class.
+// Therefore anonymous classes are still useful to implement interfaces with more than one abstract method.
+
+//**********************************************************************************************************************
+// Syntax of Lambda Expressions:
+// 1. List of parameters enclosed in parentheses, can ommit parentheses if only one parameter, no need for data types.
+// 2. The arrow token '->'.
+// 3. Body, which consists of single expression or statement block.
+
+// Body of lambda expression should either be:
+// 1. A single expression which is evaluated and returned
+// 2. A code block with a return statement that returns same type as that of interface method it implements
+
+// Note: Signature of lambda expression should match signature of method of functional interface being implemented.
+// Note: If you want a method to accept a lambda expression, make its parameters standard functional interfaces.
+// Note: Serialization of lambda expressions is strongly discouraged.
+
+//**********************************************************************************************************************
+// Lambda expression without parameters - must include empty parentheses '()'
+interface Func1 {public void func();}
+Func1 f1 = () -> System.out.println("This function prints Hello World!");
+f1.func();
+
+//**********************************************************************************************************************
+// Lambda expression with single parameter - can ommit parentheses or leave them
+interface Func2 {public void func(String s);}
+Func2 f2 = str -> System.out.println("Your name is " + str);
+
+f2.func("Jack");
+f2.func("Alex");
+
+//**********************************************************************************************************************
+// Lambda expression with more than one parameter - must include parentheses '()'
+interface Func3 {public int func(int a, int b);}
+Func3 addition = (a, b) -> a + b;
+Func3 subtraction = (a, b) -> a - b;
+
+addition.func(10, 3);
+subtraction.func(10, 3);
+
+//**********************************************************************************************************************
+// Lambda expression with explicit argument types
+interface Func4 {public String action(String a, int b);}
+
+Func4 myFunction = (String a, int b) -> a + " is " + b;
+myFunction.action("One plus Two is ", 3);
+
+//**********************************************************************************************************************
+// Lambda expressions with multiple statements
+// Body of multi-line lambda expression must be enclosed in curly braces '{}'.
+
+// If multi-line lambda expression has a return type - it must have a return statement.
+interface Func5 {public long action(int a, int b);}
+Func5 addLong = (a, b) -> {
+    long result = (long) a + (long) b;
+    return result;
+};
+addLong.action(4, 10);
+
+// If multi-line lambda expression doesn't return anything ('void') - we can ommit return statement.
+interface Func6 {public void action(String text);}
+Func6 print = str -> {
+    System.out.println("Your string is \n");
+    System.out.println(str);
+};
+print.action("sample string");
+
+//**********************************************************************************************************************
+// Using lambda to pass function as a parameter
+interface Operation {public int operate(int a, int b);}
+
+public void method(Operation operation) {   // method that expects functional interface as parameter
+    int result = operation.operate(10, 4);
+    System.out.println(result);
+}
+
+method((a, b) -> a + b);                // method call that gives lambda as parameter that implements interface
+method((a, b) -> a * 200 + b * 100)     // hence, we are passing function as a parameter
+
+//**********************************************************************************************************************
+// Importing standard functional interfaces from java.util.function removes the need of defining your own interfaces.
+// Notice the import statements on top of this file. Those standard interfaces satisfy most developer needs.
+Function func = a -> (int) a + 5;
+func.apply(2);
+
+//**********************************************************************************************************************
+// Lambda expressions can access final or effectively final variables of enclosing method, parameters of enclosing
+// method, variables in enclosing class, variables in outer class.
+class Outer {
+    int x = 10;
+    class Inner {
+        int x = 20;
+        void method(int x) {
+//            x = 999;      Will cause compile time error, because x will no longer be final or effectively final.
+            Consumer cons = y -> {
+                System.out.println("x = " + x);
+                System.out.println("y = " + y);
+                System.out.println("this.x = " + this.x);
+                System.out.println("Outer.this.x = " + Outer.this.x);
+            };
+            cons.accept(x);
+        }
+    }
+}
+Outer outer = new Outer();
+Outer.Inner inner = outer.new Inner();
+inner.method(30);
+// Renaming lambda parameter 'y' to 'x' above will cause compile time error "variable x already defined in method scope"
+// which is because lambda expression does not introduce a new level of scoping.
+
+//**********************************************************************************************************************
+// Compiler automatically determines type of arguments in a lambda expression from the context. In example below,
+// compiler determines that lambda parameters 'c' and 'd' refer to Cat and Dog because method iTakeLambdas specifies
+// standard functional interfaces with generic types to be <Cat> and <Dog, String>.
+class Cat {String name; public Cat(String name) {this.name = name;}}
+class Dog {String name; public Dog(String name) {this.name = name;}}
+
+void iTakeLambdas(Cat cat, Dog dog, Consumer<Cat> cons, Function<Dog, String> func) {
+    cons.accept(cat);
+    String result = func.apply(dog);
+    System.out.println(result);
+}
+iTakeLambdas(new Cat("Jacky"), new Dog("Bob"), c -> System.out.println(c.name), d -> d.name);
+
+
+//**********************************************************************************************************************
+// METHOD REFERENCES
+//**********************************************************************************************************************
+// Method references are compact, easy-to-read lambda expressions for methods that already have a name.
+
+// Class::staticMethod        Reference to a static method.
+// Object::instanceMethod     Reference to an instance method of a particular object.
+// Type::method               Reference to an instance method of an arbitrary object of a particular type.
+// Class::new                 Reference to a constructor.
+
+// Generally, this lambda "() -> method()" can be replaced with "className::methodName"
+// Generally, this lambda "p -> p.method()" can be replaced with "p::method"
+
+//**********************************************************************************************************************
+// Example of Class::staticMethod
+class Creator {
+    public static int makeFive() {return 5;}
+    public static int makeTen() {return 10;}
+}
+
+void method(Supplier<Integer> supl) {
+    System.out.println(supl.get());
+}
+method(() -> 4);
+method(() -> Creator.makeFive());
+
+method(Creator::makeFive)   //method reference
+method(Creator::makeTen)    //method reference
+
+//**********************************************************************************************************************
+// Example of Object::instanceMethod
+class Male {
+    public int age = 23;
+}
+class MaleHelper {
+    public int getAge(Male m) {return m.age;}
+}
+void method2(Male m, Function<Male, Integer> func) {
+    System.out.println(func.apply(m));
+}
+
+MaleHelper mh = new MaleHelper();
+method2(new Male(), mh::getAge);    // method reference
+
+//**********************************************************************************************************************
+// Example of Type::method
+void method3(String start, Function<String, String> func) {
+    System.out.println(func.apply(start));
+}
+method3("UPPER", String::toLowerCase)
+
+//**********************************************************************************************************************
+// Example of Class::new
+class Cloud {
+    public Cloud() {System.out.println("new cloud has been created");}
+}
+void method4(Supplier<Cloud> supl) {
+    Cloud c = supl.get();
+    System.out.println("method4 finished executing");
+}
+method4(() -> new Cloud());
+method4(Cloud::new)         // method reference
+
+
+//**********************************************************************************************************************
+// When to use Nested Classes, Local Casses, Anonymous Classes, Lambda Expressions
+//**********************************************************************************************************************
+// Nested Classes     - Use it if your requirements are similar to those of a local class, you want to make the type
+//                      more widely available, and you don't require access to local variables or method parameters.
+//                      Make it non-static if you require access to an enclosing instance's non-public fields and
+//                      methods. Use a static nested class if you don't require this access.
+// Local Classes      - Use it if you need to create more than one instance of a class, access its constructor.
+// Anonymous Classes  - Use if you need to declare additional fields and methods but need to use the instance only once.
+// Lambda Expressions - Use it if you need a simple instance of a functional interface and none of the preceding
+//                      criteria apply. Also when passing a single unit of behavior to other code.
+//**********************************************************************************************************************
+
+
+

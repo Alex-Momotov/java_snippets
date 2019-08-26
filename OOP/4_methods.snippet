@@ -1,0 +1,113 @@
+//**********************************************************************************************************************
+// Static methods can perform operations on static variables, but not instance variables.
+// Instance methods can perform operations on instance variables and static variables.
+
+
+//**********************************************************************************************************************
+// There are six components of a method declaration:
+// 1. Access modifiers
+// 2. Return type
+// 3. Method name
+// 4. Parameter list
+// 5. Exception list
+// 6. Method body
+
+
+//**********************************************************************************************************************
+// A method which returns nothing is declared with 'void' keywork, but it can still have 'return' statements.
+// Below method returns control flow the moment it finds a key in array and won't execute the rest of the loop.
+public static void sequentialSearch(int[] arr, int key) {
+    for (int elem : arr) {
+        if (elem == key) {
+            System.out.println("Found!");
+            return;
+        }
+    }
+}
+
+
+//**********************************************************************************************************************
+// Minimal method
+// Minimum required components of an instance method are:
+// 1. Return type
+// 2. Method name
+// 3. Parentheses
+// 4. Braces
+class Cat {
+    void scratch() {}
+}
+
+Cat c = new Cat();
+c.scratch();
+
+
+//**********************************************************************************************************************
+// Typical instance method
+public class Ocean {
+
+    private String oceanName = "Atlantic Ocean";
+
+    public void wave(int numWaves) {                                                        // instance method
+        for (int i = 0; i < numWaves; ++i) System.out.println(oceanName + " is waving!");
+    }
+}
+
+Ocean o = new Ocean();
+o.wave(4);
+
+
+//**********************************************************************************************************************
+// Overloading
+// Method signature consists of method name and parameter types e.g. calculateAnswer(double, int)
+// Overloading is when different methods have same method name but different parameter types or in different order.
+// You cannot declare two methods with the same signature even if they have a different return type.
+class Example {
+    void method() {}                // Overloading
+    void method(int a) {}           // Overloading
+    void method(byte a) {}          // Overloading
+    void method(String a) {}        // Overloading
+    void method(int a, byte b) {}   // Overloading
+}
+
+
+//**********************************************************************************************************************
+// If a method returns an object, the object must be either a subclass of, or the exact class of, method's return type.
+// Below, both method's return type is Animal, but method1 returns Animal object, and method2 returns Goat object.
+class Animal {}
+class Goat extends Animal{}
+
+public static Animal method1() {
+    Animal animal = new Animal();
+    return animal;
+}
+public static Animal method2() {
+    Goat goat = new Goat();
+    return goat;
+}
+
+
+//**********************************************************************************************************************
+// 'Covariant Return Type'
+// Normally a method that overrides a method in superclass needs to have same return type.
+// However, the return type of the overriding method can also be subclass of the original method's return type. This
+// technique, called covariant return type - return type is allowed to vary in the same direction as the subclass.
+class SuperClass {}
+class SubClass extends SuperClass {}
+
+class Vehicle {
+    public SuperClass method() {
+        return new SuperClass();
+    }
+}
+class Car extends Vehicle {
+    public SubClass method() {
+        return new SubClass();
+    }
+}
+
+
+
+
+
+
+

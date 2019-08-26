@@ -1,0 +1,87 @@
+//**********************************************************************************************************************
+// instanceof operator
+// Used to test whether an object is an instance of the specified type (class, subclass, or interface)
+
+class Animal {}
+class Cow extends Animal {}
+
+Cow cow = new Cow();
+Animal anim = new Animal();
+cow instanceof Cow;
+cow instanceof Animal;
+
+// instanceof can only be applied to reference types, so will need to cast primitives to Object type first
+int b = 4;
+(Object) b instanceof Integer;
+(Object) 3f instanceof Float;
+"example" instanceof String;
+
+// instanceof always returns false if the object is null
+String test = "something";
+test instanceof String;     // true
+test = null;
+test instanceof String;     // false
+
+// Real use of instanceof operator is to determine which method of an interface object to use after downcasting
+interface Pet {}
+class Cat implements Pet {void meow() {System.out.println("meow!");}}
+class Dog implements Pet {void bark() {System.out.println("bark!");}}
+
+public void demonstration(Pet p) {
+    if (p instanceof Cat) {
+        Cat c = (Cat) p;        // downcasting
+        c.meow();
+    } else if (p instanceof Dog) {
+        Dog d = (Dog) p;        // downcasting
+        d.bark();
+    }
+}
+demonstration(new Dog());
+demonstration(new Cat());
+
+//**********************************************************************************************************************
+// .getClass()
+// Can be called on any reference type to determine its class, returns Class object.
+// Code that inspects other code or itself if also known as 'Reflection'.
+String t = "test";
+Class c = t.getClass();
+
+// .getClass().getName()
+// Can be called on a class object. Returns name of the class.
+Integer z = 13;
+String cls = z.getClass().getName();
+
+// .getMethods()
+// Can be called an a Class object to return an array of public method signatures
+for (Object s : c.getMethods()) {System.out.println(s);}
+
+// .getDeclaredMethods()
+// Can be called an a Class object to return an array of public and private method signatures
+for (Object s : c.getDeclaredMethods()) {System.out.println(s);}
+
+
+//**********************************************************************************************************************
+// .class
+// Can be applied to class literal directly to obtain Class object of that class.
+Class c3 = String.class;
+Integer.class;
+
+//**********************************************************************************************************************
+// Trick to determine type of primitive variables. Will need to tweak it a bit to be more universal.
+int i = 20;
+float f = 20.212f;
+String varCls1 = ((Object)i).getClass().getName().split("\\.")[2];
+String varCls2 = ((Object)f).getClass().getName().split("\\.")[2];
+varCls1.equals("Integer");
+varCls2.equals("Float");
+
+public String type(Object a) {
+    return ((Object) a).getClass().getName();
+}
+type(i);
+type(f);
+
+//**********************************************************************************************************************
+// Trick to determine a type of an expression
+((Object) (2 * 2.0f)).getClass()
+

@@ -1,0 +1,101 @@
+//**********************************************************************************************************************
+// Standard if statement
+if (true) {
+    System.out.println("If statement worked!");
+}
+
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the block to be executed.
+if (true) System.out.println("If statement worked!");           // OKAY
+if (false) System.out.println("1"); System.out.println("2");    // WRONG - second statement executes despite 'false'
+
+// If-else statement
+if (false) {
+    System.out.println("If statement worked!");
+} else {
+    System.out.println("Else statement worked!");
+}
+
+// One line If-else statements. Each or neither can be on a single line
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the if/else block to be executed.
+if (false) System.out.println("If statement worked!");
+else System.out.println("Else statement worked!");
+
+// If-elseif-else statement
+if (false) {
+    System.out.println("If statement worked!");
+} else if (true) {
+    System.out.println("Else-if statement worked!");
+} else if (false) {
+    System.out.println("Else-if statement worked!");
+} else {
+    System.out.println("Else statement worked!");
+}
+
+// One line If-elseif-else statements
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the block to be executed.
+if (false) System.out.println("If statement worked!");
+else if (true) System.out.println("Else-if statement worked!");
+else if (false) System.out.println("Else-if statement worked!");
+else System.out.println("Else statement worked!");
+
+
+//**********************************************************************************************************************
+// Ternary operator - short hand if-else
+// Variable = Condition ? BlockTrue : BlockElse;
+// The condition may optionally be in brackets
+int a = 15;
+String result = a > 10 ? "a greater than 10" : "a less than 10";
+System.out.println(result);
+
+
+//**********************************************************************************************************************
+// Switch statement
+// Default statement is not compulsory. It executes only if none of cases executed.
+// Once a single case fires, Java executes all subsequent cases (including default) until 'break' is encountered.
+int day = 5;
+String message;
+switch (day) {
+    case 1:
+        message = "Monday";
+        break;
+    case 2:
+        message = "Tuesday";
+        break;
+    case 3:
+        message = "Wednessday";
+        break;
+    case 4:
+        message = "Thursday";
+        break;
+    default:
+        message = "Unknown";
+}
+System.out.println(message);
+
+// After a single case fires true, all cases (including default) are executed until first 'break' is met.
+int num = 3;
+switch(num) {
+    case 1: System.out.println(1);
+    case 2: System.out.println(2);
+    case 3: System.out.println(3);
+    case 4: System.out.println(4);
+    case 5: System.out.println(5);
+            break;
+    case 6: System.out.println(6);
+    case 7: System.out.println(7);
+    default: System.out.println("default");
+}
+
+// Ommit break if you want several cases to fall on the same code block
+int number = 3;
+switch (number) {
+    case 1:
+    case 3:
+    case 5: System.out.println("Odd number"); break;
+    case 2:
+    case 4: System.out.println("Even number"); break;
+    default: System.out.println("Unknown number");
+}
+
+
+

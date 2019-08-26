@@ -1,0 +1,111 @@
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+static class Cat {{
+//**********************************************************************************************************************
+//      List interface
+// ArrayList and LinkedList are two general purpose list implementations provided by Java.
+// .remove() operation always removes the first occurrence of the specified element from the list.
+// .add() and .addAll() always append the new element(s) to the end of the list.
+
+// Note: Arrays.asList(1, 2, 3, 4) or Arrays.asList(someArray) provide a list view of existing array that doesn't
+//       support adding or removing elements. Also modifying elements of this list will modify the origincal array
+//       because changes to the list are written through to the array.
+
+// Concatenate two lists:
+List<Integer> l1 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+List<Integer> l2 = new ArrayList<Integer>(Arrays.asList(5, 6, 7, 8));
+l1.addAll(l2);
+System.out.println(l1);
+
+// Concatenate two lists but return as new list, with originals untouched
+List<Integer> l3 = new ArrayList<Integer>(l1);
+l3.addAll(l2);
+
+// Transform another collection into list by applying stream
+List<Integer> l4 = l1.stream().map(e -> e + 5).collect(Collectors.toList());
+
+// Two List objects are equal if they contain the same elements in the same order.
+List<Integer> l5 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+List<Integer> l6 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+System.out.println(l5.equals(l6));
+
+//
+List<Integer> l10 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 1));
+System.out.println(l10.indexOf(1));         // index of fisrt such element occuring
+System.out.println(l10.lastIndexOf(1));     // index of last such element occuring
+
+List<Integer> l7 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+l7.add(1, 0);
+
+    Integer[] arr3 = {1, 2, 3, 4};
+    List<Integer> l8 = new ArrayList(Arrays.asList(arr3));
+    l8.set(0, 9);
+
+    System.out.println(l8);
+    System.out.println(Arrays.toString(arr3));
+
+// .sublist(int fromIndex, int toIndex) returns a list view into a given list.
+// Changes to a sublist view are reflected in the original list.
+// Operations that work on a List also work on a sublist. For example, this code clears a portion of a list:
+List<Integer> l9 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13));
+l9.subList(0, 3).clear();
+
+//**********************************************************************************************************************
+//      ListIterator
+// .iterator() method of a List object provides a normal Iterator with the expected behaviour.
+// However List provides a richer iterator called ListIterator allows you to traverse the list in either direction,
+// modify the list during iteration, and obtain the current position of the iterator.
+List<Integer> L1 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4));
+ListIterator<Integer> listIter = L1.listIterator();
+
+listIter.hasNext();
+listIter.next();
+listIter.nextIndex();       // returns index of subsequent element that would be returned by .next()
+listIter.hasPrevious();
+listIter.previous();
+listIter.previousIndex();   // returns index of subsequent element that would be returned by .previous()
+listIter.remove();          // Removes from the list the last element that was returned by next or previous.
+listIter.add(5);            //
+listIter.set(4);            // Replaces the last element returned by next or previous with the specified element
+
+// If we pass an int as argument to .listIterator() we get list iterator with cursor positioned at specified index
+ListIterator<Integer> listIter2 = L1.listIterator(L1.size());
+listIter2.previous();
+
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

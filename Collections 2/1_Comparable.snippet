@@ -1,0 +1,60 @@
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+//**********************************************************************************************************************
+//      Comparable interface
+// If you try to sort a list, the elements of which do not implement Comparable, Collections.sort(list) will throw a
+// ClassCastException.
+
+// compareTo(T o)
+// Compares this object with the specified object for order.
+// Returns negative integer if this object is less than specified object.
+// Returns zero if this object is equeal to specified object.
+// Returns positive integer if this object greater than specified object.
+
+//**********************************************************************************************************************
+//      Implementing Comparable
+// "class Foo implements Comparable<Foo>"
+
+public class Cat implements Comparable<Cat> {
+    public int age;
+
+    public Cat(int age) {
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return "Cat{" +
+                "age=" + age +
+                '}';
+    }
+
+    public int compareTo(Cat other) {
+        return this.age - other.age;    // positive integer if this Cat is greater than 'other' Cat
+    }
+}
+
+public static class A {{
+    List<Cat> list = new ArrayList<>();
+    list.add(new Cat(3));
+    list.add(new Cat(1));
+    list.add(new Cat(2));
+    System.out.println(list);
+    Collections.sort(list);
+}}
+
+//**********************************************************************************************************************
+//      Consistent with equals()
+// The natural ordering for a class C is said to be consistent with equals if and only if e1.compareTo(e2) == 0 has the
+// same boolean value as e1.equals(e2) for every e1 and e2 of class C. Note that null is not an instance of any class,
+// and e.compareTo(null) should throw a NullPointerException even though e.equals(null) returns false.
+//
+// It is strongly recommended (though not required) that natural orderings be consistent with equals. This is so because
+// sorted sets (and sorted maps) without explicit comparators behave "strangely" when they are used with elements
+// (or keys) whose natural ordering is inconsistent with equals. In particular, such a sorted set (or sorted map)
+// violates the general contract for set (or map), which is defined in terms of the equals method.
+
+//**********************************************************************************************************************
+
+

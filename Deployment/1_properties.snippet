@@ -1,0 +1,214 @@
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.util.Enumeration;
+import java.util.Properties;
+import java.util.Set;
+
+static class Cat {
+    static final String PATH = "/Users/omomotov/Documents/my_projects/learning_java/resources/";
+
+
+//----------------------------------------------------------------------------------------------------------------------
+// Always put keys and values of type String
+// Never use Hashtable.set() or Hastable.setAll(), always use Properties.setProperty()
+
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Create properties
+    void createProperties() {
+        Properties prop = new Properties();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Set properties
+    void setProperties() {
+        Properties prop = new Properties();
+        prop.setProperty("cat", "meow");
+        prop.setProperty("kafkaHost", "localhost:9092");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Get properties
+// Getting a property which does not exist return null
+    void getProperties() {
+        Properties prop = new Properties();
+        prop.setProperty("dog", "bark");
+        prop.getProperty("dog");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Get properties with default
+// Specified default value is only returned after prop list and it's default list (recursively) are searched
+    void getPropertiesWithDefault() {
+        Properties prop = new Properties();
+        prop.getProperty("cat", "meow");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Remove property
+    void removeProperty() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.remove("kafkaHost");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Contains value
+    void containsValue() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.containsValue("localhost:9092");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Contains key
+    void containsKey() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.containsKey("kafkaHost");
+    }
+
+// List properties
+    void listProperties() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("zookeeper", "localhost:2181");
+        prop.setProperty("cat", "meow");
+        prop.list(System.out);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Enumeration over keys
+    void enumerateKeys() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("cat", "meow");
+
+        Enumeration<?> e = prop.keys();
+        e.nextElement();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Enumeration over keys incl default keys
+    void enumerateKeysInclDefault() {
+        Properties defaultProps = new Properties();
+        defaultProps.setProperty("defKey", "defVal");
+
+        Properties prop = new Properties(defaultProps);
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("cat", "meow");
+
+        Enumeration<?> e = prop.propertyNames();
+        e.nextElement();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Enumeration over values
+    void enumerateValues() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("cat", "meow");
+
+        Enumeration<?> e = prop.elements();
+        e.nextElement();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Set of keys, incl default keys
+    void setOfKeys() {
+        Properties defaultProps = new Properties();
+        defaultProps.setProperty("defKey", "defVal");
+
+        Properties prop = new Properties(defaultProps);
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("cat", "meow");
+
+        Set<String> keys = prop.stringPropertyNames();
+        keys.forEach(System.out::println);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Create from default
+//  When getProperty() can't find it in list of properties, it's default list is searched, and it's default too, recursively
+//  remove(), contains(), setProperty() do not affect default properties of a properties instance, it only affects itself
+    void fromDefault() {
+        Properties defaultProps = new Properties();
+        defaultProps.setProperty("cat", "meow");
+
+        Properties props = new Properties(defaultProps);
+        props.getProperty("cat");
+
+        props.setProperty("cat", "diff");
+        props.getProperty("cat");
+        props.containsValue("diff");
+        props.remove("cat");
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Size of properties
+    void sizeOfProps() {
+        Properties prop = new Properties();
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("cat", "meow");
+
+        prop.size();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Properties Lifecycle
+// Starting:    App loads default properties from known location
+// Starting:    App loads last session properties from known location
+// Starting:    Properties initialised based on default and remembered properties
+// Running:     User updates properties
+// Exiting:     Session properties saved to known location
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Save properties to file
+    void saveToFile() throws IOException {
+        Properties prop = new Properties();
+        prop.setProperty("cat", "meow");
+        prop.setProperty("kafkaHost", "localhost:9092");
+        prop.setProperty("zookeperHost", "localhost:2181");
+        try (FileOutputStream out = new FileOutputStream(PATH + "appProperties")) {
+            prop.store(out, "-- no comments --");
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Load from file
+    void loadFromFile() throws IOException {
+        Properties prop = new Properties();
+        try (FileInputStream in = new FileInputStream(PATH + "appProperties")) {
+            prop.load(in);
+        }
+        prop.list(System.out);
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Starting up app with default and remembered properties
+    void appLifecycle() throws IOException {
+        // load default
+        Properties defaultProperties = new Properties();
+        try (FileInputStream in = new FileInputStream(PATH + "delaultProperties")) {
+            defaultProperties.load(in);
+        }
+
+        // load remembered
+        Properties appProperties = new Properties(defaultProperties);
+        try (FileInputStream in = new FileInputStream(PATH + "appProperties")) {
+            appProperties.load(in);
+        }
+
+        /* App runs... properties are modified */
+
+        // save remembered
+        try (FileOutputStream out = new FileOutputStream(PATH + "appProperties")) {
+            appProperties.store(out, "-- no comments --");
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+
+}

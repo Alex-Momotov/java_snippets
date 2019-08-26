@@ -1,0 +1,137 @@
+//**********************************************************************************************************************
+// Constructor is called using keyword 'new' and returns a reference to the created object.
+// Constructor shares same name as the class and has no return type, because it always returns object reference.
+// Think of constructors as automatically having 'return this;' statement in the end of the block.
+
+
+//**********************************************************************************************************************
+// Often constructors initialise variables with the values provided by the client as arguments.
+public class Charge {
+    private final double rx, ry;    // Instance variables
+    private final double q;
+
+    public Charge(double x0, double y0, double q0) {    // Constructor
+        rx = x0;
+        ry = y0;
+        q = q0;
+    }
+}
+
+Charge c1 = new Charge(1, 2, 3);    // Invoking constructor to return reference to newly created object
+
+
+//**********************************************************************************************************************
+// We can overload constructor name and have multiple constructors with different signatures
+class Cat {
+    public String catName = "Unknown";
+    public float catWeight = 15;
+
+    public Cat() {
+
+    }
+    public Cat(String name) {
+        catName = name;
+    }
+    public Cat(String name, float weight) {
+        catWeight = weight;
+    }
+}
+
+Cat cat1 = new Cat("Nicky");
+Cat cat2 = new Cat("Nicky", 35f);
+
+
+//**********************************************************************************************************************
+// If you don't create a constructor for a class, the no-argument constructor of the superclass will be automatically
+// used. If there is no superclass, the no-argument constructor of Object class will be used. The compiler will complain
+// if the superclass doesn't have a no-argument constructor so you must verify that it does.
+class Animal {public Animal() {System.out.println("Animal constructor invoked");}}
+class Cow extends Animal {}
+
+Cow cow = new Cow();
+
+Class s1 = Object.class;
+for (Object s : s1.getDeclaredMethods()) System.out.println(s);
+
+
+//**********************************************************************************************************************
+// 'this' keyword
+// Within an instance method or a constructor, 'this' is a reference to the current object - the object whose method or
+// constructor is being called. 'this' keyword cannot be used within static methods. Using 'this' you can refer to any
+// member of the current object. Most common reason for using 'this' keyword is because a field is shadowed by a method
+// or constructor parameter.
+class Test {
+    int x;
+    int y;
+
+    // constructor
+    public Test(int x, int y) {
+        this.x = x;                 // x refers to parameter, this.x refers to instance variable
+        this.y = y;                 // y refers to parameter, this.y refers to instance variable
+    }
+
+    // method
+    public void test(int x) {
+        System.out.println(x);          // prints parameter x (that shadows instance variable)
+        System.out.println(this.x);     // prints instance variable x
+    }
+}
+Test t = new Test(0, 0);
+t.test(5);
+
+
+//**********************************************************************************************************************
+// 'this' keyword (continued)
+// You can also use 'this' from within a constructor to call another constructor in the same class. Doing so is called
+// an explicit constructor invocation. Below class contains a set of constructors. Each constructor initializes some or
+// all of the rectangle's member variables. The constructors provide a default value for any member variable whose
+// initial value is not provided by an argument. If present, the invocation of another constructor must be the first
+// line in the constructor, otherwise compilation error will occur.
+public class Rectangle {
+    public int x, y;
+    public int width, height;
+
+    public Rectangle() {
+        this(0, 0, 1, 1);   // must be the first line
+    }
+
+    public Rectangle(int width, int height) {
+        this(0, 0, width, height);   // must be the first line
+    }
+
+    public Rectangle(int x, int y, int width, int height) {
+        this.x = x;
+        this.y = y;
+        this.width = width;
+        this.height = height;
+    }
+}
+
+
+//**********************************************************************************************************************
+// 'new' keyword
+// The 'new' operator requires a single, postfix argument: a call to a constructor.
+// The name of the constructor provides the name of the class to instantiate.
+// The new operator returns a reference to the object it created.
+// Therefore object reference doesn't have to be stored in a variable. It can be used straight away.
+// Since we are never storing object reference in a variable, the object gets automatically garbage collected.
+class Thunder {
+    public void sound() {
+        System.out.println("Boom!");
+    }
+}
+new Thunder().sound();
+
+// Example with arrays
+System.out.println(new int[4].length);
+
+
+//**********************************************************************************************************************
+// Garbage Collection
+// The Java runtime environment deletes objects when it determines that they are no longer being used. This process is
+// called garbage collection. An object is eligible for garbage collection when there are no more references to that
+// object. You can explicitly drop an object reference by setting the variable to the special value null. Remember that
+// a program can have multiple references to the same object; all references to an object must be dropped before the
+// object is eligible for garbage collection. The Java runtime environment has a garbage collector that periodically
+// frees the memory used by objects that are no longer referenced. The garbage collector does its job automatically when
+// it determines that the time is right.

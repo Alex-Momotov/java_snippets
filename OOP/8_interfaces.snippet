@@ -1,0 +1,162 @@
+//**********************************************************************************************************************
+// Interfaces serve functionalify of an API. The client does not need to know how an interface is implemented to use it.
+// Like classes, top level interfaces can only be public or package-private. Inner level ones can have any modifier.
+
+//**********************************************************************************************************************
+// Interfaces can contain abstract methods, default methods, static methods, and constants.
+// All interfaces are implicitly abstract, so you can omit 'abstract' modifier when declaring an interface.
+// All interface methods that are not default or static are implicitly abstract, so you can omit 'abstract' modifier.
+// All abstract, default, and static methods in an interface are implicitly public, so you can omit the public modifier.
+// All constant fields in an interface are implicitly public, static, and final, so you can omit these modifiers.
+interface Test {
+    int a = 13;                         // constant - implicitly 'public', 'static', 'final'
+    void abstractMethod();              // abstract method - those have no body and are terminated with semicolon
+    default void defaultMethod() {}     // default method
+    static void staticMethod() {}       // static method
+}
+
+//**********************************************************************************************************************
+// To use an interface, you write a class that implements the interface.
+// It must provide a method body for each of the methods declared in the interface.
+public interface Animal {
+    void makeSound();
+}
+public class Cat implements Animal {
+    public void makeSound() {System.out.println("Meow!");}
+}
+
+//**********************************************************************************************************************
+// Classes can only inherit from one parent.
+// Interfaces can inherit from multiple other interfaces.
+interface A {}
+interface B {}
+interface C extends A, B {}
+
+// Classes can implement multiple interfaces.
+class D implements A, B {}
+
+// Classes can extend other classes and implement interfaces at the same time - 'extends' must come before 'implements'.
+class E {}
+class F extends E implements A, B {}
+
+//**********************************************************************************************************************
+// Interfaces cannot be instantiated - they can only be implemented by classes or extended by other interfaces.
+// When you define a new interface, you are defining a new reference data type. If you define a reference variable whose
+// type is an interface, any object you assign to it must be an instance of a class that implements the interface.
+interface Fish {}
+class Salmon implements Fish {}
+
+//Fish f1 = new Fish();         // can't instantiate an interface directly - will cause error
+Fish f2 = new Fish() {};        // instantiate an interface with an annonymous class
+Salmon f3 = new Salmon();       // off course we can instantiate the class itself
+Fish f4 = new Salmon();         // variable of interface type gets assigned an instance of class that implements it
+Salmon f5 = (Salmon) f4;        // casting interface instance back to class that implemented it
+
+//**********************************************************************************************************************
+// When class implements interface, the instance can be of both their own class type and interface type at the same time
+interface Material {}
+class Silver implements Material {}
+
+Material m1 = new Silver();
+m1 instanceof Material;
+m1 instanceof Silver;
+
+// Moreover, the instance can be of their own class type, their superclass type, and interface type at the same time.
+// This gives them some of advantages of multiple inheritance, having behavior from both a superclass and an interface.
+class Metal {}
+class Iron extends Metal implements Material {}
+
+Material m2 = new Iron();       // has behaniour from both superclass and interface
+m2 instanceof Material;
+m2 instanceof Metal;
+m2 instanceof Iron;
+
+//**********************************************************************************************************************
+// If clients rely on existing interface provided by you, adding new method to interface will break client's code,
+// since their classes will no longer implement all interface methods. There are three options to add new method safely:
+// 1. Make new interface that extends old one
+// 2. Make added method default
+// 3. Make added method static
+
+//**********************************************************************************************************************
+// Default methods
+//**********************************************************************************************************************
+// Use 'default' keyword to declare a default method. Default methods must have an implementation.
+// Default methods is a safe way of adding more features to an existing interface without breaking client's code.
+interface Bird {
+    default void method() {System.out.println("default mehod worked");}
+}
+class Hawk implements Bird {}
+
+Bird b1 = new Hawk();
+Hawk b2 = new Hawk();
+b1.method();
+b2.method();
+
+//**********************************************************************************************************************
+// Offcourse, clients can override the default method with their own code, whenever they are ready.
+class Eagle implements Bird {
+    public void method() {System.out.println("overriding mehod worked");}
+}
+Bird b3 = new Eagle();
+Eagle b4 = new Eagle();
+b3.method();
+b4.method();
+
+//**********************************************************************************************************************
+// When an interface inherits from another interface with default methods, inheriting interface has 3 options:
+// 1. Do nothing - default method is inherited.
+// 2. Override default method as abstract.
+// 3. Override default method as another default method.
+interface Origin {
+    default void method() {System.out.println("default method invoked.");}
+}
+
+//**********************************************************************************************************************
+// Case 1. Do nothing.
+interface Alpha extends Origin {}
+new Alpha() {}.method();
+
+//**********************************************************************************************************************
+// Case 2. Override as abstract.
+interface Beta extends Origin {
+    void method();
+}
+new Beta() {
+    public void method() {System.out.println("abstract method implemented by anonymous class and invoked");}
+}.method();
+
+//**********************************************************************************************************************
+// Case 3. Override as default.
+interface Omega extends Origin {
+    default void method() {System.out.println("default method overriden and invoked");}
+}
+new Omega() {}.method();
+
+//**********************************************************************************************************************
+// Static methods
+//**********************************************************************************************************************
+// Purpose of static interface methods is to provide helper functionality for implementing other interface methods.
+// Static interface methods are part of interface, and cannot be used within implementing class.
+// We can't use them via implementing class or its instances - only via name of the interface or within interface.
+// Static interface methods cannot be overriden in inplementing class - @Override annotation will complain.
+//**********************************************************************************************************************
+// No overriding of static method within implementing method
+interface Number {
+    static void method() {System.out.println("static interface method invoked");}
+    default void IamBeingHelped() {method();}
+}
+class Five implements Number {}
+
+Five c1 = new Five();
+Number c2 = new Five();
+
+c1.IamBeingHelped();    // okay
+c2.IamBeingHelped();    // okay
+
+Number.method();        // okay
+//Five.method();    will cause error
+//c1.method();      will cause error
+//c2.method();      will cause error
+
+//**********************************************************************************************************************

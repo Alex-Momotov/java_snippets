@@ -1,0 +1,234 @@
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.io.PrintStream;
+import java.io.PrintWriter;
+import java.util.Scanner;
+
+    static class Cat {
+    final static String PATH_TO_RES = "/Users/omomotov/Documents/my_projects/learning_java/resources/";
+
+//----------------------------------------------------------------------------------------------------------------------
+//      Cheat Sheet
+// FileInputStream - read file one byte at a time
+// FileOutputStream - write file one byte at a time
+
+// FileReader - Read one character at a time
+// FileWriter - Write one character at a time
+
+// PrintWriter - Writing one line at a time
+// BufferedReader + FileReader - Reading one line at a time
+
+// BufferedInputStream - buffered reading on byte level
+// BufferedOutputStream - buffered writing on byte level
+
+//  OutputStreamWriter - character-to-byte bridge stream
+//  InputStreamReader - byte-to-character bridge stream
+
+// BufferedReader - buffered reading on character level
+// BufferedWriter - buffered writing on character level
+
+//  ByteArrayOutputStream - save data as byte array in memory
+//  ByteArrayInputStream - read data from an in-memory byte array
+
+//----------------------------------------------------------------------------------------------------------------------
+//      Theory
+// InputStream - This abstract class is the superclass of all classes representing an input stream of bytes.
+// OutputStream - This abstract class is the superclass of all classes representing an output stream of bytes.
+
+//----------------------------------------------------------------------------------------------------------------------
+// FileInputStream - Read file one byte at a time - old school way
+    void method() throws Exception {
+        FileInputStream in = null;
+        try {
+            in = new FileInputStream(PATH_TO_RES + "Mozart.txt");
+            int b;
+            while ((b = in.read()) != -1) {
+                System.out.println(b);  // Lets see them bytes.
+            }
+        } finally {
+            if (in != null) in.close();
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Try-With-Resources
+// try-with-resources statement is only possible if underlying stream implements AutoClosable
+    void method1() throws Exception {
+        try (FileInputStream in = new FileInputStream(PATH_TO_RES + "Mozart.txt");) {
+            int b;
+            while ((b = in.read()) != -1) {
+                System.out.println(b);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// FileOutputStream - Write file one byte at a time
+// This example also makes copy of the file
+    void method2() throws Exception {
+        try (FileInputStream in = new FileInputStream(PATH_TO_RES + "Mozart.txt");
+            FileOutputStream out = new FileOutputStream(PATH_TO_RES + "Copy.txt");) {
+            int b;
+            while ((b = in.read()) != -1) {
+                System.out.println(b);
+                out.write(b);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// FileReader - Read one character at a time
+    void method3() throws Exception {
+        try (FileReader input = new FileReader(PATH_TO_RES + "Mozart.txt");) {
+            int c;      // ASCII encoded character
+            while ((c = input.read()) != -1) {
+                char ch = (char) c;     // cast it back to char
+                System.out.println(c + " -> " + ch);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// FileWriter - Write one character at a time
+    void method4() throws IOException {
+        try (FileWriter writer = new FileWriter(PATH_TO_RES + "Story.txt")) {
+            for (int i = 0; i < 10; i++) {
+                writer.write('a');
+            }
+            writer.write('\r'); // carrige return
+            writer.write('\n'); // new line
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// PrintWriter - handles type (int, char, String, etc) to char encoding to bytes
+// Unable to write bytes directly, this is abstracted away
+    void method5() throws IOException {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(PATH_TO_RES + "MyText.txt"));) {
+            for (int i = 0; i < 10; i++) {
+                writer.println("Sentence number " + i);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  PrintStream - handles type (int, char, String, etc) to char encoding to bytes
+//  So, same as PrintWriter, but with the added ability to write bytes directly
+    void printStream() {
+        try (PrintStream out = new PrintStream(PATH_TO_RES + "PrintStream.txt");) {
+            out.println("some data with new line");
+            out.print(5);       // integer
+            out.print('c');     // character
+            out.write(127);     // byte
+            out.printf("my pet is %s", "cat");  // formatted string
+        } catch (FileNotFoundException e) {}
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// BufferedReader + FileReader - Reading one line at a time (as String)
+    void method6() throws Exception {
+        try(BufferedReader reader = new BufferedReader(new FileReader(PATH_TO_RES + "MyText.txt"));) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// Buffered Streams
+// Wrap buffered streams around unbuffered streams to reduce disk access calls and make program more efficient.
+// Flushing output streams means writing all data remaining in buffer.
+
+//----------------------------------------------------------------------------------------------------------------------
+//  OutputStreamWriter - character-to-byte bridge stream
+    void method81() throws Exception {
+        OutputStreamWriter out = new OutputStreamWriter(new FileOutputStream(PATH_TO_RES + "SomethingNew.txt"));
+        out.write("some text");
+        out.close();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  InputStreamReader - byte-to-character bridge stream
+    void method82() throws Exception {
+        InputStreamReader in = new InputStreamReader(new FileInputStream(PATH_TO_RES + "SomethingNew.txt"));
+        String text = "";
+        for (int c; (c = in.read()) != -1;) text += (char) c;
+        System.out.println(text);
+        in.close();
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// BufferedInputStream - buffered reading on byte level
+// BufferedOutputStream - buffered writing on byte level
+    void method7() throws Exception {
+        BufferedInputStream in = new BufferedInputStream(new FileInputStream(PATH_TO_RES + "MyText.txt"));
+        BufferedOutputStream out = new BufferedOutputStream(new FileOutputStream(PATH_TO_RES + "MyText.txt"));
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// BufferedReader - buffered reading on character level
+// BufferedWriter - buffered writing on character level
+    void method8() throws IOException {
+        BufferedReader reader = new BufferedReader(new FileReader(PATH_TO_RES + "MyText.txt"));
+        BufferedWriter writer = new BufferedWriter(new FileWriter(PATH_TO_RES + "MyText.txt"));
+     }
+//----------------------------------------------------------------------------------------------------------------------
+//  ByteArrayOutputStream - save data as byte array in memory
+    void method9() throws IOException {
+        ByteArrayOutputStream bOut = new ByteArrayOutputStream();
+        try (OutputStreamWriter out = new OutputStreamWriter(bOut);) {
+             out.write("some text");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  ByteArrayInputStream - read data from an in-memory byte array
+        ByteArrayInputStream bIn = new ByteArrayInputStream(bOut.toByteArray());
+        try (InputStreamReader reader = new InputStreamReader(bIn);) {
+            System.out.println(reader.read());
+        }
+
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Scanner - read file one word at a time
+    void method10() throws Exception {
+        try (Scanner s = new Scanner(new BufferedReader(new FileReader(PATH_TO_RES + "MyText.txt")))) {
+            while (s.hasNext()) {
+                System.out.println(s.next());
+            }
+        }
+    }
+//----------------------------------------------------------------------------------------------------------------------
+//  Scanner - read double values only, skip non-doubles
+    void method11() throws Exception {
+        try (Scanner s = new Scanner(new BufferedReader(new FileReader(PATH_TO_RES + "MyText.txt")))) {
+            while (s.hasNext()) {
+                if (s.hasNextDouble()) {
+                    System.out.println(s.nextDouble());
+                } else {
+                    s.next();
+                }
+            }
+        }
+    }
+
+}
+
+
+

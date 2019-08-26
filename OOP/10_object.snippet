@@ -1,0 +1,336 @@
+import java.util.Arrays;
+import java.util.Objects;
+//**********************************************************************************************************************
+// Every class you use or write inherits 6 important instance methods of Object.
+// If you choose to use any of these methods, you may need to override them with code that is specific to your class.
+// 1.   protected Object clone() throws CloneNotSupportedException
+//      Creates and returns a copy of this object.
+
+// 2.   public boolean equals(Object obj)
+//      Indicates whether some other object is "equal to" this one.
+
+// 3.   protected void finalize() throws Throwable
+//      Called by the garbage collector on an object when garbage
+//      collection determines that there are no more references to the object.
+
+// 4.   public final Class getClass()
+//      Returns the runtime class of an object.
+
+// 5.   public int hashCode()
+//      Returns a hash code value for the object.
+
+// 6.   public String toString()
+//      Returns a string representation of the object.
+
+import java.util.Objects;for (Object meth : Object.class.getDeclaredMethods()) System.out.println(meth);
+
+//**********************************************************************************************************************
+// Object also has 5 very important instance methods related to concurrency - those are discussed in concurrency notes.
+// 1.   public final void notify()
+// 2.   public final void notifyAll()
+// 3.   public final void wait()
+// 4.   public final void wait(long timeout)
+// 5.   public final void wait(long timeout, int nanos)
+
+//**********************************************************************************************************************
+// clone()
+//**********************************************************************************************************************
+// In order to be able to call clone(), either class or superclass must implement Cloneable interface.
+// Implementing Cloneable interface is like giving our permission to clone objects of this class.
+// Object's clone() method checks that class implements Cloneable - if it doesn't CloneNotSupportedException is thrown.
+
+// If class implements Cloneable but does not override clone(), Object's implementation of clone() creates object of
+// same class and initializes new object's member variables to same values.
+// One problem remains though - Object's clone method is protected - therefore we must override it and make it public.
+
+// For classes that have only primitive or String members, default behavior of Object's clone() works just fine.
+// But if object contains reference members, you need to override clone() else reference members will be aliased.
+// To decouple the two objects, you must override clone() so that it calls clone() on each reference type variable.
+
+//**********************************************************************************************************************
+// Checklist - all fields are primitives or String
+//      1. Implement Cloneable
+//      2. Override clone() with 'public' modifier, set return type to current class type, and add @Override annotation:
+//         @Override
+//         public Type clone() throws CloneNotSupportedException {}
+//      3. Cast super.clone() to current class type before returning it:
+//         return (Type) super.clone();
+class Cat implements Cloneable {
+    String name;
+    int age;
+
+    @Override
+    public Cat clone() throws CloneNotSupportedException {
+        return (Cat) super.clone();
+    }
+}
+Cat cat1 = new Cat();
+Cat cat2 = cat1.clone();    // this line should be in a block that either handles or throws CloneNotSupportedException
+
+// Check to see clone is independent
+cat2.age;
+cat2.name;
+cat1.age = 20;
+cat1.name = "Jack";
+cat2.age;
+cat2.name;
+
+//**********************************************************************************************************************
+// Checklist - some fields are reference types
+//      1. Implement Cloneable
+//      2. Override clone() with 'public' modifier, set return type to current class type, and add @Override annotation:
+//         @Override
+//         public Type clone() throws CloneNotSupportedException {}
+//      3. Create new object by calling (Type) super.clone() - this will copy all primitive and String types.
+//      4. Manually initialise the rest of object's reference types by calling:
+//         this.refVariable.clone()
+class BagOfCats implements Cloneable {
+    int numCats;
+    Cat cat1 = new Cat();
+    Cat cat2 = new Cat();
+
+    @Override
+    public BagOfCats clone() throws CloneNotSupportedException {
+        BagOfCats result = (BagOfCats) super.clone();       // clones primitives or String fields for us
+        result.cat1 = this.cat1.clone();
+        result.cat2 = this.cat2.clone();
+        return result;
+    }
+}
+
+BagOfCats bag1 = new BagOfCats();
+BagOfCats bag2 = bag1.clone();    // this should be in a block that either handles or throws CloneNotSupportedException
+
+// Check to see clone is independent
+bag2.cat1.age;
+bag2.cat1.name;
+bag1.cat1.age = 20;
+bag1.cat1.name = "Jack";
+bag2.cat1.age;
+bag2.cat1.name;
+
+//**********************************************************************************************************************
+// equals()
+//**********************************************************************************************************************
+// The equals() method is meant to compare equality - whether fields of two objects have same values.
+// The equals() provided by Object uses identidy check "==" testing whether the object references are equal.
+// This is clearly not what we want - so we must override equals() with our own implementation that compares fields.
+// Our implementation should use "==" to compare primitive type fields and '.equals()' for reference types or String.
+// If you override equals(), you must override hashCode() as well.
+
+// Checklist for overriding equals():
+//      1. @Override annotation.
+//      2. Check for identity. Identical objects are always equal.
+//      3. Check object is not null. Check objects are of same class.
+//      4. Cast object to current class type.
+//      5. Use '==' to check equality for primitive type fields.
+//      6. Use Objects.equals(obj1, obj2) for reference type fields including String.
+//         It checks for null for you. Remember to import Objects standard library first.
+//      7. Use Arrays.equals(arr1, arr2) for comparing one level of array contents.
+//         Use Arrays.deepEquals(arr1, arr2) for comparing all inner levels of array contents recursively.
+import java.util.Objects;
+class Bird {
+    String name = "Jack";
+    int age = 5;
+    int[] arr = {1, 2, 3};
+    int[][] arr2 = {{1, 2}, {3, 4}};
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Bird bird = (Bird) o;
+        return age == bird.age &&
+                Objects.equals(name, bird.name) &&
+                Arrays.equals(arr, bird.arr) &&
+                Arrays.deepEquals(arr2, bird.arr2);
+    }
+}
+
+Bird b1 = new Bird();
+Bird b2 = new Bird();
+b1 == b2;
+b1.equals(b2);
+
+//**********************************************************************************************************************
+// hashCode()
+//**********************************************************************************************************************
+// HARD RULE - If two objects are equal their hash code must also be equal.
+// SOFT RULE - If two objects are not equal their hash code should be different (desireable for efficiency).
+// Two equal objects must have same hash code so that HashMap won't store them in different buckets.
+
+// If you don't override hashCode(), its implementation in Object returns object's memory address in hexadecimal.
+// Overriding equals() changes how two objects are equated and Object's implementation of hashCode() is no longer valid.
+// Therefore if you override the equals() method, you MUST also override hashCode() method.
+
+//      THE CHART
+//  byte, short, int, char:     (int) field
+//  long:                       (int) (field ^ (field >>> 32))
+//  float:                      Float.floatToIntBits(field)
+//  double:                     (int) (Double.doubleToLongBits(field) ^ (Double.doubleToLongBits(field) >>> 32))
+//  boolean:                    (field ? 0 : 1)
+//  object or String:           (field == null ? 0 : field.hashCode())
+//  array:                      Arrays.hashCode(arr)            (if used Arrays.equals() in equals())
+//                              Arrays.deepHashCode(arr)        (if used Arrays.deepEquals() in equals())
+
+//**********************************************************************************************************************
+// Checklist for overriding hashCode() manually:
+//      1. @Override annotation
+//      2. Start building hash with small prime number (e.g. 7)
+//      3. For every field in the class that is used to determine equality:
+//         Use THE CHART to calculate number for that field.
+//         Multiply current hash value by another prime number (e.g. 31) and add the above number.
+//      4. Return resulting hash.
+class Mammal {
+    byte num1 = 10;
+    short num2 = 20;
+    int num3 = 30;
+    long num4 = 40L;
+    float num5 = 1.23F;
+    double num6 = 1.23D;
+    boolean bool = true;
+    char cha = 'A';
+    String str = "Jack";
+    int[] arr = {1, 2, 3};
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Mammal mammal = (Mammal) o;
+        return num1 == mammal.num1 &&
+                num2 == mammal.num2 &&
+                num3 == mammal.num3 &&
+                num4 == mammal.num4 &&
+                Float.compare(mammal.num5, num5) == 0 &&
+                Double.compare(mammal.num6, num6) == 0 &&
+                bool == mammal.bool &&
+                cha == mammal.cha &&
+                Objects.equals(str, mammal.str) &&
+                Arrays.equals(arr, mammal.arr);
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 31 * hash + num1;
+        hash = 31 * hash + (int) num2;
+        hash = 31 * hash + (int) num3;
+        hash = 31 * hash + (int) (num4 ^ (num4 >>> 32));
+        hash = 31 * hash + Float.floatToIntBits(num5);
+        hash = 31 * hash + (int) (Double.doubleToLongBits(num6) ^ (Double.doubleToLongBits(num6) >>> 32));
+        hash = 31 * hash + (bool ? 0 : 1);
+        hash = 31 * hash + (int) cha;
+        hash = 31 * hash + (str == null ? 0 : str.hashCode());
+        hash = 31 * hash + Arrays.hashCode(arr);
+        return hash;
+    }
+}
+Mammal m1 = new Mammal();
+Mammal m2 = new Mammal();
+m1 == m2;
+m1.hashCode();
+m2.hashCode();
+
+//**********************************************************************************************************************
+// Checklist for overriding hashCode() with help of Objects library:
+//      1. @Override annotation
+//      2. Use Objects.hash(fields1, field2, ...) on all fields to compute initial hash
+//      3. For arrays use either       Arrays.hashCode(arr)            (if used Arrays.equals() in equals())
+//                                     Arrays.deepHashCode(arr)        (If used Arrays.deepEquals() in equals())
+class Robot {
+    byte num1 = 10;
+    short num2 = 20;
+    int num3 = 30;
+    long num4 = 40L;
+    float num5 = 1.23F;
+    double num6 = 1.23D;
+    boolean bool = true;
+    char cha = 'A';
+    String str = "Jack";
+    int[] arr = {1, 2, 3};
+    int[][] arr2 = {{1, 2}, {1, 2}};
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Robot robot = (Robot) o;
+        return num1 == robot.num1 &&
+                num2 == robot.num2 &&
+                num3 == robot.num3 &&
+                num4 == robot.num4 &&
+                Float.compare(robot.num5, num5) == 0 &&
+                Double.compare(robot.num6, num6) == 0 &&
+                bool == robot.bool &&
+                cha == robot.cha &&
+                Objects.equals(str, robot.str) &&
+                Arrays.equals(arr, robot.arr) &&
+                Arrays.deepEquals(arr2, robot.arr2);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = Objects.hash(num1, num2, num3, num4, num5, num6, bool, cha, str);
+        result = 31 * result + Arrays.hashCode(arr);
+        result = 31 * result + Arrays.deepHashCode(arr2);
+        return result;
+    }
+}
+
+//**********************************************************************************************************************
+// As a side note, both equals() and hashCode() are already implemented correctly for String.
+String s1 = new String("goat");
+String s2 = new String("goat");
+s1.hashCode();
+s2.hashCode();
+s1 == s2;
+s1.equals(s2);
+
+//**********************************************************************************************************************
+// finalize()
+//**********************************************************************************************************************
+// finalize() gets invoked when object becomes eligible for garbage collection and is meant to contain clean up code.
+// Object's implementation of filizise does nothing.
+// You can override finilize() to do clean up, such as freeing us system resources.
+// finalize() is not called strictly after object becomes garbage, so you must not rely on it for clean up code.
+class CleanMe {
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println("I just got cleaned");
+    }
+}
+
+//**********************************************************************************************************************
+// getClass()
+//**********************************************************************************************************************
+// You cannot override getClass() and there is no need to.
+// getClass() is used as part of Reflection.
+class Dog {}
+
+new Dog().getClass();
+Class cls = new Dog().getClass();
+
+//**********************************************************************************************************************
+// toString()
+//**********************************************************************************************************************
+// toString() method is meant to return a String representation of the object, which is very useful for debugging.
+// toString() gets automatically invoked whenever the object is printed or concatenated with a string.
+// You should override toString() to output useful information about the object for debugging purposes.
+class Employee {
+    int salary = 35000;
+    String name = "Jack";
+
+    @Override
+    public String toString() {
+        return "Employee{" +
+                "salary=" + salary +
+                ", name='" + name + "\'}";
+    }
+}
+
+Employee emp = new Employee();
+System.out.println(emp);        // toString() got invoked
+String output = "" + emp;      // toString() got invoked
+
+//**********************************************************************************************************************

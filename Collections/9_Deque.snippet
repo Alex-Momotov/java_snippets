@@ -1,0 +1,68 @@
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+static class Cat {{
+//**********************************************************************************************************************
+//      Deque interface
+// A double-ended-queue that supports the insertion and removal of elements at both end points.
+// Deque can be used as stack (LIFO) or as a queue (FIFO).
+// Implementations are ArrayDeque and LinkedList.
+    Deque<Integer> d = new LinkedList<>();
+
+// Violent methods
+    d.addFirst(3);      // Add element at beginning. Exception if full.
+    d.addLast(3);       // Add element at end. Exception if full.
+    d.removeFirst();    // Remove and return first element. Exception if empty.
+    d.removeLast();     // Remove nd return last element. Exception if empty.
+    d.getFirst();       // Retrieve first element without removing it. Exception if empty.
+    d.getLast();        // Retrieve last element without removing it. Exception if empty.
+
+// Calm methods
+    d.offerFirst(1);    // Add element at beginning. Exception if full.
+    d.offerLast(1);     // Add element at end. Exception if full.
+    d.pollFirst();      // Remove end return first element. Exception if empty.
+    d.pollLast();       // Remove end return last element. Exception if empty.
+    d.peekFirst();      // Retrieve first element without removing it. Null if empty.
+    d.peekLast();       // Retrieve last element without removing it. Null if empty.
+
+    d.removeFirstOccurrence(1); // Removes the first occurrence of the specified element.
+    // Returns boolean telling if element was present.
+    d.removeLastOccurrence(1);  // Removes the last occurrence of the specified element.
+    // Returns boolean telling if element was present.
+
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

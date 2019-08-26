@@ -1,0 +1,77 @@
+//**********************************************************************************************************************
+// Instance variables are declared outside all methods and appear as first statements in the class.
+// Scope of instance variables is the entire class. Instance variables are also refered to as 'fields'.
+class Example {
+    int num;        // example of an instance variable
+}
+
+//**********************************************************************************************************************
+// Access modiviers
+class Example1 {
+    private int num1;       // private - accessible only witin the current class
+    public int num2;        // public - accessible from all classes
+    protected int num3;     // protected -
+    int num4;               // default (no modifier) -
+}
+
+//**********************************************************************************************************************
+// Getters and setters.
+// In the spirit of encapsulation, it is common to make all fields private, then add getters and setters.
+class Example2 {
+    private int someNumber;
+    private String someString;
+
+    public int getSomeNumber() {
+        return someNumber;
+    }
+    public void setSomeNumber(int newValue) {
+        someNumber = newValue;
+    }
+    public String getSomeString() {
+        return someString;
+    }
+    public void setSomeString(String newValue) {
+        someString = newValue;
+    }
+}
+
+
+//**********************************************************************************************************************
+// Example of how to give instance variables default values - can either do through constructor or within declaration.
+public class Rectangle {
+    public int width = 0;
+    public int height = 0;
+    public Point origin;
+
+    public Rectangle() {
+        origin = new Point(0, 0);
+    }
+
+    public Rectangle(Point p) {
+        origin = p;
+    }
+
+    public Rectangle(int w, int h) {
+        origin = new Point(0, 0);
+        width = w;
+        height = h;
+    }
+
+    public Rectangle(Point p, int w, int h) {
+        origin = p;
+        width = w;
+        height = h;
+    }
+}
+
+
+public class Point {
+    public int x = 0;
+    public int y = 0;
+
+    public Point(int a, int b) {
+        x = a;
+        y = b;
+    }
+}
+

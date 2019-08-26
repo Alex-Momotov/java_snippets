@@ -1,0 +1,157 @@
+import java.util.HashMap;
+//**********************************************************************************************************************
+// General rules:
+// 1. Instance methods can access instance variables, instance methods, class variables, class methods directly.
+// 2. Class methods can only access class variables and class methods directly.
+// 3. Class methods cannot access instance variables or instance methods directly — they must use an object reference.
+// 4. Class methods cannot use 'this' keyword as there is no instance for this to refer to.
+
+
+//**********************************************************************************************************************
+// Class Variables
+//**********************************************************************************************************************
+// 'static' keyword is used to create fields and methods that belong to the class, rather than instance of the class.
+// Class variables (aka static variables) are shared across all instances of a class and declared with 'static' keyword.
+// By convention static variables should appear right below class declaration and before instance variables.
+public class Employee {
+    public static int numEmployees = 0;     // class variable
+
+    public Employee() {
+        numEmployees++;
+    }
+}
+
+Employee e = new Employee();
+Employee.numEmployees;
+Employee h = new Employee();
+Employee.numEmployees;
+
+
+//**********************************************************************************************************************
+// Class variables should be accessed or changed via class name directly without needing to create an instance, such as
+// ClassName.classVariable. You can also access/change static variables via object reference, such as
+// instanceName.classVariable but this is discouraged since its not clear that they are class variables.
+
+class Cat {
+    private static int numCats = 0;
+}
+Cat c = new Cat();
+
+c.numCats;      // view class variable via instance
+Cat.numCats;    // view class variable via class
+
+c.numCats = 1;      // change class variabe value via instance
+Cat.numCats = 2;    // change class variable value via class
+
+
+//**********************************************************************************************************************
+// Class Methods
+//**********************************************************************************************************************
+// Class methods have 'static' modifier in their declarations and should be invoked with the class name, without needing
+// to create an instance - ClassName.methodName(args). You can also refer to static methods via object reference, such
+// as - instanceName.methodName(args), but this is discouraged since its not clear that they are class methods. A common
+// use for static methods is to access static fields.
+class Lion {
+    private static int numLions = 0;
+    public static int getNumLions() {
+        return numLions;
+    }
+    public static void setNumLions(int newVal) {
+        numLions = newVal;
+    }
+}
+
+Lion.getNumLions();
+Lion.setNumLions(25);
+Lion.getNumLions();
+
+//**********************************************************************************************************************
+// 1st Alternative Way to Initialise Instance Variables - Initialisation Blocks
+//**********************************************************************************************************************
+// Besides class constructor there are two ways to initialise instance variables - initialiser blocks and final methods.
+// Initialiser blocks for instance variables look like a pair of curly braces outside all methods.
+// Initialiser blocks get called each time an instance of a class is constructed.
+// The compiler copies initialiser blocks into every constructor, so the code block is shared among all constructors.
+class Bird {
+    int wingSize;
+
+    // Initialiser block
+    {
+        System.out.println("Initiaiser block triggered");
+        wingSize = 13;
+    }
+
+    public Bird() {}
+    public Bird(int wingSize) {
+        this.wingSize = wingSize;
+    }
+}
+Bird b = new Bird();
+Bird b2 = new Bird(20);
+
+//**********************************************************************************************************************
+// 2nd Alternative Way to Initialise Instance Variables - Final Methods
+//**********************************************************************************************************************
+// Final methods are a second alternative way to initialise instance variables. Remember, they cannot be overriden.
+// This is especially useful if subclasses might want to reuse the initialization method. The method is final because
+// calling non-final methods during instance initialization can cause problems.
+class Something {
+    public int entity = initialiseEntity();
+    private final int initialiseEntity() {
+        return 13;
+    }
+}
+Something s = new Something();
+s.entity;
+
+//**********************************************************************************************************************
+// 1st Way to Initialise Static Variables - Static Initialisation Blocks
+//**********************************************************************************************************************
+// Static blocks are useful if you just want to execute bits of code once, before any object is constructed.
+// Static variables can be assigned single value during declaration, but what if we want more complex logic for
+// initialisation? Instance variables have constructors for this, but what about static variables? There are two ways to
+// segregate the logic of initialising a static variable into a separate block of code - static inilialiser blocks and
+// private static methods. All static blocks get called once, when the class itself is initialised.
+
+public class ExampleTwo {
+    private static final HashMap<String, String> MAP = new HashMap<String, String>();
+
+    // Static block to initialise more complex static variables
+    static {
+        MAP.put("fruit", "banana");
+        MAP.put("vegetable", "tomato");
+        MAP.put("fish", "salmon");
+        System.out.println("static block triggered");
+    }
+}
+ExampleTwo expl = new ExampleTwo();
+ExampleTwo expl2 = new ExampleTwo();    // Creating additional instances doesn't invoke static block more than once
+
+// The code in the static initialiser blocks will be executed at class load time, before any instances of the class are
+// constructed. That way you can make sure that the class resources are all ready to use.
+
+
+//**********************************************************************************************************************
+// 2nd Way to Initialise Static Variables - Private Static Methods
+//**********************************************************************************************************************
+// Advantage of private static methods is that they can be reused later if you need to reinitialize the class variable.
+class ExampleThree {
+    private static final HashMap<String, String> MAP = initialiseMAP();
+
+    private static HashMap<String, String> initialiseMAP() {
+        HashMap<String, String> map = new HashMap<String, String>();
+        map.put("fruit", "banana");
+        map.put("vegetable", "tomato");
+        map.put("fish", "salmon");
+        System.out.println("private static method invoked");
+        return map;
+    }
+}
+ExampleThree thing1 = new ExampleThree();
+ExampleThree thing2 = new ExampleThree();   // Creating additional instances doesn't invoke the method more than once
+
+//**********************************************************************************************************************
+
+
+
+

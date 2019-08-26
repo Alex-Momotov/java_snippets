@@ -1,0 +1,81 @@
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+static class Cat {{
+//**********************************************************************************************************************
+//      Set interface
+// Two set instances are equal is they contain same elements.
+// There are three general-purpose Set implementations: HashSet, TreeSet, and LinkedHashSet.
+
+// 1. HashSet         - Stores its elemnts in a hash table - its the best performing implementation.
+//                      But gives no guarantee about the order of iteration.
+//                      Its the best all-around Set implementation in the Java platform.
+// 2. TreeSet         - Stores elements in a red-black tree. Orders its elements based on value.
+//                      It's substantially slower than HashSet.
+// 3. LinkedHashSet   - Implemented as a hash table with a linked list running through it.
+//                      Orders elements based on insertion order into the set.
+//                      Almost as performant as HashSet.
+    List<Integer> list7 = Arrays.asList(1, 1, 2, 2);
+
+// One-liner which removes duplicates from another collection:
+    Set<Integer> mySet = new HashSet<>(list7);
+
+// Same thing but using stream and aggregate operations:
+    Set<Integer> mySet2 = list7.stream().collect(Collectors.toSet());
+
+// Also removes duplicates but preserves order of the collection:
+    Set<Integer> mySet3 = new LinkedHashSet<>(list7);
+
+// Bulk operations are particularly usefull with sets:
+// s1.containsAll(s2) — returns true if s2 is a subset of s1.
+// s1.addAll(s2) — transforms s1 into the union of s1 and s2.
+// s1.retainAll(s2) — transforms s1 into the intersection of s1 and s2.
+// s1.removeAll(s2) — transforms s1 into the (asymmetric) set difference of s1 and s2.
+
+    Set<Integer> s1 = new HashSet<>(Arrays.asList(1, 2, 3));
+    Set<Integer> s2 = new HashSet<>(Arrays.asList(1, 2, 3));
+
+// To calculate intersection, difference, union without changing initial sets, we need to first copy elements to new set
+    Set<Integer> union = new HashSet<Integer>(s1);
+    union.addAll(s2);
+    Set<Integer> intersection = new HashSet<Integer>(s1);
+    intersection.retainAll(s2);
+    Set<Integer> difference = new HashSet<Integer>(s1);
+    difference.removeAll(s2);
+
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

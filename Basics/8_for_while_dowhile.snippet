@@ -1,0 +1,154 @@
+import java.util.Scanner;
+//**********************************************************************************************************************
+// For loop.
+// Syntax:          for (initialisation; condition; change) {}
+// Initialisation is executed once, condition is checked before running each block, change is executed after each block
+
+for (int i = 0; i < 5; ++i) {
+    System.out.println(i);
+}
+
+// One line for loop example
+// Careful, braces {} can be ommitted only if there is a single statement within the loop to be executed.
+for (int i = 0; i <= 10; i += 2) System.out.print(i + " ");                         // OKAY
+for (int i = 0; i <= 5; ++i) System.out.println("o"); System.out.println("p");      // WRONG
+
+// Initialisation, condition, and change blocks can be anything (including mehthods) and can even be empty
+for (String a = "a"; a.length() < 10; a += "a") System.out.println(a);
+
+// You can declare counting variable outside the loop if you want. The variable has now a different scope.
+int r;
+for (r = 0; r < 10; ++r) System.out.println(r);
+
+// Infinite for loop (do not run)
+for ( ; ; ) {}
+
+// The middle condition part can be any boolean expression, e.g. 'true'
+for (int i = 0; false; ++i) {
+    System.out.println(i);
+}
+
+// The third 'change' part does not have to be incremented by one. It can be incremented by 2 or even multiplied.
+for (int i = 0; i <= 10; i += 2) {
+    System.out.println(i);
+}
+
+// Example of an interesting change part
+for (int i = 0; i <= 10; i = i + 2) {
+    System.out.println(i);
+}
+
+//**********************************************************************************************************************
+// For-each loop.
+// Syntax:          for (type variable : arrayname) {}
+String[] cars = {"Ford", "BMW", "Honda", "Mazda"};
+for (String car : cars) {
+    System.out.println(car);
+}
+
+// One line example
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+String[] bikes = {"Kawasaki", "Yamaha", "Honda", "Suzuki"};
+for (String bike : bikes) System.out.println(bike);
+
+
+//**********************************************************************************************************************
+// While loop.
+// Syntax           while (condition) {}
+// Condition is checked before each iteration. Condition can be anything, e.g. node in linked list has next elemment.
+int u = 0;
+while (u < 10) {
+    System.out.println(u);
+    ++u;
+}
+
+// Infinite while loop (do not run)
+while (true) {
+    System.out.println("do something");
+}
+
+
+//**********************************************************************************************************************
+// Do-While loop.
+// Syntax:          do {code block} while (condition);
+// Use do-while loop when you want the loop to execute at least once
+int k = 0;
+do {
+    System.out.println(k);
+    ++k;
+} while (k < 5);
+
+// A good use case for do-while loop is taking and validating an input from a user:
+Scanner sc = new Scanner(System.in);
+int n;
+do {
+    n = sc.nextInt();
+    System.out.println("you entered " + n);
+} while (n < 0);
+
+//**********************************************************************************************************************
+// break.
+// Break statement has two forms, 'labeled' and 'unlabeled'.
+// Unlabled break statement breaks execution of current loop. In example below we are jumping out when i is 4:
+for (int i = 0; i < 10; ++i) {
+    System.out.println(i);
+    if (i == 4) break;
+}
+
+// Labeled break statement.
+// When loops are nested labels tell Java which loop to break out of.
+int[][] array = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+int searchVal = 5;
+search:
+    for (int i = 0; i < array.length; ++i) {
+        inner: for (int j = 0; j < array[i].length; ++j) {
+            if (array[i][j] == searchVal) break search;
+        }
+    }
+
+
+//**********************************************************************************************************************
+// continue.
+// Continue statement has two forms, 'labeled' and 'unlabeled'.
+// Unlabeled continue statement skips execution of current iteration.
+for (int i = 0; i < 10; ++i) {
+    if (i == 4) continue;
+    System.out.println(i);
+}
+
+// When using continue in while loops, dont forget to increment the iterating integer, else loop will run forever
+int i = 0;
+while (i < 10) {
+    if (i == 4) {
+        ++i;
+        continue;
+    }
+    System.out.println(i);
+    ++i;
+}
+
+// Labled continue statement.
+// When loops are nested labels tell Java which loop to continue.
+int[][] array2 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+search: for (int i = 0; i < array2.length; ++i) {
+    inner: for (int j = 0; j < array2[i].length; ++j) {
+        if (array2[i][j] % 2 == 0) {                        // Find first even number in each subarray
+            System.out.println(array2[i][j]);
+            continue search;
+        }
+    }
+}
+
+
+//**********************************************************************************************************************
+// Return statement.
+// Return statement can return a value, or simply return nothing if method returns void.
+// There can be multiple return statements.
+public static void example() {
+    boolean someCondition = true;
+    boolean otherCondition = false;
+    if (someCondition) return;
+    else if (otherCondition) return;
+}
+
+

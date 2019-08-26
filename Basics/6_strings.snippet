@@ -1,0 +1,306 @@
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+//**********************************************************************************************************************
+// Strings are immutable
+// The String class is immutable, so that once it is created a String object cannot be changed. The String class has a
+// number of methods, some of which will be discussed below, that appear to modify strings. Since strings are immutable,
+// what these methods really do is create and return a new string that contains the result of the operation.
+
+//**********************************************************************************************************************
+// Three types of comments:
+//      1. //           line comment
+//      2. /* text */   block comment
+//      3. /** doc */   doc comment, 'javadoc' command uses doc comments when automatically gererating documentation
+
+/** doc comment */
+/* block comment*/
+// line comment
+
+//**********************************************************************************************************************
+// Multi-line string
+
+String mult = " If a string is really long, " +
+    "you can break it up using plus sign" +
+    "across multiple lines of code";
+
+//**********************************************************************************************************************
+// Printing
+// System.out.print()                       print with no new line
+// System.out.println()                     print with new line
+// System.out.printf(format_str, varargs)   print formatted
+//                                          %n    - platform independent new line, always use %n instead of \n
+//                                          %s    - string
+//                                          %d    - decimal
+//                                          %f    - float
+//                                          %.4f  - float with 4 digits after decimal point
+System.out.printf("New line is this %n new line");
+System.out.printf(
+    "float: %f, %nfloat with a given precision: %.3f %nint: %d, %nstring: %s",
+    3.1231F,
+    3.1231F,
+    5,
+    "Jack");
+
+//**********************************************************************************************************************
+// Format Strings
+// String.format(newstr, params...) returns formatted string with placeholders in newstr replaced with param values.
+// Accepts an arbitrary number of arguments
+// Use %s for string, %d for decimal, %f for real number parameters.
+String result1 = String.format("%s is %d years old %f", "Michael", 35, 23f);
+
+//**********************************************************************************************************************
+// Concatenating strings
+String greeting = "Hello";
+String name = "Michael";
+String message = greeting + ", " + name + ". Welcome!";
+System.out.println(message)
+
+// Concatenating string and a number.
+// When + is used between string and numeric type, the number is first converted to string, from left to right.
+System.out.println("10" + 10 + 10);
+System.out.println(10 + "10" + 10);
+System.out.println(10 + 10 + "10");
+
+//**********************************************************************************************************************
+// Escape characters
+System.out.println("\'");
+System.out.println("\"");
+System.out.println("\\");
+System.out.println("\ntext");
+System.out.println("\ttext");
+
+//**********************************************************************************************************************
+// String from character array
+// You can create a string from an array of characters
+char[] arr = {'c', 'a', 'f', 'f', 'e', 'i', 'n', 'e'};
+String word = new String(arr);
+
+//**********************************************************************************************************************
+// Length
+// .length() returns length of string
+"hello".length();
+
+//**********************************************************************************************************************
+// Index and slice a string.
+// .charAt returns character at specific index.
+// .substring(start) returns substring beginning at specified index and up to the end of the string.
+// .substring(strart, end) returns substring beginning at specified index start and up to the end index.
+String h = "hello there";
+"hello".charAt(0);          // first character of a string
+h.charAt(h.length() - 1);   // last character of a string
+h.substring(6);
+h.substring(0, 5);
+
+//**********************************************************************************************************************
+// Uppercase, lowercase
+// .toLowerCase() returns lowercased copy of string.
+String h1 = "Hello World!";
+h1.toLowerCase();
+
+// .toUpperCase() returns uppercased copy of string.
+String h2 = "Hello World!";
+h2.toUpperCase();
+
+//**********************************************************************************************************************
+// Searching for substrings
+// .indexOf(str) Returns index of substring or character. Searches from beginning. If not found returns -1
+"she and he and they and me".indexOf("and");
+"she and he and they and me".indexOf('y');
+
+// .lastIndexOf(str) Returns index of substring or character. Searches from the end. If not found returns -1
+"she and he and they and me".lastIndexOf("and");
+"she and he and they and me".lastIndexOf('e');
+
+// .contains(str) Returns true if string contains specified substring, false otherwise.
+"she and he and they and me".contains("e");
+"she and he and they and me".contains("meow");
+
+// .matches(regex)
+// Returns true if string matches the specified regular expression.
+"hey".matches("(hey|hi|hello)");
+
+//**********************************************************************************************************************
+// Replacing substrings
+// .trim()
+// Removes trailing and leading whitespace from a string and returns new string. Not an in-place method.
+String g = " some text here    ";
+g.trim();
+
+// .replace(old, new)
+// Replaces all occurrences of substring or character with another. Not an in-place method.
+"she and he and they".replace(" and ", "_");
+"she and he and they".replace('t', 'Z');
+
+// .replaceAll(regex, new)
+// Replaces each substring of this string that matches the given regular expression with the given replacement.
+"she and he and they".replaceAll("(e|and)", "X");
+
+// .replaceFirst(regex, new)
+// Replaces the first substring of this string that matches the given regular expression with the given replacement.
+"she and he and they".replaceFirst("(e|and)", "X");
+
+//**********************************************************************************************************************
+// Comparing strings
+// .compareTo(str)
+// Compares two strings lexicographically. Returns an integer indicating whether this string is greater than
+// (result is > 0), equal to (result is = 0), or less than (result is < 0) the argument.
+"abc".compareTo("abc");
+"abc".compareTo("abb");
+
+// .equals(str)
+// Returns true if and only if argument is String object that represents same sequence of characters as this object.
+"abc".equals("abc");
+"abc".equals("ab");
+"abc".equals(4);
+
+//**********************************************************************************************************************
+// Joing and Split
+// String.join(separator, list) Joins elements in array ar list over given separator and returns it.
+String[] courses = {"foo","bar","baz"};
+String result = String.join(" and ", courses);
+
+// text.split(', ') Splits a given string using given separator and returns String array
+String text = "History, Math, Physics, CompSci";
+String[] words = text.split(", ");
+
+//**********************************************************************************************************************
+// Iterate through string
+String example = "example";
+for (int i = 0; i < example.length(); ++i) {System.out.print(example.charAt(i) + " ");}
+
+//**********************************************************************************************************************
+// Remove a set of symbols from a given string
+HashSet<Character> punct = new HashSet<Character>();
+punct.add('.');
+punct.add(',');
+punct.add('\'');
+punct.add('\"');
+String dirty = "\"so\'me. ,\",d\'ir\'ty,.. .t,e\"x.t..";
+String clean = "";
+for (int i = 0; i < dirty.length(); ++i) {
+    char curr = dirty.charAt(i);
+    if (!punct.contains(curr)) {clean += curr;}
+}
+clean;
+
+//**********************************************************************************************************************
+// StringBuilder
+//**********************************************************************************************************************
+// StringBuilder objects are like String objects, except that they can be modified.
+// Internally, these objects are treated like variable-length arrays that contain a sequence of characters.
+// At any point, the length and content of the sequence can be changed through method invocations.
+// Working with StringBuilder is often more efficient than using String.
+
+//**********************************************************************************************************************
+// Four ways to create StringBuilder
+// 1. StringBuilder()                   Creates empty string builder with capacity 16.
+StringBuilder sb1 = new StringBuilder();
+
+// 2. StringBuilder(string)             Creates string builder from string.
+StringBuilder sb2 = new StringBuilder("some string");
+
+// 2. StringBuilder(charSeq)            Creates string builder from CharSequence (interface implemented by String).
+CharSequence ch = "1234";
+StringBuilder sb3 = new StringBuilder(ch);
+
+// 3. StringBuilder(capacity)           Creates empty string builder with specified initial capacity.
+StringBuilder sb4 = new StringBuilder(100);
+
+//**********************************************************************************************************************
+// Length
+// .length() Returns current number of characters in StringBuilder. This is less than or equal to capacity at any time.
+StringBuilder sb5 = new StringBuilder("hello");
+sb5.length();
+
+// .setLength(newLength) Sets length of string builder. If less than current length, last characters are truncated.
+StringBuilder sb6 = new StringBuilder("something");
+sb6.setLength(4);
+sb6;
+
+//**********************************************************************************************************************
+// Capacity
+// .capacity() Returns current StringBuilder capacity.
+// Every string builder has a capacity - the number of character spaces that have been allocated.
+// This capacity will automatically expand as necessary to accommodate additions to the string builder.
+StringBuilder sb7 = new StringBuilder("hi there");
+sb7.capacity();
+sb7.append("12345678912345678");
+sb7.capacity();
+
+// .ensureCapacity(minCapacity) Ensures that the capacity is at least equal to the specified minimum.
+StringBuilder sb8 = new StringBuilder();
+sb8.capacity();
+sb8.ensureCapacity(1000);
+sb8.capacity();
+
+//**********************************************************************************************************************
+// Append
+// .append(str) Appends argument to string builder. Data is converted to string before append operation takes place.
+// Arguments can be strings, primitive types or objects. If objects, toString is called on the object first.
+StringBuilder sb9 = new StringBuilder();
+sb9.append((byte) 5);
+sb9.append(5.125);
+sb9.append(" some string ");
+
+//**********************************************************************************************************************
+// Insert
+// .insert(offset, str) Inserts argument after given offset. Data is converted to string before inserting.
+StringBuilder sb10 = new StringBuilder("XXXXXXXXX");
+sb10.insert(3, "new");
+
+//**********************************************************************************************************************
+// Delete
+// .delete(start, end) Deletes the subsequence from start to end-1 (inclusive).
+StringBuilder sb11 = new StringBuilder("0123456789");
+sb11.delete(5, 7);
+
+// .deleteCharAt Deletes character at given index.
+StringBuilder sb12 = new StringBuilder("0123456789");
+sb12.deleteCharAt(1);
+
+//**********************************************************************************************************************
+// Replace
+// .replace(start, end, str) Replace given characters from start index to end index with a given string.
+StringBuilder sb13 = new StringBuilder("XXXXXXX");
+sb13.replace(1, 3, "hello");
+
+// .setCharAt(index, char) Sets character at specified index to given character.
+StringBuilder sb14 = new StringBuilder("XXXXXXX");
+sb14.setCharAt(1, 'r');
+sb14;
+
+//**********************************************************************************************************************
+// Reverse
+// .reverse() Reverses characters in string builder. In place method. Returns new string builder.
+StringBuilder sb15 = new StringBuilder("1234");
+sb15.reverse();
+
+// Dirty quick way to reverse a string.
+String start = "1234";
+start = new StringBuilder(start).reverse().toString();
+
+//**********************************************************************************************************************
+// toString()
+// Returns a string that contains the character sequence in the builder.
+StringBuilder sb16 = new StringBuilder();
+sb16.append("hi ");
+sb16.append("there!");
+String result2 = sb16.toString();
+String result3 = sb16 + "";         // toString() is called automatically
+
+//**********************************************************************************************************************
+// String methods on StringBuilder
+//  You can use String methods on StringBuilder object by first converting string builder to string with toString(),
+//  then convert the string back into string builder using StringBuilder(str) constructor.
+StringBuilder sb17 = new StringBuilder("hi there! How are you doing?");
+String temp = sb17.toString().replaceAll("(hi there)", "Yo");
+temp = temp.toUpperCase();
+sb17 = new StringBuilder(temp);
+
+//**********************************************************************************************************************
+
+
+
+
+

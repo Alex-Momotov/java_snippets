@@ -1,0 +1,83 @@
+// Use enum types any time you need to represent a fixed set of constants.
+// Since enum values are constants, the names of an enum type's fields are in uppercase letters.
+
+// Just like classes enum types can be defined in its own file - IntelliJ IDEA supports making those as an option.
+// Just like top-level classes, enum types can only either be 'public' or 'no-modifier' (package-private).
+
+// All enums implicitly extend java.lang.Enum.
+// Because a class can only extend one parent, enum types cannot extend anything else.
+
+//**********************************************************************************************************************
+// Keyword 'enum' defines enum data type.
+enum Day {
+    MONDAY, TUESDAY, WEDNESSDAY, THURSDAY,
+    FRIDAY, SATURDAY, SUNDAY                // does not have to end with semicolon
+}
+
+//**********************************************************************************************************************
+// Creating instance of enum type.
+Day d = Day.MONDAY;
+d.equals(Day.MONDAY);
+d == Day.MONDAY;
+System.out.println(d);
+
+//**********************************************************************************************************************
+// Instances of enum type are of class enumType
+d.getClass()
+d.getClass().getDeclaredMethods();
+
+//**********************************************************************************************************************
+// By default every enum type has .values() and .valueOf() static methods
+for (Object o : Day.class.getDeclaredMethods()) System.out.println(o);
+
+//**********************************************************************************************************************
+// EnumType.values()
+// Returns array of enumType objects containing all possible values. This is commonly used to loop through all values.
+Day.values();
+for (Day d : Day.values()) System.out.println(d);
+
+//**********************************************************************************************************************
+// EnumType.valueOf();
+// Returns enum type object with enum value that matches the string. Static method.
+Day.valueOf("TUESDAY");
+Day d2 = Day.valueOf("WEDNESSDAY");
+
+//**********************************************************************************************************************
+// Enum types can have fields, constructors and methods
+// However, Java requires that the constants be defined first, prior to any fields or methods.
+// Also, when there are fields and methods, the list of enum constants must end with a semicolon.
+
+// The constructor for an enum type must be package-private or private access.
+// It automatically creates the constants that are defined at the beginning of the enum body.
+// You cannot invoke an enum constructor yourself.
+public enum Compas {
+    NORTH_EAST("Up", "Right"),
+    NORTH_WEST("Up", "Left"),
+    SOUTH_EAST("Down", "Right"),
+    SOUTH_WEST("Down", "Left");     // must end with semicolon
+
+    private final String direction1;
+    private final String direction2;
+    Compas(String a, String b) {
+        this.direction1 = a;
+        this.direction2 = b;
+    }
+
+    public void getDirections() {
+        System.out.println(direction1 + " " + direction2);
+    }
+}
+
+//**********************************************************************************************************************
+// Think of enum types as normal classes, but where objects were already created in every possible configuration for us.
+// We just have to choose which one we want - choose enum value. Therefore, enum types are like normal classes but
+// have a set of pre-defined ways to invoke constructor, that you must choose from.
+Compas c1 = Compas.NORTH_EAST;
+Compas c2 = Compas.SOUTH_WEST;
+
+c1.getDirections();
+c2.getDirections();
+
+//**********************************************************************************************************************
+
+

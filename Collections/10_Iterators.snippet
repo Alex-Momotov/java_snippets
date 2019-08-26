@@ -1,0 +1,87 @@
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+static class Cat { void method() {
+//**********************************************************************************************************************
+//      3. Iterators
+// Iterator objects enable us to traverse collections remove elements from the collection selectively, if desired.
+// The .remove() method of iterators is the only safe way to modify a collection during iteration.
+// The behavior is unspecified if the collection is modified in any other way while the iteration is in progress.
+
+// You get an iterator for a collection by calling its iterator method.
+    List<String> list5 = new ArrayList(Arrays.asList("1", "2", "3", "4"));
+    Iterator<String> myIter = list5.iterator();
+
+// Iterator methods:
+    myIter.hasNext();       // .hasNext() returns true if the iteration has more elements.
+    myIter.next();          // .next() returns the next element in the iteration.
+    myIter.remove();        // .remove() removes the last element that was returned by next.
+    // .remove() can be called only once after each .next() and throws exception othervise.
+
+// Use iterators when:
+// 1. Need to remove current element.
+// 2. Iterate over multiple collections in parallel.
+
+// Using iterators with for loops:
+    Set<String> set3 = new HashSet<>(Arrays.asList("1", "2", "3", "4"));
+
+    for (Iterator<String> it = set3.iterator(); it.hasNext(); ) {
+        String curr = it.next();
+        if (curr.equals("3")) it.remove();
+    }
+    System.out.println(set3);
+
+// Using iterators with while loops
+    List<Integer> list6 = new ArrayList<>(Arrays.asList(1, 2, 3, 4));
+    Iterator<Integer> iter1 = list6.iterator();
+    while (iter1.hasNext()) {
+        System.out.println(iter1.next());
+    }
+
+//**********************************************************************************************************************
+//      Iterable interface
+// Iterable is a root interface which Collection extends.
+// Implementing Iterable interface enables a type to be iterated using the enhanced for-each loop.
+// Iterable has a method .forEach() which performs an action for each of its elements, it has nothing to do with
+// the .stream().forEach()
+    List<Integer> L2 = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 1));
+    L2.forEach(System.out::println);
+
+
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

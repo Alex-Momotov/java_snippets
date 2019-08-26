@@ -1,0 +1,120 @@
+//**********************************************************************************************************************
+// !!! GOOGLE JAVA SCOPE AND EDIT THE NOTES BELOW, COMPARE WITH LEBG
+// !!! GOOGLE JAVA SCOPE AND EDIT THE NOTES BELOW, COMPARE WITH LEBG
+// !!! GOOGLE JAVA SCOPE AND EDIT THE NOTES BELOW, COMPARE WITH LEBG
+// !!! GOOGLE JAVA SCOPE AND EDIT THE NOTES BELOW, COMPARE WITH LEBG
+// !!! GOOGLE JAVA SCOPE AND EDIT THE NOTES BELOW, COMPARE WITH LEBG
+// https://www.geeksforgeeks.org/variable-scope-in-java/
+
+
+// To initialise a variable within an if-elseif-else construct, we must declare it outside the construct.
+char grade;
+int score = 76;
+if (score >= 70) grade = 'A';
+else if (score >= 60) grade = 'B';
+else if (score >= 50) grade = 'C';
+else grade = 'D';
+System.out.println(grade);
+
+
+//**********************************************************************************************************************
+// Here, the two variables 'a' are different. One local and one local to the if statement
+int a = 4;
+if (true) {
+    int a = 13;
+    if (true) {
+        int a = 5;
+    }
+}
+if (true) {int a = 13;}
+System.out.println(a);
+
+
+//**********************************************************************************************************************
+// Explain this behaviour
+public void method1() {
+    {int a = 5;}
+    int a = 3;
+}
+method1();
+
+public void method2() {
+    int a = 3;
+    {int a = 5;}
+}
+method2();
+
+void method3() {
+    {int a = 13;}
+    {int a = 13;}
+}
+method3();
+
+
+//**********************************************************************************************************************
+// Parameter names must be unique to its scope. No local parameter should have the same name.
+void method(int a) {
+    int a;
+}
+
+
+//**********************************************************************************************************************
+// 'this' keyword
+class Example {
+    public int a = 3;
+    void method1(int a) {
+        a = a;              // parameter name shadows field name
+    }
+    void method2(int a) {
+        this.a = a;         // 'this' makes us refer to the field instead of parameter
+    }
+}
+
+Example e = new Example();
+e.a;
+e.method1(5);
+e.a;
+e.method2(5);
+e.a;
+
+
+//**********************************************************************************************************************
+// "Pass by value" - primitive types
+// Primitive arguments are passed into methods by value (copied, so to speak).
+// This means that any changes to the values of the parameters exist only within the scope of the method.
+// When the method returns, the parameters are gone and any changes to them are lost.
+void method4(int num) {
+    num = 5;
+}
+
+int x = 3;
+method4(x);
+x;
+
+
+//**********************************************************************************************************************
+// "Pass by value" - reference types
+// Reference type paremeters are also passed to methods by value (object reference is copied).
+// Therefore, the the method can modify the object's fields (state).
+// When the method returns, the passed-in reference still references the same object as before.
+class Point {public int x = 5;}
+void change(Point p) {p.x = 10;}
+Point p = new Point();
+p.x;
+change(p)
+p.x;
+
+
+//**********************************************************************************************************************
+// Same mechanism applies when swapping elements of an array using a method
+void swap(int[] arr) {
+    int temp = arr[0];
+    arr[0] = arr[1];
+    arr[1] = temp;
+}
+
+int[] arr = {1, 2};
+swap(arr);              // Method swaps elements of array (which is reference type off course)
+arr;
+
+

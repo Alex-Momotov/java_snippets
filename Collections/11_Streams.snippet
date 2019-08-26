@@ -1,0 +1,97 @@
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+static class Cat {{
+//**********************************************************************************************************************
+//      Aggregate oparations
+// A pipeline is a sequence of aggregate operations.
+// A stream is a sequence of elements. It carries values from a source through a pipeline.
+// An intermediate operation, such as filter, produces a new stream.
+
+// A pipeline consists of:
+// 1. Source. Could be a collection, an array, a generator function, or an I/O channel.
+// 2. Zero or more intermediate operations.
+// 3. Terminal operation. Produces a non-stream result, such as single value, a collection, or nothing (.forEach())
+// Reduction operations are terminal operations that return one value by combining the contents of a stream.
+
+// Intermediate operations:
+// .filter()    Returns a new stream that contains elements that match its predicate.
+// .map()       Returns a stream consisting of the results of applying the given function to the elements of this stream.
+// .mapToInt()  Returns an IntStream consisting of the results of applying the given function to the elements of this stream.
+
+// Terminal operations:
+// .forEach()   Performs an action for each element of this stream.
+// .collect()   Can either return a collection, or a single value depending on use.
+
+// Reduction terminal operations that return single value:
+// .reduce()
+// .average()
+// .sum()
+// .min()
+// .max()
+// .count()
+
+
+// Print all elements of a list:
+    List<Integer> L3 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    L3.stream().forEach(e -> System.out.println(e));
+
+// Print all even numbers of a list:
+    List<Integer> L4 = new ArrayList<Integer>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+    L4.stream().filter(e -> e % 2 == 0).forEach(e -> System.out.println(e));
+
+// Average of all numbers in the list:
+    L4.stream().mapToInt(e -> e).average().getAsDouble();
+
+// Add 5 to each number and print out:
+    L4.stream().map(e -> e + 5).forEach(System.out::println);
+
+// Single argument version of .reduce() takes only accumulator function. Accumulator function takes two parameters - a
+// partial result of reduction (e.g. the sum of all processed integers so far) and the next element of the stream.
+    L4.stream().reduce((a, b) -> a + b);
+
+// Two argument version of .reduce() takes identity and accumulator. Identity is both the initial value of the
+// reduction and the default result if there are no elements in the stream.
+    L4.stream().reduce(10, (a, b) -> a + b);
+
+// Create another list containing wanted elements using .collect(Collectors.toList())
+// This version of the collect operation takes one parameter of type Collector.
+    List<Integer> evenNums = L4.stream().filter(e -> e % 2 == 0).collect(Collectors.toList());
+
+
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

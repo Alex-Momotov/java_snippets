@@ -1,0 +1,297 @@
+import java.math.BigDecimal;
+//**********************************************************************************************************************
+// Order of precedence:
+// 1. Prefix increment and decrement operators (++ and --)
+// 2. Arithmetic operators (first * and /, then + and -)
+// 4. Comparisons (<, >, >=, <=, ==, !=)
+// 5. Boolean operators (&&, ||, !)
+
+//**********************************************************************************************************************
+// The assignment operator in Java returns the assigned value.
+int ce;
+System.out.println(ce = 3);  // "ce = 3" assignment part returns 3.
+int be = ce = 5;              // This works because "ce = 5" returns 5, so we assign 5 to be.
+ce;
+be;
+
+// Assignment statement can be enclosed within parentheses and used as part of conditional check.
+(be = 5) == 4;
+(be = 5) == 5;
+
+// Therefore this behaviour is possible.
+int pon;
+if ((pon = 5) == 5) {/* do something */}
+
+//**********************************************************************************************************************
+// Arithmetic operators
+2 + 2;
+2 - 2;
+2 * 2;
+1 / 2;
+5 % 3;
+
+//**********************************************************************************************************************
+// Boolean operators
+// && operator won't evaluate right operand if left operand is false.
+// || operator won't evaluate right operand if left operand is true. This is known as "short-circuiting" behaviour.
+1 < 2;
+1 > 2;
+1 <= 2;
+1 >= 2;
+1 != 2;
+1 == 2;
+true && false       // logical AND
+true || false       // logicall OR
+!true               // logical NOT
+!false
+
+//**********************************************************************************************************************
+// Incrementing operators.
+// Prefix (e.g. "++q") increments variable before expression is evaluated.
+// Postfix (e.g. "q++") increments variable after the expression has finished evaluating.
+double q = 1;
+q++;
+q--;
+++q;
+--q;
+q += 1;
+q -= 1;
+q /= 2;
+q *= 2;
+q %= 2;
+
+//**********************************************************************************************************************
+// Result type
+// You cannot store result of operation between byte and int into a new byte variable, but you can into a new int
+// variable. This is because there is a possibility of information loss the first way but not the second. This can be
+// generalised onto other variable types with different levels of precision.
+byte b = 127;
+int c = 1;
+int d = 13 * b;
+
+//**********************************************************************************************************************
+// Implicit casting
+// Applying operators between different types, automatically converts one of variables.
+1 / 2.0;      // Implicit casting to double
+1 / 2.0D;     // Implicit casting to double
+2 * 2.0F;     // Implicit casting to float
+
+//**********************************************************************************************************************
+// Integer division
+// A / B returns integer result if both operands are integers.
+// Even if storing result in float or double, we must convert one of the operands to float or double during division.
+5 / 3;                  // GOTCHA - integer division
+5 / 3.0;                // okay
+5 / 3D;                 // okay
+5 / 3F;                 // okay
+(double) 5 / 3;         // okay
+5 / (double) 3;         // okay
+
+//**********************************************************************************************************************
+// Overflow
+byte a = 127;
+++a;
+
+//**********************************************************************************************************************
+// Underflow
+byte p = -128;
+--p;
+
+//**********************************************************************************************************************
+// Math - java.util.Math
+// The methods in the Math class are all static, so you call them directly from the class e.g. Math.cos(45).
+// Using the static import, you don't have to write Math in front of every math function e.g. cos(45)
+
+Math.E;         // e number
+Math.PI;        // pi number
+
+Math.abs(-13);    // Absolute value. Return type is same as parameter type.
+Math.abs(-13D);
+Math.abs(-13F);
+Math.abs(-13L);
+
+Math.ceil(3.0001F);     // Rounds float or double up. Returns double.
+Math.floor(3.9999);     // Rounds float or double down. Returns double.
+Math.rint(3.499D);      // Rounds double or float to whole number. Returns as double.
+
+Math.round(3.499F);     // Rounds float or double to whole number. Returns int if float given, long if double given.
+Math.round(3.5D);
+
+Math.min(0.5F, 0.4F);   // Returns smaller of two arguments. Return type is same as parameter type.
+Math.max(50L, 51L);     // Returns larger of two arguments. Return type is same as parameter type.
+
+Math.pow(2, 3);         // Returns the value of the first argument raised to the power of the second argument.
+Math.sqrt(4);           // Returns the square root of the argument.
+Math.log10(100);        // Returns the base 10 logarithm of a double value.
+
+Math.exp(8);            // Raises Math.E to specified power. Returns as double
+Math.log(8);            // Returns the natural logarithm (base e) of a double value.
+                        // Logarithm of any base is achieved using logarithmic identity log_b(n) = log_e(n) / log_e(b)
+
+Math.random();          // Returns a double value with a positive sign, greater than or equal to 0.0 and less than 1.0.
+(int)(Math.random() * 10);      // Random integer between 0 and 10
+                                // If you need to geenerate a series of random numbers, use java.util.Random
+
+//**********************************************************************************************************************
+// Math.BigDecimal
+
+// Creating BigDecimal from int, double, long, String
+BigDecimal b1 = new BigDecimal(5);
+BigDecimal b2 = new BigDecimal(5D);
+BigDecimal b3 = new BigDecimal(5L);
+BigDecimal b4 = new BigDecimal("5");
+
+// Static mehtods to create BigDecimal
+BigDecimal b5 = BigDecimal.valueOf(5);
+BigDecimal b6 = BigDecimal.valueOf(5D);
+BigDecimal b7 = BigDecimal.valueOf(5L);
+
+// Convert BigDecimal to primitives
+int num1 = b1.intValueExact();
+long num4 = b1.longValueExact();
+float num2 = b1.floatValue();
+double num3 = b1.doubleValue();
+
+// instance.toString()
+// Returns the string representation of this BigDecimal
+BigDecimal b16 = new BigDecimal(10);
+String s1 = b16.toString();
+
+// instance.abs()
+// Returns absolute value of current instance as another BigDecimal
+BigDecimal b8 = new BigDecimal(-15);
+b8 = b8.abs();
+
+// instance.negate()
+// Returns a BigDecimal whose value is (-this)
+BigDecimal b14 = new BigDecimal(10);
+b14 = b14.negate();
+
+// instance.add(another)
+// Returns a BigDecimal whose value is (this + another)
+BigDecimal one = new BigDecimal(5);
+BigDecimal two = new BigDecimal(5);
+one = one.add(two);
+
+// instance.subtract(another)
+// Returns a BigDecimal whose value is (this - another)
+BigDecimal b15 = new BigDecimal(10);
+b15 = b15.subtract(new BigDecimal(4));
+
+// instance.compareTo(another)
+// Returns 1 if current instance is bigger than another
+// Returns -1 if current instance is smallerthan another
+// Returns 0 if current instance is equal to another
+BigDecimal b10 = new BigDecimal(5);
+b10.compareTo(new BigDecimal(2));
+b10.compareTo(new BigDecimal(10));
+b10.compareTo(new BigDecimal(5));
+
+// instance.multiply(another)
+// Returns a BigDecimal whose value is (this × multiplicand)
+BigDecimal b17 = new BigDecimal(5);
+b17 = b17.multiply(new BigDecimal(3));
+
+// instance.divide(another)
+// Returns a BigDecimal whose value is (this / another)
+BigDecimal b11 = new BigDecimal(100);
+b11 = b11.divide(new BigDecimal(20));
+
+// instance.max(another)
+// Returns the maximum of this BigDecimal and another.
+BigDecimal b12 = new BigDecimal(5);
+b12 = b12.max(new BigDecimal(10));
+
+// instance.min(another)
+// Returns the minimum of this BigDecimal and another.
+BigDecimal b13 = new BigDecimal(5);
+b13 = b13.min(new BigDecimal(4));
+
+//**********************************************************************************************************************
+// Identity vs equality
+// '=='         Checks equality between two primitive types (checks value).
+// '=='         Checks identity between two reference types (checks memory address).
+// '.equals()'  Checks for equality between two reference types (checks value), exception is arrays.
+//              You must override equals() if you are defining a class that will have reference type or String members.
+// '.equals()'  Checks identity between two arrays (memory address). This is a special quirk of arrays.
+//              To check equality between two arrays, use 'Arrays.equals(arr1, arr2)'.
+
+int i1 = 5;
+int i2 = 5;
+i1 == i2;       // equality check
+
+Integer j1 = new Integer(10);
+Integer j2 = new Integer(10);
+j1 == j2;           // identity check
+j1.equals(j2);      // equality check
+
+String s1 = new String("test");
+String s2 = new String("test");
+s1 == s2;           // identity check
+s1.equals(s2);      // equality check
+
+//**********************************************************************************************************************
+// Aliasing vs cloning
+// '='          Copies value for primitive types and String. No alias created.
+// '='          Copies memory address for reference types. Alias is created.
+// '.clone()'   Returns new object with all fields copied for reference types. No alias created.
+//              See notes in OOP 'Object' for how to properly override clone() if you want your object to be cloneable.
+int a1 = 3;
+int a2 = a1;                // no alias created
+
+String s3 = "test";
+String s4 = s3;             // no alias created, strings are immutable
+
+int[] ar1 = {1, 2};
+int[] ar2 = ar1;            // alias created
+int[] ar3 = ar1.clone();    // no alias created, watch out for multidimentional and reference member arrays though
+
+Integer i3 = new Integer(10);
+Integer i4 = i3;            // no alias created, wrapper types for primitives are immutable
+
+//**********************************************************************************************************************
+// Infinity
+// Doubles and floats can store infinity and NaN values.
+// Dividing positive/negative number by zero will result in positive/negative infinity respectively (if float or double)
+double num1 = 5.0/0;
+double num2 = -5.0/0;
+num1 == Double.POSITIVE_INFINITY;
+num2 == Double.NEGATIVE_INFINITY;
+
+float num3 = 5.0f/0;
+float num4 = -5.0f/0;
+num3 == Float.POSITIVE_INFINITY;
+num4 == Float.NEGATIVE_INFINITY;
+
+//**********************************************************************************************************************
+// NaN
+// Doubles and floats can store NaN value.
+// Dividing zero by zero will result in NaN value
+double num5 = 0/0.0;
+float num6 = 0/0.0f;
+Double.isNaN(num5);     // Double.NaN == num is wrong, will return false
+Float.isNaN(num6);      // isNaN is the proper way to check for NaN for both double and float
+
+//**********************************************************************************************************************
+// Some operations with Infinity and NaN
+Float.POSITIVE_INFINITY + Float.NEGATIVE_INFINITY;      // NaN
+Float.POSITIVE_INFINITY + Float.POSITIVE_INFINITY;      // Infinity
+Float.NEGATIVE_INFINITY + Float.NEGATIVE_INFINITY;      // -Infinity
+
+Float.POSITIVE_INFINITY - Float.NEGATIVE_INFINITY;      // Infinity
+Float.POSITIVE_INFINITY - Float.POSITIVE_INFINITY;      // NaN
+Float.NEGATIVE_INFINITY - Float.NEGATIVE_INFINITY;      // NaN
+
+//**********************************************************************************************************************
+// Any number divided by positive or negative infinity is zero
+2 / Float.POSITIVE_INFINITY;
+2 / Float.NEGATIVE_INFINITY;
+
+//**********************************************************************************************************************
+// Any operation between a number an NaN will result in NaN
+// This includes operations between Infinity and NaN or -Infinity and NaN
+2 * Float.NaN;
+Float.POSITIVE_INFINITY / Float.NaN;
+
+
+

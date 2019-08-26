@@ -1,0 +1,85 @@
+import java.io.BufferedReader;
+import java.io.Console;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.util.Properties;
+import java.util.Scanner;
+
+static class Cat {
+    final static String PATH_TO_RES = "/Users/omomotov/Documents/my_projects/learning_java/resources/";
+
+//----------------------------------------------------------------------------------------------------------------------
+//      System streams
+// System.in       Standard input stream                InputStream instance
+// System.out      Standard output stram                PrintStream instance
+// System.err      Standard output stream for errors    PrintStream instance
+
+//----------------------------------------------------------------------------------------------------------------------
+// Console - System.console() returns an instance of Console
+// Console is a better version of standard input and output streams
+// Ensure console is not null, which can happen if environment doesn't support command line IO
+
+// Console. Depending on environment console might be null.
+    public Console getConsole() {
+        Console con = System.console();
+        if (con == null) {
+            System.err.println("No console.");
+            System.exit(1);
+        }
+        return con;
+    }
+
+//----------------------------------------------------------------------------------------------------------------------
+// con.readPassword() - reads password
+// con.readLine() - reads input
+    void readLoginAndPassword() {
+        Console con = getConsole();
+        String login = con.readLine("Enter your login: ");
+        char[] password = con.readPassword("Enter your password: ");
+    }
+
+    //----------------------------------------------------------------------------------------------------------------------
+// con.format() - formatted output to the user
+    void formattedOutputToUser() {
+        Console con = getConsole();
+        con.format("Your password has been changed, %s", "login");
+    }
+
+    void systemStream() {
+        Properties prop = System.getProperties();
+        prop.list(System.err);
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

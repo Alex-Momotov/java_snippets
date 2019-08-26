@@ -1,0 +1,149 @@
+//**********************************************************************************************************************
+// Access level modifiers determine whether other classes can use a particular field or invoke a particular method.
+// If a class has no modifier it is called 'default' or 'package-private'.
+// There are two levels of access control:
+
+// Top Level (Classes, Interfaces):                                 public, no-modifier
+// Member Level (Fields, Methods, Nested Classes/Interfaces):       public, protected, no-modifier, private
+
+
+//**********************************************************************************************************************
+// Classes and interfaces declared outside all other classes or interfaces can only be public and no-modifier.
+// No-modifier classes:
+//      1. Entirely invisible to classes outside the package. They cannot even be imported.
+//      2. Cannot be subclassed from another package, because for subclassing it has to be imported first.
+//      3. Can be subclassed/accessed within the same package, off course.
+// public classes:
+//      1. Visible to all classes, everywhere.
+public class Cat {}
+class Dog {}
+
+//**********************************************************************************************************************
+// However, nested classes and interfaces (just like other entities at the member level) can have any access modifier.
+class Outer {
+    public class Inner1 {}
+    protected class Inner2 {}
+    class Inner3 {}
+    private class Inner4 {}
+}
+
+
+//**********************************************************************************************************************
+// public           Member can be accessed by all classes everywhere.
+// protected        Member can only be accessed in its own package, and by a subclass of its class in another package
+//                  and if so only via an instance of the subclass.
+// no-modifier      Member can only be accessed in its own package.
+// private          Member can only be accessed in its own class.
+
+
+//**********************************************************************************************************************
+// The following table shows the access to members permitted by each modifier.
+//                  Class       Package     Subclass    World
+// public           Y           Y           Y           Y
+// protected        Y           Y           Y           N
+// no-modifier      Y           Y           N           N
+// private          Y           N           N           N
+
+// 1st column shows if the class itself has access to the member.
+// 2nd column shows if classes in same package as the class (regardless of their parentage) have access to the member.
+// 3rd column shows if the subclasses declared in another package can access the member via instance of that subclass.
+// 4th column shows if all classes have access to the member.
+
+
+//**********************************************************************************************************************
+// final
+//**********************************************************************************************************************
+//    final class
+// 1. A final class cannot be subclassed.
+//    This is particularly useful, for example, when creating your own immutable classes. Immutable classes are 'final'
+//    and all their fields are also 'final'. They have getters and constructors but no setters.
+
+//    final method
+// 2. A final method cannot be overriden in its subclass.
+//    Make a method final if it has implementation that should not be changed is critical to consistent state of object.
+//    Methods called from constructors should generally be declared final.
+
+//    final local variable
+// 4. A final local variable cannot change its value throughout method body.
+//    If that local variable is of reference type, the object reference cannot change but internal object state can.
+
+//    final parameter
+// 3. A final parameter within a method cannot change its value throughout method body.
+//    If that parameter is of reference type, the object reference cannot change but internal object state can.
+
+//    final instance variable
+// 5. A final instance variable cannot change value throughout the class.
+//    An instance variable that is declared 'final' but not assigned value, will wait to be assigned value. This can be
+//    done only in constructors, initialisation blocks, or by equating the variable to result of a final method.
+//    If you have more than one constructor, you must initialise uninitialised final instance variable in all of them.
+//    Note, you can also equate the variable to a result of a method that is not final, but this is really bad practice.
+
+//    final class variable
+// 6. A static final variable is used to define constants.
+//    By convention, names of constant values are spelled in uppercase letters, separated by underscore (_).
+//    Compile-time-constant is any constant that is of primitive or String type. If you change value of such constant in
+//    class, you must recompile all classes that use this constant, else the change will not take place in those classes.
+//    Class variables declared constant but uninitialised can be initialied in static initialisation blocks or by
+//    equating their value to a result from a private static method. Note, the method doesn't have to be private, but
+//    it is a best practice to make it private. The method must be 'static' though.
+
+//**********************************************************************************************************************
+// final class
+public final class Liquid {}                 // final class
+public class Water extends Liquid {}         // error - cannot subclass a final class
+
+//**********************************************************************************************************************
+// final method
+class Holder {
+    public final void method() {}            // final method
+}
+class HolderSub extends Holder {
+    public void method() {}                  // error - cannot override a final method
+}
+
+//**********************************************************************************************************************
+// final local variable
+public void method3() {
+    final int localVar = 5;                 // final local variable
+    localVar = 10;                          // error - cannot change value of final local variable
+}
+
+//**********************************************************************************************************************
+// final parameter
+public void method2(final String str) {     // final parameter
+    str = "test";                           // error - cannot change value of final parameter
+}
+
+//**********************************************************************************************************************
+// final instance variable
+class Example2 {
+    final int x = 5;                        // final instance variable
+    void method() {x = 10;}                 // error - cannot change value of final instance variable once assigned
+}
+class Example3 {
+    final int x;                            // uninitialised final instance variable
+    public Example3(int x) {this.x = x;}    // gets assigneg value for the first time in constructor
+}
+class Example4 {
+    final int x;                            // uninitialised final instance variable
+    {this.x = 10;}                          // gets assigneg value for the first time in initialisation block
+}
+class Example5 {
+    final int x = method();                 // uninitialised final instance variable
+    final int method() {return 5;}          // gets assigneg value for the first time in final method
+}
+
+//**********************************************************************************************************************
+// final class variable
+class Example6 {
+    static final double PI =3.14;     // constant
+    static void method() {PI = 13;}   // error - cannot change value of final static variable once assigned
+}
+class Example7 {
+    static final int x;               // uninitialised constant
+    static {x = 10;}                  // gets assigneg value for the first time in static initialisation block
+}
+class Example8 {
+    static final int x = method();              // uninitialised constant
+    private static int method() {return 5;}     // gets assigneg value for the first time in private static method
+}

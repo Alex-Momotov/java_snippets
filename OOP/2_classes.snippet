@@ -1,0 +1,19 @@
+//**********************************************************************************************************************
+// The first letter of a class must be capitalised and must match the filename e.g. Animal.java
+// Simplest class declaration
+class Animal {}
+
+// Class declaration that inherits from another class. Zebra inherits from Animal.
+// A class can only extend one parent class.
+class Zebra extends Animal {}
+
+// Class declaration that inherits from another class and implements an interface.
+interface MyInterface {}
+class Cat extends Animal implements MyInterface {}      // Cat implements MyInterface and inherits from Animal.
+
+// A class can implement more than one interface. Implemented interfaces are separated by a comma.
+interface Interface1 {}
+interface Interface2 {}
+class example implements Interface1, Interface2 {}
+
+

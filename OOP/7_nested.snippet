@@ -1,0 +1,181 @@
+// Java allows nested classes
+// Nested classes can be static ('static nested classes') and non-static ('inner classes').
+class Outer {
+    class Inner {      // inner class
+
+    }
+}
+
+class Outer2 {
+    static class Inner2 {  // static nested class
+
+    }
+}
+
+
+//**********************************************************************************************************************
+// Nested classes can have any access modifier: public, protected, package-private, private
+class OuterX {
+    public class InnerA {}
+    protected class InnerB {}
+    class InnerC {}
+    private class InnerD {}
+}
+
+
+//**********************************************************************************************************************
+// Non-Static Nested Classes
+// Those classes are associated with an instance of enclosing class and have access to static/instance members of
+// enclosing class, even if they are declared private. Also, because an inner class is associated with an instance,
+// it cannot define any static declarations itself (unless they are constants - 'final'). In example below, an instance
+// of Inner3 can exist only within an instance of Outer3 and has direct access to methods and fields of its enclosing
+// instance.
+
+class Outer3 {
+    private int x = 13;
+    private static int y = 7;
+    Inner3 inn = this.new Inner3();     // syntax to create inner class objects within enclosing class
+
+    class Inner3 {
+//        private static int something = 3;           // will cause error
+        private final static int something2 = 3;    // okay, because its constant - 'final'
+        public Inner3() {
+            System.out.println("Inner class has access to outer class's instance variables: " + x + " " + y);
+        }
+    }
+
+}
+
+// To instantiate an inner class, you must first instantiate the outer class. Then, create the inner object within the
+// outer object with this syntax: Outer.Inner innerObj = outerObj.new Inner();
+
+// Inner class instances can also be created within instance of outer class with following syntax:
+// Inner obj = this.new Inner();
+Outer3 outerObj = new Outer3();
+Outer3.Inner3 innerObj = outerObj.new Inner3();
+
+
+//**********************************************************************************************************************
+// Local Non-Static Nested Classes
+// There are two additional special kinds of inner classes: local classes and anonymous classes.
+// A class can be defined inside any block of code - if-block, loop, method etc. Those are known as local classes.
+// Just like inner classes local classes can access members of its enclosing class.
+// In addition, local classes can access local variables of enclosing code block that are final or effectively final.
+// Effectively final - means variable or parameter whose value is never changed after it is initialized.
+// Variables in local class can shadow variables with the same name in the enclosing scope.
+// Local classes cannot be static or have static members (exception is constants - 'final' variables of built-in type).
+class Outer5 {
+    int a = 10;
+    public void method() {
+        final int b = 20;       // final variable
+        int c = 30;             // effectively final variable
+        class LocalClass {{
+            System.out.println("I can see " + a);
+            System.out.println("I can see " + b);
+            System.out.println("I can see " + c);
+        }}
+        LocalClass locCls = new LocalClass();
+    }
+}
+new Outer5().method();
+
+
+//**********************************************************************************************************************
+// Anonymous Classes
+// Anonymous classes must implement an interface or extend another class and they do not have a name.
+// Those classes are used to declare and instantiate a class at the same time, they can't have constructors (no need).
+// Anonymous classes are expressions, which means the class declaration must be followed by semicolon ';'.
+// We write body of anonymous class between curly braces that immediately follow interface or superclass instantiation.
+// They have same scope/access/shadowing rules as local classes - use them if you need to use a local class only once.
+interface Sky {
+    public void blue();
+    public void orange();
+}
+
+Sky sk = new Sky() {
+    public String someWords = "The sky is ";
+    public void blue() {
+        System.out.println(someWords + "blue.");
+    }
+    public void orange() {
+        System.out.println(someWords + "orange.");
+    }
+};
+sk.blue();
+sk.orange();
+
+// Anonymous classes are ideal for implementing an interface that contains two or more methods or overriding small parts
+// of superclass.
+class Fire {
+    public void blue() {System.out.println("The fire is blue");}
+    public void orange() {System.out.println("The fire is orange");}
+}
+Fire fire = new Fire() {
+    public String someWords = "The fire is VERY ";
+    public void blue() {System.out.println(someWords + "blue");}
+    public void orange() {System.out.println(someWords + "orange");}
+};
+fire.blue();
+fire.orange();
+
+
+//**********************************************************************************************************************
+// Static Nested Classes
+// Like static methods, these classes can't access instance members of enclosing class directly - they must use object
+// reference. A static nested class interacts with the instance members of its outer class (and other classes) just like
+// any other top-level class. In effect, a static nested class is behaviorally a top-level class that has been nested in
+// another top-level class for packaging convenience.
+class Outer4 {
+    public int x = 13;
+    public static int y = 7;
+
+    static class Inner4 {
+        static int j = 5;   // static variables in static nested classes are okay
+
+        public Inner4() {
+            Outer4 out = new Outer4();
+            System.out.println(out.x);  // can access instance/static members of enclosing class via object reference
+            System.out.println(y);      // can access static members of enclosing class directly
+        }
+    }
+}
+
+// Syntax to access a static nested class: OuterClass.StaticNestedClass
+Class innerCls = Outer4.Inner4.class;
+
+// Syntax to create an object for the static nested class: Outer.Inner obj = new Outer.Inner();
+Outer4.Inner4 t4 = new Outer4.Inner4();
+
+//**********************************************************************************************************************
+// Why use nested classes?
+// 1. It is a way of logically grouping classes that are only used in one place: If a class is useful to only one other
+//    class, then it is logical to embed it in that class and keep the two together. Nesting such "helper classes" makes
+//    their package more streamlined.
+// 2. It increases encapsulation: Consider two top-level classes, A and B, where B needs access to members of A that
+//    would otherwise be declared private. By hiding class B within class A, A's members can be declared private and B
+//    can access them. In addition, B itself can be hidden from the outside world.
+// 3. It can lead to more readable and maintainable code: Nesting small classes within top-level classes places the code
+//    closer to where it is used.
+// 4. Its a way to implement helper classes for the enclosing class and neatly keep the two together.
+// Note: Serialization of inner classes, including local and anonymous classes, is strongly discouraged.
+
+//**********************************************************************************************************************
+// Shadowing
+// The example below shows how to refer to shadowed instance variables or parameters in inner classes
+public class ShadowTest {
+    public int x = 0;
+
+    class FirstLevel {
+        public int x = 1;
+        void methodInFirstLevel(int x) {
+            System.out.println("x = " + x);
+            System.out.println("this.x = " + this.x);
+            System.out.println("ShadowTest.this.x = " + ShadowTest.this.x);
+        }
+    }
+}
+ShadowTest st = new ShadowTest();
+ShadowTest.FirstLevel fl = st.new FirstLevel();
+fl.methodInFirstLevel(23);
+
+//**********************************************************************************************************************

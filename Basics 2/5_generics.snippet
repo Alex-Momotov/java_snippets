@@ -1,0 +1,476 @@
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+//**********************************************************************************************************************
+// Generic classes.
+//**********************************************************************************************************************
+// Generics enable types (classes and interfaces) to be parameters when defining classes, interfaces and methods.
+// Angle brackets "<T1, T2, ...>" designate type parameter section, "T" stands for type.
+// Type parameter section follows class name and specifies 'type parameters', aka, 'type variables'.
+// Syntax for creating generic classes: class name<T1, T2, ..., Tn> {}
+
+// Examples of simple generic classes
+class Test<T1> {}
+class Test1<T1, T2, T3, T4> {}
+
+// Example of using type variables throughout the class
+public class Box<T> {
+    private T t;
+    public void set(T t) { this.t = t; }
+    public T get() { return t; }
+}
+
+//**********************************************************************************************************************
+// Generic interfaces.
+//**********************************************************************************************************************
+// To create a generic interface, follow the same conventions as for creating a generic class.
+// Make sure parameter section <T1, T2, ...> of implemented interface matches that of implementing class.
+public interface Dict<K, V> {
+    K getKey();
+    V getValue();
+}
+public class MyDict<K, V> implements Dict<K, V> {
+    private K key;
+    private V value;
+    public K getKey() {return key;}
+    public V getValue() {return value;}
+}
+
+//**********************************************************************************************************************
+// Type variables.
+//**********************************************************************************************************************
+// 'type parameter' - T, K, V, etc.
+// 'type argument' - Integer, String, Byte, etc.
+// A type argument can be any non-primitive type: class type, interface type, array type, or even another type variable.
+// By convention, type parameter names are single, uppercase letters. Type parameter naming conventions are:
+// E - Element (used extensively by the Java Collections Framework)
+// K - Key
+// N - Number
+// T - Type
+// V - Value
+// S,U,V etc. - 2nd, 3rd, 4th types
+
+//**********************************************************************************************************************
+// Summary - Declaration, Initialisation.
+//**********************************************************************************************************************
+Box<Byte> boxA = new Box<Byte>();// GOOD - Do this. Very propper way.
+Box<Byte> boxB = new Box<>();    // GOOD - Do this. Also propper way. Type argument inferred from context.
+Box<Byte> boxC = new Box();      // OKAY - Don't do. Bad practice. Warning raised if flag passed.
+
+Box boxD = new Box<Byte>();      // OKAY - Don't do. Only works for compatibility reasons. Pre-generics behaviour.
+Box boxE = new Box<>();          // OKAY - Don't do. Only works for compatibility reasons. Pre-generics behaviour.
+Box boxF = new Box();            // OKAY - Don't do. Bad practice. Pre-generics behaviour.
+
+// Box<> box11 = new ...         // ERROR - Wrong syntax altogether. Won't even compile.
+
+//**********************************************************************************************************************
+// Declaration, Initialisation.
+//**********************************************************************************************************************
+// Think of declaring a generic type variable as passing type argument to the class itself.
+// To declare a variable, replace T with some concrete type (class or interface), such as Integer.
+// The convention is to read ClassName<Type> as "ClassName of type", e.g. read "Box<Integer>" as "Box of Integer".
+// To instantiate a variable, use 'new' keyword, as usual, and place concrete type between class name and parenthesis.
+
+Box<Integer> box1;                      // Declaration      ("box1" variable will hold reference to Box of Integer)
+box1 = new Box<Integer>();              // Instantiation
+Box<String> box2 = new Box<String>();   // Declaration and instantiation
+
+// You can replace the type arguments required to invoke the constructor of a generic class with empty brackets "<>",
+// as long as the compiler can determine, or infer, the type arguments from the context. "<>" is called the diamond.
+Box<Byte> box3 = new Box<>();
+box3.set((byte) 5);
+
+//**********************************************************************************************************************
+// Raw types.
+//**********************************************************************************************************************
+// Raw type is the name of a generic class or interface without any type arguments.
+// Don't use raw types, this is a bad practice. You can encounter them in legacy code though.
+// In the example below, Bow is the raw type of the generic type Box<T>.
+Box<Byte> paramBox = new Box<>();   // parametrized type
+Box rawBox = new Box();             // raw type
+
+// However, if class or interface didn't have generic parameters in it, in the first place, it is not a raw type.
+class Carpet {}
+Carpet carpet = new Carpet();           // not a raw type - Carpet class doesn't have type parameters in the first place
+class Chair<T> {}
+Chair chair = new Chair();              // raw type - Chair is a generic class, but generic arguments are not provided
+Chair<Short> chair2 = new Chair<>();    // not a raw type - Chair is generic class, but generic arguments are provided
+
+// When using raw types, you essentially get pre-generics behavior — a Box gives you Objects.
+// This is as if we rewrote Box class as follows:
+public class Box2 {
+    private Object t;
+    public void set(Object t) { this.t = t; }
+    public Object get() { return t; }
+}
+
+// With pre-generics behaviour we have to cast Object to the type we need which is less readabe.
+// This is also more prone to error because code that expects one type but receives another will throw error.
+Box box4 = new Box();
+box4.set("test");
+box4.set(3D);       // We are passing a double right after having passed a String. There is no type cheching.
+((String)box4.get()).toUpperCase();     // Code line that expects String but receives double and throws error.
+
+// Assigning a parameterized type to its raw type is allowed.
+Box box5 = new Box<>();
+Box box6 = new Box<Integer>();
+
+// But assigning raw type to parameterized type will result in a warning.
+// By default the warning takes form of compile-time notice "unchecked".
+// "unchecked" means compiler does not have enough type information to perform type checks necessary for type safety.
+// To turn on the warning behaviour, use flag "-Xlint:unchecked" when compiling the code.
+// To suppress the warning use @SuppressWarnings("unchecked") annotation.
+Box<Byte> box7 = new Box();
+
+// You also get a warning if you use a raw type to invoke generic methods defined in the corresponding generic type.
+Box box8 = new Box<Integer>();
+box8.set(8);
+
+//**********************************************************************************************************************
+// Multiple generic parameters.
+//**********************************************************************************************************************
+// Example of a class that uses multiple type parameters.
+public class Pair<K, V> {
+    private K key;
+    private V value;
+    public Pair(K key, V value) {
+        this.key = key;
+        this.value = value;
+    }
+    public K getKey() {return key;}
+    public V getValue() {return value;}
+}
+
+// The code "Pair<String, Integer>" instantiates K as a String and V as an Integer.
+Pair<String, Integer> pair1 = new Pair<String, Integer>("John", 12345);
+pair1.getKey();
+pair1.getValue();
+
+// Below code uses diamond instead of specifying type arguments explicitly. Constructor infers them using passed values.
+// Due to autoboxing we can pass float and long instead of Float and Long.
+Pair<Float, Long> pair2 = new Pair<>(1.23F, 30L);
+pair2.getKey();
+pair2.getValue();
+
+//**********************************************************************************************************************
+// Parametrized types.
+//**********************************************************************************************************************
+// You can substitute type parameter (e.g. K or V) with parametrized type (e.g. List<String>).
+// This is the same as treating parametrised type (e.g. Box<Byte>) as a normal type and plugging it in. For example:
+Pair<String, Box<Integer>> pair3 = new Pair<>("test", new Box<Integer>());
+
+//**********************************************************************************************************************
+// Generic Methods.
+//**********************************************************************************************************************
+// Generic methods are similar to generic classes, but type parameter's scope is limited to method where it is declared.
+// Generic constructors, generic instance methods, generic static methods are all allowed.
+// Type parameter section <T1, T2, ... > should be put before methods return type.
+<T> void method() {}
+public <T> void method2() {}
+public static <T> void method3() {}
+
+// Type parameters can be used to declare return type.
+// Type parameters can also act as placeholders for argument types.
+// Type parameters can also be used to specify type arguments for generic class method parameters.
+public <T> T method4(T param) {return param;}
+public <K, V> void method5(Pair<K, V> p) {System.out.println(p.getKey() + " " + p.getValue());}
+Pair<String, Integer> p = new Pair<>("test", 5);
+method5(p);
+
+// When calling generic methods type argument can be provided explicitly in angle brackets or ommitted.
+// If type argument is ommitted, compiler infers it from context.
+class Cat {
+    public <T> T instMethod(T param) {return param;}
+    public static <T> T statMethod(T param) {return param;}
+}
+Cat c = new Cat();
+Cat.statMethod(5);              // type argument omitted in static method
+c.instMethod(5);                // type argument omitted in instance method
+Cat.<Integer>statMethod(5);     // type argument provided in static method
+c.<Integer>instMethod(5);       // type argument provided in instance method
+
+// Using generic methods with array arguments
+public <E> void print(E[] arr) {
+    for (E elem : arr) {System.out.println(elem);}
+}
+print(new Integer[] {1, 2, 3, 4, 5});
+print(new String[] {"one", "two", "three"});
+
+
+//**********************************************************************************************************************
+// Bounded type parameters.
+//**********************************************************************************************************************
+// Bounded type parameters limit possible types of a generic parameter to those extending/implementing given class/interface.
+// Syntax to declare bounded type parameter - <T extends N> meaning T can only be subclass of N or implement interface N.
+class Example<T extends String> {}
+
+// In addition to restricting possible type arguments, we can now invoke methods of the class or interface that the type must extend/implement.
+// This is because now we know for certain that the type will have the methods of class/interface that will be called.
+// We still cannot, however, invoke methods unique to the subclass, since there may be many different subclasses.
+class A {void actionA() {System.out.println("Action A");}}
+class B extends A {void actionB() {System.out.println("Action B");}}
+public class Example<T extends A> {
+    void action(T x) {
+        x.actionA();    // OKAY - we are calling method in A because we know T will inherits it because T subclasses A
+      //x.actionB();  ERROR - if x is instance of class that extends A, it isn't necessarity B class
+    }
+}
+Example<A> example = new Example<>();
+example.action(new A());
+example.action(new B());
+
+// A type parameter can have more than one bound, meaning it must extend/implement all specified classes and interfaces.
+// Syntax for writing type that must extend/implement multiple bounds uses '&' as follows: <T extends A & B & C & D>.
+// When writing out bounds that must be extended/implemented by the type T, classes must always be written first.
+// Again, the benefit is that we can call any of the methods within classes/interfaces T must extend or implement,
+// because we surely know it will inherit them.
+class A {}
+interface B {default void methodB() {System.out.println("B");}}
+interface C {}
+public class Example2<T extends A & B & C> { // A must appear before B and C because its a class. Classes always first
+    void action(T x) {x.methodB();}  // We can call methodB() on type T because we know T surely inherits the method.
+}
+class D extends A implements B, C {}  // class that satisfies all requirements of type T in parametrized class Example2
+
+Example2<D> example2 = new Example2<D>();
+example2.action(new D());
+
+// If generic parameter in a method must extend the Comparable interface, we can use comparison on T, when T is number.
+public <T extends Comparable<T>> int countElem(T[] arr, T value) {
+    int count = 0;
+    for (T elem : arr) if (elem.compareTo(value) > 0) ++count;
+    return count;
+}
+countElem(new Integer[] {1, 2, 3, 4, 5}, (Integer) 2);
+
+//**********************************************************************************************************************
+// Subtyping.
+//**********************************************************************************************************************
+// Rule 1:  Where code expects one type, we can provide its subtype and it will work fine. For example, Integer and
+//          Double are subtypes of Number, so where code expects Number type, we can give it Integer or Double.
+Number num = new Integer(5);    // OKAY - Integer is subtype of Number
+Number num2 = new Double(5D);   // OKAY - Double is subtype of Number
+// Rule 2:  However, Box<Integer> and Box<Double> are not subtypes of Box<Number>, so we cannot pass Box<Integer> or
+//          Box<Double> where code expects Box<Number> type. Like any other class, Box<Integer> is only subtype of
+//          Object, by default.
+class Fox<T> {}
+Fox<Number> fox = new Fox<Number>();
+Fox<Number> fox2 = new Fox<Integer>();  // ERROR - Fox<Integer> is not subtype of Fox<Number>
+// Rule 3:  Box<Integer> IS subtype of Entity<Integer>, PROVIDED Box<T> extends/implements Entity<T> AND type argument
+//          (is in this case "Integer") does not vary. In more generic terms if SubSlass<T> extends SuperClass<T>,
+//          SubClass<type argument> is subtype of SuperClass<type argument> provided the type argument is the same.
+class Animal<T> {}
+class Cat<T> extends Animal<T> {}
+Animal<Number> animal = new Cat<Number>();      // OKAY - Cat<Number> is subtype of Animal<Number>
+Animal<Number> animal2 = new Cat<Integer>();    // ERROR - Cat<Integer> is not subtype of Animal<Number>
+
+class Lion<T, S> extends Animal<T> {}
+Animal<Number> animal3 = new Lion<Number, String>();    // OKAY - type argument Number matches corresponding T parameter
+Animal<Number> animal4 = new Lion<Number, Integer>();   // OKAY - Lion<Number, Integer> is subtype of Animal<Number>
+
+//**********************************************************************************************************************
+// Wildcards.
+//**********************************************************************************************************************
+// Upper bound wildcard
+// <? extends Type> This means type argument can only be Type or any class that extends/implements it.
+List<? extends Number> list = Arrays.asList(new Integer[] {1, 2, 3});
+List<? extends Number> list = Arrays.asList(new Double[] {1D, 2D, 3D});
+List<? extends Number> list = Arrays.asList("1", "2", "3");        // ERROR
+
+// Unbound wildcard
+// <?> Also known as unknown type. This lets us use generic type parameters with any parametrization of their type.
+// However, List<Object> and List<?> are not the same in that you can insert an Object, or any subtype of Object, into
+// List<Object>, but you can only insert null into a List<?>. With <?> can only use methods in the generic class List<>
+// that don't depend on the parameter type - such as prining elements
+List<?> list2 = Arrays.asList(new Integer[] {1, 2, 3});
+list2 = Arrays.asList("1", "2", "3");       // NO ERROR
+
+// Lower bound wildcard
+// <? super Type> This means type argument can only be Type or any supertype of Type.
+List<? super Integer> list3 =  Arrays.asList(new Integer[] {1, 2, 3});
+List<? super Integer> list4 =  Arrays.asList(new Object[] {new Object()});
+
+//**********************************************************************************************************************
+// Widlcard Subtyping.
+//**********************************************************************************************************************
+public class Food {}
+public class Fruit extends Food {}      // Fruit is subtype of Food
+public class Apple extends Fruit {}     // Apple is subtype of Fruit and subtype of Food
+public class Thing<T> {}                // Generic class
+
+//**********************************************************************************************************************
+// OKAY - Fruit is subtype of Food
+Food a = new Fruit();
+
+// ERROR - Thing<Fruit> is not subtype of Thing<Food>
+Thing<Food> a1 = new Thing<Fruit>();
+
+// OKAY - Thing<Food>, Thing<Fruit>, Thing<Apple> are all subtype of Thing<?>
+Thing<?> a2 = new Thing<Food>();
+Thing<?> a3 = new Thing<Fruit>();
+Thing<?> a4 = new Thing<Apple>();
+
+// OKAY - Thing<? extends Fruit> is a subtype of Thing<? extends Food>
+Thing<? extends Fruit> a5 = new Thing<>();
+Thing<? extends Food> a6 = a5;
+
+// OKAY - Thing<? extends Apple> is a subtype of Thing<? extends Fruit>
+Thing<? extends Apple> a7 = new Thing<>();
+Thing<? extends Fruit> a8 = a7;
+
+// OKAY - Thing<? super Food> is a subtype of Thing<? super Fruit>
+Thing<? super Food> a6 = new Thing<>();
+Thing<? super Fruit> a7 = a6;
+
+// OKAY - Thing<? super Fruit> is a subtype of Thing<? super Apple>
+Thing<? super Fruit> a8 = new Thing<>();
+Thing<? super Apple> a9 = a8;
+
+//**********************************************************************************************************************
+// Wildcards Guidelines.
+//**********************************************************************************************************************
+// "In" variable - serves data to be read by the current code.
+// "Out" variable - waits to receive data from current code.
+// An example could be method "void method(src, dest)" where src is an "in" variable, and dest is an "out" variable.
+// 1. An "in" variable is defined with an upper bounded wildcard, <? extends Type> and provides data to be read.
+// 2. An "out" variable is defined with a lower bounded wildcard, <? super Type> and receives data from current code.
+// 3. In case where "in" variable can be accessed using only methods defined in Object, use an unbounded wildcard <?>.
+// 4. In case where code needs to access variable as both an "in" and an "out" variable, do not use a wildcard.
+// 5. Using wildcard as a return type should be avoided because it forces programmers using the code to deal with wildcards.
+
+//**********************************************************************************************************************
+// Type Erasure
+//**********************************************************************************************************************
+// During the type erasure process, the Java compiler erases all type parameters and replaces each with its first bound
+// if the type parameter is bounded, or Object if the type parameter is unbounded.
+
+// During type erasure, unbound types are replaced with Object:
+public class Node<T> {
+    public T data;
+    public Node<T> next;
+}
+// becomes...
+public class Node {
+    public Object data;
+    public Node next;
+}
+
+// Bounded types are replaced with their first bound:
+public class Node<T extends Comparable<T>> {
+    public T data;
+    public Node<T> next;
+}
+// becomes...
+public class Node {
+    public Comparable data;
+    public Node next;
+}
+
+//**********************************************************************************************************************
+// Non-Reifiable Types
+//**********************************************************************************************************************
+// Reifiable type     - A type whose type information is fully available at runtime. E.g. primitives, non-generic types,
+//                      raw types, invocations of unbound wildcards.
+// Non-reifiable type - Type where information has been removed at compile-time by type erasure - invocations of generic
+//                      types that are not defined as unbounded wildcards. A non-reifiable type does not have all of its
+//                      information available at runtime.
+
+//**********************************************************************************************************************
+// Restrictions On Generics
+//**********************************************************************************************************************
+// Resctiction 1 - Cannot Instantiate Generic Types With Primitive Types.
+// Solution is to use wrapper types, then autoboxing becomes possible.
+class Pair<K, V> {
+    private K key;
+    private V value;
+    public Pair(K key, V value){
+        this.key=key;
+        this.value=value;
+    }
+}
+Pair<int, byte> p1 = new Pair<>(5,8);       // ERROR - primitive types passed as generic type parameters
+Pair<Integer, Byte> p2 = new Pair<>(5,8);   // OKAY - compiler uses autoboxing
+
+//**********************************************************************************************************************
+// Restriction 2 - Cannot Create Instances of Type Parameters.
+public class Water<T> {
+    public Water() {
+        T instance = new T();       // ERROR - cannot create instance of type parameter
+    }
+}
+
+// A workaround is to use a reflection
+class Lava<T> {
+    public Lava(Class<T> cls) throws Exception {
+        T instance = cls.newInstance();
+    }
+}
+Lava<String> instance = new Lava<String>(String.class);
+
+//**********************************************************************************************************************
+// Restriction 3 - Cannot Declare Static Fields With Type Parameter Type
+// This is because class variables are shared across instances and generic type instances can be of different types.
+public class Candy<T> {
+    static T something;     // ERROR - static field of type parameter type
+}
+
+//**********************************************************************************************************************
+// Restriction 4 - Cannot Use Casts or instanceof with Parameterized Types
+class Box<T> {
+    public T data;
+    public Box(T data) {
+        this.data = data;
+    }
+}
+
+Box<String> b = new Box<>("hi");
+b instanceof Box<Integer>;              // ERRPR
+
+Box<?> b1 = new Box<>("hi");
+b1 instanceof Box<?>;                   // OKAY - using instanceof with <?> is fine
+
+// Typically, you cannot cast to a parameterized type unless it is parameterized by unbounded wildcards.
+List<Integer> li = new ArrayList<>();
+List<Number>  ln = (List<Number>) li;   // ERROR
+
+// Its fine when compiler knows that type parameter is always valid
+List<String> li = new ArrayList<>();
+List<String>  ln = (List<String>) li;   // OKAY
+
+//**********************************************************************************************************************
+// Restriction 5 - Cannot Create Arrays of Generic Types
+// You cannot create arrays of parameterized types.
+List<Integer>[] arrayOfLists = new List<Integer>[2]                     // ERROR - generic array creation
+HashMap<String, Integer>[] myMap = new HashMap<String, Integer>[5];     // ERROR - generic array creation
+
+Object[] arr = new Object[2];
+arr[0] = "string";
+arr[1] = 123;
+
+//**********************************************************************************************************************
+// Restriction 6 - Cannot Extend "Throwable" Directly Or Indirectly, Cannot Catch Or Throw Generic Type Exceptions
+public class MathExpection1 extends Exception {}        // OKAY
+public class MathExpection2<T> extends Throwable {}     // ERROR - cannot extend Throwable directly
+public class MathExpection3<T> extends Exception {}     // ERROR - cannot extend Throwable indirectly
+
+public <T extends Exception> void method() throws T {
+    try {
+        throw new T("error message");   // ERROR
+    } catch (T e) {}    // ERROR
+}
+
+// You can, however, use a type parameter in the throws clause
+class Parser<T extends Exception> {
+    public void parse() throws T {}     // OKAY
+}
+
+//**********************************************************************************************************************
+// Restriction 7 - Cannot Have Two Overloaded Methods That Will Have Same Signature After Type Erasure
+public class Example {
+    public void print(List<String> list) {}     // Compile time error because after type erasure signatures are same
+    public void print(List<Integer> list) {}
+}
+
+//**********************************************************************************************************************

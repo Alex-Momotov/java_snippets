@@ -1,0 +1,42 @@
+//----------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+//----------------------------------------------------------------------------------------------------------------------
+PATH
+The bin directory within "Java/jdk-11.0.1/" contains both the compiler and the launcher.
+
+Setting up PATH variable is not necessary, but then you would have to specity full path to Java commands such as "java",
+"javac", "javadoc" every time you run them. This would look like: "C:\Java\jdk1.7.0\bin\javac MyClass.java" and it is
+not convenient.
+
+The PATH environment variable is a series of directories separated by semicolons (;). Microsoft Windows looks for
+programs in the PATH directories in order, from left to right. You should have only one bin directory for the JDK in the
+path at a time (those following the first are ignored), so if one is already present, you can update that entry.
+
+Alternatively, PATH environment variable may start with another environment variable, such as JAVA_HOME. If this is the
+case it is enough to update JAVA_HOME variable to point to current jdk, or get rid of JAVA_HOME and set full path to
+jdk in the PATH variable.
+
+On Linux server Open Java is installed in:
+/usr/lib/jvm/java-11-openjdk-amd64
+
+On Levelo laptop Java is installed in:
+C:\Program Files\Java\jdk-11.0.1
+
+//----------------------------------------------------------------------------------------------------------------------
+CLASSPATH
+The CLASSPATH variable is one way to tell applications, including the JDK tools, where to look for user classes.
+
+
+
+
+
+

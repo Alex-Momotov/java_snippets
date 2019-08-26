@@ -1,0 +1,233 @@
+import java.lang.annotation.*;
+import java.util.List;
+//**********************************************************************************************************************
+// Annotations often replace comments in code.
+// Just like classes annotations are defined in its own file - IntelliJ IDEA supports making those as an option.
+// Top level annotations can either be public or package-private.
+// Just like nested classes, member level annotations can have any access modifier.
+
+// Annotations have no direct effect on the operation of the code they annotate. Uses of annotations are:
+// 1. Information for the compiler — Annotations can be used by the compiler to detect errors or suppress warnings.
+// 2. Compile-time and deployment-time processing — Software tools can process annotation information to generate code.
+// 3. Runtime processing — Some annotations are available to be examined at runtime.
+
+//**********************************************************************************************************************
+// Annotation elements (parameters) can be named or unnamed. Example of named annotation:
+@Author(name="Alex", date="3/28/2001")
+class Cat {}
+
+//**********************************************************************************************************************
+// Example of unnamed annotation.
+@SupressWarnings(value="unchecked")
+public void method() {}
+
+//**********************************************************************************************************************
+// If there is just one element, its name can be omitted.
+@SupressWarnings("unchecked")
+public void method2() {}
+
+//**********************************************************************************************************************
+// If the annotation has no elements, then the parentheses can be omitted, as with @Override.
+class SuperClass {void method() {}}
+class SubClass extends SuperClass{
+    @Override
+    void method() {}
+}
+
+//**********************************************************************************************************************
+// Its possible to use multiple annotations on the same declaration
+@Author(name="John Doe")
+@EBook
+class Test {}
+
+//**********************************************************************************************************************
+// If the annotations have the same type, then this is called a repeating annotation
+@Author(name = "Jane Doe")
+@Author(name = "John Smith")
+class Test2 {}
+
+//**********************************************************************************************************************
+// Besides declarations of classes, fields, methods, annotations can be applied to:
+// 1. Instance creation
+new @Interned String("Test");
+// 2. Type case
+String s = (@NonNull String) 5;
+// 3. Implements clause
+class UnmodifiableList<T> implements @Readonly List<@Readonly T> {}
+// 4. Exception declaration
+void monitorTemperature() throws @Critical TemperatureException {}
+
+//**********************************************************************************************************************
+// @interface
+// Allows to create your own annotation types. Syntax is similar to class declaration.
+// 'default' keyword specifies default values, in which case the value can be omitted when annotation being used.
+@interface MyAnnotation {
+    String author() default "Alex";
+    String date();
+    int currentVersion() default 1;
+    String[] reviewedBy();
+}
+
+//**********************************************************************************************************************
+// Using our own annotation we defined above
+@MyAnnotation(
+    author="Alex",              // can be omitted since field has default value
+    date="17/01/2019",
+    currentVersion=1,           // can be omitted since field has default value
+    reviewedBy={"", "", ""}
+)
+public void method3() {
+    System.out.println("hello");
+}
+
+//**********************************************************************************************************************
+// PREDEFINED ANNOTATION TYPES
+//**********************************************************************************************************************
+// @Deprecated
+// Indicates that the marked element is deprecated and should no longer be used.
+@Deprecated
+void method4() {}
+
+method4();
+
+//**********************************************************************************************************************
+// @Override
+// Informs the compiler that the element is meant to override an element declared in a superclass. While it is not
+// required to use this annotation when overriding a method, it helps to prevent errors. If a method marked with
+// @Override fails to correctly override a method in one of its superclasses, the compiler generates an error.
+class Super {void sound() {System.out.print("Boom!");}}
+class Sub extends Super {
+    @Override
+    void sound() {
+        System.out.println("Thuurrr!");
+    }
+}
+
+//**********************************************************************************************************************
+// @SuppressWarnings("warning type")
+// Tells the compiler to suppress specific warnings that it would otherwise generate.
+// The Java Language Specification lists two categories: 'deprecation' and 'unchecked'.
+// 'unchecked' warning means the compiler indicates that it cannot ensure type safety.
+// The 'unchecked' warning can occur when interfacing with legacy code written before the advent of generics.
+
+@SuppressWarnings("deprecation")
+void methodThatOverridesDeprecatedMethod() {}
+
+// To suppress multiple types of warnings use the following syntax
+@SuppressWarnings({"unchecked", "deprecation"})
+void method5() {}
+
+//**********************************************************************************************************************
+// @SaveVarargs
+// Asserts that the code does not perform potentially unsafe operations on its varargs parameter.
+// Only applicable to non-reifialbe types - which don't have all information available at runtime (e.g. generic types).
+@SafeVarargs
+static void method(List<String>... a) {}
+
+//**********************************************************************************************************************
+// @FunctionalInterface
+// Indicates that the interface is intended to be functional.
+// Compiler generates an error if annotated interfaces does not satisfy the requirements of a functional interface.
+// These requirements are to only have a single abstract method (but can have default methods).
+@FunctionalInterface
+interface Func {
+    String apply(Object a);
+//    String method();      // will cause error, since multiple abstract methods
+}
+
+Func func = data -> data.getClass().getName().split("\\.")[2];  // function that determines type of primitive
+func.apply(23);
+func.apply(23L);
+func.apply(23D);
+func.apply("test");
+
+//**********************************************************************************************************************
+// Meta Annotations
+// Annotations that apply to other annotations.
+//**********************************************************************************************************************
+
+//**********************************************************************************************************************
+// @Retention
+// Indicates how long annotations with the annotated type are to be retained.
+// RetentionPolicy.SOURCE – The marked annotation is retained only in the source level and is ignored by the compiler.
+// RetentionPolicy.CLASS – The marked annotation is retained by the compiler at compile time, but is ignored by the JVM.
+// RetentionPolicy.RUNTIME – The marked annotation is retained by the JVM so it can be used by the runtime environment.
+import java.lang.annotation.Retention;
+
+@Retention(value=RetentionPolicy.CLASS)
+@interface MyAnnotation3 {
+    String name();
+}
+
+//**********************************************************************************************************************
+// @Documented
+// Annotation will be documented by javadoc and similar tools by default.
+import java.lang.annotation.Documented;
+
+@Documented
+public @interface MyAnnotation2 {
+    String author();
+    String date();
+}
+
+//**********************************************************************************************************************
+// @Target
+// Restricts what kind of Java elements the annotation can be applied to.
+// ElementType.ANNOTATION_TYPE is used to make an annotation for other annotations.
+// ElementType.CONSTRUCTOR can be applied to a constructor.
+// ElementType.FIELD can be applied to a field or property.
+// ElementType.LOCAL_VARIABLE can be applied to a local variable.
+// ElementType.METHOD can be applied to a method-level annotation.
+// ElementType.PACKAGE can be applied to a package declaration.
+// ElementType.PARAMETER can be applied to the parameters of a method.
+// ElementType.TYPE can be applied to any element of a class.
+import java.lang.annotation.Target;
+
+@Target(ElementType.METHOD)
+@interface MyAnnotation4 {
+    String name();
+}
+
+//**********************************************************************************************************************
+// @Inherited
+// Means that subclasses of annotated classes are considered having the same annotation as their superclass.
+// When the user queries the annotation type and the class has no annotation for this type, the class' superclass is
+// queried for the annotation type. This annotation applies only to class declarations.
+import java.lang.annotation.Inherited;
+
+@Inherited
+protected @interface MyAnnotation5 {
+    String name();
+}
+//**********************************************************************************************************************
+// @Repeatable
+// Indicates that the marked annotation can be applied more than once to the same declaration or type use.
+// The value in parentheses, is the type of the container annotation. So we need to also declare annotation container.
+
+// The container annotation must have a value element with an array type.
+// The component type of the array type must be the repeatable annotation type.
+import java.lang.annotation.Repeatable;
+
+@interface MyContainer {
+    MyAnnotation6[] value();
+}
+
+@Repeatable(value=MyContainer.class)
+@interface MyAnnotation6 {
+    int version() default 1;
+}
+
+@MyAnnotation6
+@MyAnnotation6          // repeated annotation does not cause error
+void myMethod() {}
+
+//**********************************************************************************************************************
+
+
+
+
+
+
+
+
+

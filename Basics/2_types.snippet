@@ -1,0 +1,273 @@
+import java.util.ArrayList;
+import java.util.List;
+
+//**********************************************************************************************************************
+// Creating primitive
+// The 8 primitive types and String make the 9 built-in types.
+// Numeric literal ending in 'l' or 'L' is long, otherwise its an int
+// Numeric literal ending in 'f' or 'F' is float
+// Numeric literal ending in 'd' or 'D' or '.123' is double
+byte x1 = 1;                // 1 byte | stores whole numbers from -128 to 127
+short x2 = 2;               // 2 bytes | Stores whole numbers from -32,768 to 32,767
+int x3 = 3;                 // 4 bytes | Stores whole numbers from -2,147,483,648 to 2,147,483,647
+long x4 = 13L;              // 8 bytes | Stores really big numbers
+float x5 = 5.123f;          // 4 bytes | Stores 6 decimal places, and rounds off the rest
+double x6 = 6d;             // 8 bytes | Stores 15 decimal places, and rounds off the rest
+boolean x7 = true;          // 1 byte
+char x8 = 'r';              // 2 bytes | Must use single quotes for defining characters
+String x9 = "something";    // Must use double quotes for defining strings
+
+//**********************************************************************************************************************
+// Creating wrapper
+Byte m1 = 5;
+Short m2 = 5;
+Integer m3 = 5;
+Long m4 = 5L;
+Float m5 = 5.12F;
+Double m6 = 5.12D;
+Boolean m7 = true;
+Character m8 = 'r';
+
+//**********************************************************************************************************************
+// Primitive -> Wrapper
+Byte q1 = x1;
+Short q2 = x2;
+Integer q3 = x3;
+Long q4 = x4;
+Float q5 = x5;
+Double q6 = x6;
+Boolean q7 = x7;
+Character q8 = x8;
+
+Byte w1 = Byte.valueOf((byte) 5);
+Short w2 = Short.valueOf((short) 5);
+Integer w3 = Integer.valueOf(5);
+Long w4 = Long.valueOf(5L);
+Float w5 = Float.valueOf(5F);
+Double w6 = Double.valueOf(5D);
+Boolean w7 = Boolean.valueOf(true);
+Character w8 = Character.valueOf('a');
+
+Byte a1 = new Byte((byte) 5);
+Short a2 = new Short((short) 5);
+Integer a3 = new Integer(5);
+Long a4 = new Long(5L);
+Float a5 = new Float(5F);
+Double a6 = new Double(5D);
+Boolean a7 = new Boolean(true);
+Character a8 = new Character('a');
+
+//**********************************************************************************************************************
+// Wrapper -> Primitive
+byte k1 = m1;
+short k2 = m2;
+int k3 = m3;
+long k4 = m4;
+float k5 = m5;
+double k6 = m6;
+boolean k7 = m7;
+char k8 = m8;
+
+byte j1 = m1.byteValue();
+short j2 = m2.shortValue();
+int j3 = m3.intValue();
+long j4 = m4.longValue();
+float j5 = m5.floatValue();
+double j6 = m6.doubleValue();
+boolean j7 = m7.booleanValue();
+char j8 = m8.charValue();
+
+//**********************************************************************************************************************
+// Primitive/Wrapper -> String
+String s1 = Byte.toString((byte) 5);
+String s2 = Short.toString((short) 5);
+String s3 = Integer.toString(5);
+String s4 = Long.toString(5L);
+String s5 = Float.toString(5F);
+String s6 = Double.toString(5D);
+String s7 = Boolean.toString(true);
+String s8 = Character.toString('a');
+
+String s11 = String.valueOf((byte) 5);
+String s12 = String.valueOf((short) 5);
+String s13 = String.valueOf(5);
+String s14 = String.valueOf(5L);
+String s15 = String.valueOf(5D);
+String s16 = String.valueOf(5F);
+String s17 = String.valueOf(true);
+String s18 = String.valueOf('d');
+
+String s21 = "" + (byte) 5;
+String s22 = "" + (short) 5;
+String s23 = "" + 5;
+String s24 = "" + 5L;
+String s25 = "" + 5D;
+String s26 = "" + 5F;
+String s27 = "" + true;
+String s28 = "" + 'a';
+
+String s29 = a1.toString();
+String s30 = a2.toString();
+String s31 = a3.toString();
+String s32 = a4.toString();
+String s33 = a5.toString();
+String s34 = a6.toString();
+String s35 = a7.toString();
+String s36 = a8.toString();
+
+//**********************************************************************************************************************
+// String -> Primitive
+byte n_1 = Byte.parseByte("1");
+short n_2 = Short.parseShort("2");
+int n_3 = Integer.parseInt("3");
+long n_4 = Long.parseLong("4");
+float n_5 = Float.parseFloat("5.1");
+double n_6 = Double.parseDouble("6.123");
+boolean n_7 = Boolean.parseBoolean("true");
+char n_8 = "r".charAt(0);
+
+// String -> Wrapper
+Byte h1 = Byte.valueOf("1");
+Short h2 = Short.valueOf("1");
+Integer h3 = Integer.valueOf("1");
+Long h4 = Long.valueOf("1");
+Float h5 = Float.valueOf("1.12");
+Double h6 = Double.valueOf("1.12");
+Boolean h7 = Boolean.valueOf("true");
+Character h8 = "a".charAt(0);
+
+// Note: There is no method Character.parseChar()
+// Note: Type.parseType() returns primitive from a string, while Type.valueOf() returns a wrapper from a String.
+// Note: With introduction of autoboxing those methods can be used interchangeably.
+
+//**********************************************************************************************************************
+// Default values
+// Uninitialed primitive type fields always have a value (default), while reference types can be null
+// Default numeric types (byte, short, int, long, float, double) have value 0 or 0.0
+// Default boolean has value of false
+// Default char has value '\000'
+// Default String and other reference types have values of null
+byte e1;
+short e2;
+int e3;
+long e4;
+float e5;
+double e6;
+boolean e7;
+char e8;
+String e9;
+
+//**********************************************************************************************************************
+// Local default values
+// Local variables are never assigned default values. If you cannot initialize a local variable where it is declared,
+// make sure to assign it a value before you attempt to use it. Accessing an uninitialized local variable will result
+// in a compile-time error.
+public static void example() {
+    int k;
+    System.out.println(k);      // will cause error
+}
+
+//**********************************************************************************************************************
+// Naming conventions
+// Convention is to use camel case for all normal variables, and capitalised with underscore for constants 'final'.
+int normalVariable = 5;
+final int SOME_CONSTANT = 10;
+
+//**********************************************************************************************************************
+// Sientific notation
+// Double and float can be written with scientific notation using 'e'
+float x = 0.002e4F;
+double y = 6.23e5;
+
+//**********************************************************************************************************************
+// Underscore in literals
+// This enables you to separate groups of digits in numeric literals to improve readability of your code
+long creditCardNumber = 1234_5678_1231_5424L;
+int[] cats = new int[100_000];
+int bigNum = 1000_000_000;
+
+//**********************************************************************************************************************
+// null value
+// As already mentioned, only reference types can be of value null.
+// Reference types can be checked to have value null or be set to null as follows.
+String mes = "Sample string";
+if (mes == null) System.out.println("Raise alert!");
+mes = null;
+if (mes == null) System.out.println("Raise alert!");
+
+//**********************************************************************************************************************
+// Max, min values
+Byte.MAX_VALUE;
+Byte.MIN_VALUE;
+
+Short.MAX_VALUE;
+Short.MIN_VALUE;
+
+Integer.MAX_VALUE;
+Integer.MIN_VALUE;
+
+Long.MAX_VALUE;
+Long.MIN_VALUE;
+
+Float.MAX_VALUE;
+Float.MIN_VALUE;
+
+Double.MAX_VALUE;
+Double.MIN_VALUE;
+
+//**********************************************************************************************************************
+// Casting
+// Note: Converting double or float to int discards decimal values
+int i = 5;
+double d = (double) i;
+
+double p = 3.999;
+int j = (int) p;
+
+float f = 1.12F;
+int r = (int) f;
+
+//**********************************************************************************************************************
+// Underflow, overflow
+// Converting numeric type to a less precise type may result in unexpected underflow or overflow
+int t = 128;
+byte b = (byte) t;      // overflow
+
+int t2 = -129;
+byte b2 = (byte) t2;    // underflow
+
+//**********************************************************************************************************************
+// Autoboxing and unboxing
+// Autoboxing - Automatic conversion of primitives to wrapper classes. Java compiler applies autoboxing when primitive
+//              value is passed as a parameter to a method that expects an object of the corresponding wrapper class, OR
+//              when primitive value is assigned to a variable of the corresponding wrapper class.
+
+// Unboxing - Automatic conversion of wrapper classes to primitives. Java compiler applies unboxing when wrapper type
+//            object is passed as a parameter to a method that expects a value of the corresponding primitive type, OR
+//            wrapper type object is assigned to a variable of the corresponding primitive type.
+
+// Autoboxing example
+Character ch = 'a';
+
+// Unboxing example
+int num = new Integer(5);
+
+// Autoboxing example
+void method1(Double a) {System.out.println(a instanceof Double);}
+method1(5D);
+
+// Unboxing example
+void method2(float a) {System.out.println(++a);}
+method2(new Float(5F));
+
+// Autoboxing example - below list expects the wrapper type Integer, however received primitive int and compiles fine.
+// This is because int i gets converted to Integer automatically using Integer.valueOf(i) at runtime.
+List<Integer> li = new ArrayList<>();
+for (int i = 1; i < 10; i += 2) li.add(i);
+
+// Unboxing example - below code does not throw an error because during runtime compiler invokes .intValue() on i7
+Integer i7 = new Integer(5);
+i7++;
+i7 % 2;
+
+//**********************************************************************************************************************

@@ -1,0 +1,115 @@
+import java.io.OutputStream;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+static class Cat {{
+//**********************************************************************************************************************
+//      Map Interface
+// Map interface does not extend collection. It's a standalone interface.
+// Implementations are HashMap, TreeMap, and LinkedHashMap.
+// Their performance is analogous to HashSet, TreeSet, and LinkedHashSet.
+
+// 1. HashMap does not order elements it contains
+// 2. TreeMap orders elements based on key
+// 3. LinkedHashMap orders elements based on order of insertion
+
+// Two Map instances are equal (as in .equals() returns true) if they represent the same key-value mappings.
+// This rule applied to all implementations of Map interface.
+
+// Map implementations contain constructor that initialises map from another map.
+// The map created from another map contains all of its mappings.
+    Map<String, Integer> map1 = new HashMap<>();
+    Map<String, Integer> map2 = new TreeMap<>(map1);
+    Map<String, Integer> map3 = new LinkedHashMap<>(map1);
+
+    map1.clear();       // Removes all elements from the map.
+    map1.putAll(map2);  // Puts all mappings of map2 into map1.
+
+// Traversing a map can only be done with Collection views:
+// We can traverse the obtained collection views using the three ways to traverse a normal Collection. Collection views:
+// 1. .keySet() Set type collection view of map keys.
+// 2. .values() Collection type collection view of map values.
+// 3. .entrySet() Set type collection view of map key-value pairs represented my Map.Entry<Type, Type> object.
+// With all three Collection views, calling an Iterator's remove operation removes the associated entry from the Map.
+// The Collection views do not support element addition under any circumstances.
+// The Collection views support element removal in all its many forms — remove, removeAll, retainAll, and clear
+
+// Create a sample map:
+    Map<String, Integer> map4 = new HashMap<>();
+    for (int i = 0; i < 50; i++) map4.put(Integer.toString(i), (int) Math.pow(i, 2));
+
+// 1. Using .keySet() as a collection view of keys
+    Set<String> set4 = map4.keySet();
+    for (String s : set4) System.out.println(s);
+// Of course we can convert Set view into an iterator.
+    Iterator<String> iter4 = set4.iterator();
+    while (iter4.hasNext()) System.out.println(iter4.next());
+// Of course we can use streams and aggregate operations on the collection view. This code removed even keys from map.
+    set4.stream().filter(e -> Integer.valueOf(e) % 2 == 0).forEach(e -> set4.remove(e));
+
+// 2. Using .values() as a collection view of values
+    Collection<Integer> vals = map4.values();
+    for (int v : vals) System.out.println(v);
+// This code removes all map entries that map to an even value
+    Iterator<Integer> iter5 = vals.iterator();
+    while(iter5.hasNext()) if (iter5.next() % 2 == 0) iter5.remove();
+
+// 3. Using .entrySet()
+    Set<Map.Entry<String, Integer>> keyVals = map4.entrySet();
+    for (Map.Entry<String, Integer> entry : keyVals) System.out.println(entry.getKey() + " " + entry.getValue());
+// More concise version
+    for (Map.Entry<String, Integer> entry : map4.entrySet()) System.out.println(entry.getKey() + " " + entry.getValue());
+// .setValue() method can be called on Map.Entry object to set value of a given entry.
+// This code sets all even values to 0.
+    for (Map.Entry<String, Integer> entry : map4.entrySet()) if (entry.getValue() % 2 == 0) entry.setValue(0);
+
+// Neat code that tests if one map is submap of another:
+    map1.entrySet().containsAll(map2.entrySet());
+
+// Code that makes a set of keys common to two maps:
+    Set<String> commonKeys = new HashSet<String>(map1.keySet());
+    commonKeys.retainAll(map2.keySet());
+
+// Remove all key-value pairs form one map that are common with another:
+    map1.entrySet().removeAll(map2.entrySet());
+
+// Remove all keys form one map that are common with another:
+    map1.keySet().removeAll(map2.keySet());
+
+// A multimap is like a Map but it can map each key to multiple values.
+// To implement this we need to create a Map whose values are of type List.
+//**********************************************************************************************************************
+
+
+
+
+
+}}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

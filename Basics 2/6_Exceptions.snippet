@@ -1,0 +1,268 @@
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.EmptyStackException;
+//**********************************************************************************************************************
+//      Rationalle
+// The whole idea behind catching exceptions with try-catch, instead of letting exceptions be thrown, is as follows.
+// If you don't catch a given exception your program will terminate and the service implemented with your program will
+// stop. Obviously we don't want our service to stop because our customers will be unhappy. So we must catch exceptions
+// encountered by the program and log them, while the service as a whole continues to operate. We can then inspect logs
+// and fix the bug that caused the exception while our service is running uninterrupted.
+
+//**********************************************************************************************************************
+//      Definitions
+// Exception object    - Method that produces error creates "exception object" and hands it to runtime system.
+//                       The exception object contains information about the error.
+// Throw an exception  - Means to create the exception object and hand it to runtime system.
+// Call stack          - Ordered list of methods that had been called to get to the method where error occured.
+// Exception handler   - block of code that can handle the exception.
+// Catching exception  - When appropriate exception handler is found and is used to handle an exception.
+
+//**********************************************************************************************************************
+//      When error occurs
+// 1. The runtime system searches call stack for a method that contains exception handler (block of code handling exc).
+//    Search begins with the method in which error occurred and proceeds through call stack in the reverse order in
+//    which the methods were called.
+// 2. When an appropriate handler is found, the runtime system passes the exception to the handler. Exception handler is
+//    considered appropriate if type of the exception object thrown matches the type that can be handled by the handler.
+// 3. Outcome One - Exception handler is found and it catches the exception.
+//    Outcome Two - No appropriate exception handler is found in the call stack, so the program terminates.
+
+//**********************************************************************************************************************
+//      Reading stack trace
+// First line tells you exception name and thread name.
+// Second line tells you which class and method first caused the exception - the root cause.
+// Third, and consecutive lines tell you which methods where called bofore one another. E.g:
+/**
+ * Exception in thread "main" java.io.IOException
+ * 	at com.nexmo.reports.dispatcher.Testing.method_2(Testing.java:16)
+ * 	at com.nexmo.reports.dispatcher.Testing.method_1(Testing.java:12)
+ * 	at com.nexmo.reports.dispatcher.Testing.main(Testing.java:8)
+ *
+ * Process finished with exit code 1
+ * */
+
+//**********************************************************************************************************************
+//      Checked vs Unchecked
+// Object ---> Throwable
+//                   \  \___> Error
+//                    \
+//                     \___> Exception
+//                                \  \___> RuntimeException ---> [...]
+//                                 \
+//                                  \___> [...]
+
+// All exceptions extend from Throwable
+// Error            - Unckecked. Directly extends Throwable. Thrown by JVM after hard failure. Normal programs typically
+//                    do not throw Error.
+// Exception        - Directly extends Throwable. Most programs throw and catch Exception.
+// RuntimeException - Unckecked. Directly extends Exception. Reserved for incorrect use of Java API.
+//                    E.g. NullPointerException.
+
+//**********************************************************************************************************************
+//      'Catch or Specify' Rule
+// Code that throws checked exception must either:
+// 1. Be enclosed in try block that catches the excepetion.
+// 2. Be in the method with 'throws' clause that lists this exception.
+
+// All checked exceptions are subject to the above rule, unchecked are not.
+// Unchecked exceptions are those which extend Error and RuntimeException.
+
+//**********************************************************************************************************************
+//      Try-Catch-Finally
+// If an exception occurs within the try block, that exception is handled by the associated catch block.
+// Each catch block is an exception handler that handles the type of exception indicated by its argument.
+// The catch block contains code that is executed if and when the exception handler is invoked.
+// The argument of each catch block is the name of the exception class that the handler handles.
+// Try block must be defined with either catch block(s) or finally block or both. Try block cannot stand on its own.
+// A common thing to do is to output exception text using System.err.println("ExceptionType: " + e.getMessage());
+
+try {
+    /* code that might throw exception */
+} catch(IllegalArgumentException e) {
+    System.err.println("IllegalArgumentException: " + e.getMessage());
+} catch(NullPointerException e) {
+    System.err.println("NullPointerException: " + e.getMessage());
+} catch(Exception e) {
+    System.err.println("Exception: " + e.getMessage());
+}
+
+//**********************************************************************************************************************
+//      One handler for multiple exceptions
+// We can use single catch block for more than one exception type, by using the '|' to separate exception arguments.
+// This way the exception argument automatically becomes final.
+try {
+    /* code that might throw exception */
+} catch (IllegalArgumentException | NullPointerException e) {
+    System.err.println("Exception: " + e.getMessage());
+}
+
+//**********************************************************************************************************************
+//      Finally
+// The system always executes the finally block, regardless of what happens within try and catch blocks.
+// Therefore finally block is the perfect place to perform cleanup, such as closing database and freeing resources.
+// Two situations when finally block might not execute:
+//      1. The JVM exits while the try or catch code is being executed.
+//      2. The thread executing the try or catch code is interrupted or killed.
+try {
+    throw new Exception();
+} catch(Exception e) {
+    System.out.println("catch block");
+} finally {
+    System.out.println("finally block");
+}
+
+//**********************************************************************************************************************
+//      Example of try-catch-finally
+public void method() {
+    PrintWriter out = null;
+    try {
+        out = new PrintWriter(new FileWriter("OutFile.txt"));
+
+    } catch (IOException e) {
+        System.out.println("IOException: MEOW " + e.getMessage());
+    }
+    finally {
+        if (out != null) out.close();
+    }
+}
+method();
+
+//**********************************************************************************************************************
+//      Try-with-resources statement
+// A try-with-resources statement contains declarations in parentheses that are separated by semicolon (the resources).
+// A resource can be any object that implements java.lang.AutoCloseable.
+
+// A try-with-resources statement does not require a catch block.
+// In a try-with-resources statement, any catch or finally block is run after the resources declared have been closed.
+
+// When the try block terminates, either normally or because of an exception, the "close" methods of each resource are
+// called in the opposite order of their declaration.
+
+// In example below close() will be first called for newBufferedWriter, then ZipFile
+java.nio.charset.Charset charset = java.nio.charset.StandardCharsets.US_ASCII;
+java.nio.file.Path outputFilePath = java.nio.file.Paths.get("test");
+try (java.util.zip.ZipFile zf = new java.util.zip.ZipFile("test");
+     java.io.BufferedWriter writer = java.nio.file.Files.newBufferedWriter(outputFilePath, charset)) {}
+
+//**********************************************************************************************************************
+//      Suppressed exceptions
+// When try-with-resources statement tries to close resources, the close method itself can throw exceptions.
+// If the try block itself throws exceptions, the exceptions thrown by the close blocked will be suppressed.
+// However they can be retrieved using Throwable.getSuppressed() method from the exception object thrown by try block.
+
+//**********************************************************************************************************************
+//      Exceptions Thrown By Method
+// Sometimes, it's appropriate for code to catch exceptions that can occur within it.
+// In other cases, however, it's better to let a method further up the call stack handle the exception.
+// If a method doesn't catch exceptions that can occur within it, it must specify that it can throw these exceptions.
+// The "throws clause" is made of "throws" keyword, followed by comma-separated list of exceptions thrown by the method.
+
+// Below FileWriter constructor throws IOException, but instead of handling it with try-catch we decide to make the
+// method throw the exception. Now it will be the responsibility of whoever uses this method to handle the exception.
+public void method2() throws IOException {
+    PrintWriter out = new PrintWriter(new FileWriter("OutFile.txt"));
+    out.close();
+}
+
+// Method that throws multiple exceptions
+public void method3() throws IOException, IndexOutOfBoundsException {
+    PrintWriter out = new PrintWriter(new FileWriter("OutFile.txt"));
+    out.close();
+}
+
+//**********************************************************************************************************************
+//      Throwing exceptions
+// No matter what code throws exception, your code / library code / etc, its always thrown using "throw" statement.
+// Java platform provides numerous exception classes, which are all subclasses of the Throwable class.
+// The throw statement requires a single argument - a throwable object (instance of any subclass of Throwable class).
+
+// A throwable object can be instantiated like a normal object, just using constructor of the exception class.
+Exception e = new Exception();
+throw e;
+
+// More commonly, instantiation is combined with throw statement.
+throw new Exception();
+
+// We can pass a exception message to exception constructor. It can later be retreived using e.getMessage().
+throw new Exception("message");
+
+// Example of throwing an exception withing a method body
+public void method4() throws Exception {
+    throw new Exception();
+}
+
+// Excample of throwing an unchecked exception within a method - no need for "throws" clause in method signature
+public void method5() {
+    throw new EmptyStackException();
+}
+
+//**********************************************************************************************************************
+//      Exception hierarchy
+// Throwable has two direct descendants: Error and Exception.
+// Exception class, in turn has a descendant RuntimeException.
+
+// Error is used for hard faulures within JVM. Simple programs typically do not catch or throw Errors.
+// Most programs you write will throw and catch Exceptions as opposed to Errors.
+// The Java platform defines the many descendants of the Exception class.
+// RuntimeException is reserved for exceptions that indicate incorrect use of an API - for example NullPointerException.
+
+// A method can catch an exception based on its group or general type by specifying any of the exception's superclasses
+// in the catch statement. For example, to catch all I/O exceptions, regardless of their specific type, an exception
+// handler specifies an IOException argument. In most situations, however, you want exception handlers to be as specific
+// as possible. Exception handlers that are too general can make code more error-prone by catching and handling
+// exceptions that weren't anticipated by the programmer and for which the handler was not intended.
+
+//**********************************************************************************************************************
+//      Chained exceptions
+// Chained exceptions is when we throw another exception within a catch block, during handling of the first exception.
+// We pass instance of first exception to the constructor of second exception, either with or without message.
+// Reason for using chained exceptions is to throw up the chain of exceptions to a next higher level exception handler.
+try {
+    throw new IOException();
+} catch (IOException e) {
+    throw new Exception("second exception message", e);
+}
+
+// The second exception can access first exception's information, such as stack trace with e.getStackTrace();
+
+//**********************************************************************************************************************
+//      Creating own exceptions
+// Most of the time when defining own exceptions you want to extend the Exception class.
+// Off course, you can extend a more specific existing exception it it fitts your needs well.
+// It is a good practice to end the name of your exception with "Exception", such as LinkedListException, MyException...
+public class MyException extends Exception {}
+throw new MyException();
+
+// It is a good idea to at least override the constructor that accepts the string argument as follows.
+public class MyException2 extends Exception {
+    public MyException2(String message) {
+        super(message);
+    }
+}
+
+//**********************************************************************************************************************
+//      Advantages of exceptions
+// Exceptions allow programmers to separate logic of the program from logic of error handling. Pseudocode example:
+// readFile {
+//    try {
+//        open the file;
+//        determine its size;
+//        allocate that much memory;
+//        read the file into memory;
+//        close the file;
+//    } catch (fileOpenFailed) {
+//       doSomething;
+//    } catch (sizeDeterminationFailed) {
+//        doSomething;
+//    } catch (memoryAllocationFailed) {
+//        doSomething;
+//    } catch (readFailed) {
+//        doSomething;
+//    } catch (fileCloseFailed) {
+//        doSomething;
+//    }
+//}
+
+//**********************************************************************************************************************

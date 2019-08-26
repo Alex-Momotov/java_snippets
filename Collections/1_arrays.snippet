@@ -1,0 +1,194 @@
+import java.util.List;
+import java.util.Arrays;
+import java.util.HashSet;
+public static class Cat {{
+
+// Arrays are objects. Arrays are mutable objects.
+// Arrays class imported above helps to work with arrays. Syntax:  Arrays.<function name>
+
+//**********************************************************************************************************************
+// Two ways to declare an array, both are fine.
+int[] ar1;
+int ar2[];
+
+//**********************************************************************************************************************
+// 1st way to create array - Declare array with a specific number of elements, then initialise with a loop.
+// Primitive types are initialised to their default value, reference types initialised to null.
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+int[] arr = new int[10];
+for (int i = 0; i < arr.length; ++i) arr[i] = (int) Math.pow(i, 2);
+
+// 2nd way to create array - Write out by hand.
+// When writing out by hand, the 'new int[]' can be ommited, because it is done implicitly.
+int[] arr3 = {1, 2, 3, 4, 5};
+int[] arr4 = new int[]{1, 2, 3, 4, 5};
+String[] arr5 = {"one", "two", "three", "four"};
+
+//**********************************************************************************************************************
+// Create an empty array
+int[] arr14 = new int[0];
+int[] arr15 = {};
+System.out.println(arr14.length == 0);
+System.out.println(arr15.length == 0);
+
+//**********************************************************************************************************************
+// Copying and avoiding aliases.
+int[] x = {1,2,3,4,5};
+int[] y = x;            // Alias is created
+int[] z = x.clone();    // No alias created, but if array multidimentional, subarrays are aliased (shallow copy)
+int[] u = Arrays.copyOf(x, x.length);   // No alias created, but shallow copy again. Second parameter is new length.
+
+//**********************************************************************************************************************
+// Copy a slice as new array
+// Arrays.copyOfRange(arr, start, end)
+int[] ar13 = {1, 2, 3, 4, 5};
+int[] ar14 = Arrays.copyOfRange(ar13, 0, 5);
+
+// Reassign an array to its slice
+int[] ar15 = {1, 2, 3, 4, 5};
+ar15 = Arrays.copyOfRange(ar15, 0, 3);
+
+//**********************************************************************************************************************
+// Check if two arrays are equal - use Arrays.equals(arr1, arr2)
+int[] ar16 = {1, 2, 3, 4, 5};
+int[] ar17 = {1, 2, 3, 4, 5};
+System.out.println(ar16 == ar17);               // WRONG - Checks for array identity (same memory address), not equality
+System.out.println(ar16.equals(ar17));          // WRONG - Same as arr1 == arr2 (memory address), special array quirk
+System.out.println(Arrays.equals(ar16, ar17));  // RIGHT - Check for equality (contents are same), shallow equals
+
+//**********************************************************************************************************************
+// Check is two multidimentional arrays are equal - use Arrays.deepEquals(arr1, arr2)
+int[][] a1 = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+int[][] a2 = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+Arrays.equals(a1, a2);
+Arrays.deepEquals(a1, a2);
+
+//**********************************************************************************************************************
+// Closest to list comprehensions
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+boolean[] b = new boolean[100];
+for (int i = 0; i < b.length; ++i) b[i] = i % 2 == 0;
+
+//**********************************************************************************************************************
+// Array length
+int[] arr6 = {1, 2, 3, 4, 5};
+System.out.println(arr6.length);
+
+//**********************************************************************************************************************
+// Access an element
+int[] arr7 = {1, 2, 3, 4, 5};
+System.out.println(arr7[4]);
+
+//**********************************************************************************************************************
+// Access last element
+int[] arr16 = {1, 2, 3, 4, 5};
+System.out.println(arr16[arr16.length - 1]);
+
+//**********************************************************************************************************************
+// Change element
+int[] arr8 = {1, 2, 3, 4, 5};
+arr8[0] = 100;
+
+//**********************************************************************************************************************
+// Fill array with values - Use Arrays.fill(arr, value);
+int[] ar21 = new int[10];
+Arrays.fill(ar21, -7);
+
+//**********************************************************************************************************************
+// Sort array in place - Use Arrays.sort(arr)
+int[] ar22 = {6, 2, 5, 7, 3, 9, 1, 4, 8};
+Arrays.sort(ar22);
+
+//**********************************************************************************************************************
+// Sort array in place in parallel - Arrays.parallelSort(arr)
+// Would be a good idea to compare sorting time with an equivalent of time() in Python
+int[] ar33 = {6, 2, 5, 7, 3, 9, 1, 4, 8};
+Arrays.sort(ar33);
+
+//**********************************************************************************************************************
+// Search array - Use Arrays.binarySearch(array, element)
+// Array has to be sorted beforehand
+int[] ar32 = {6, 2, 5, 7, 3, 9, 1, 4, 8};
+Arrays.sort(ar32);
+byte idx = (byte) Arrays.binarySearch(ar32, 4);
+System.out.println(ar32[idx]);
+
+//**********************************************************************************************************************
+// Loop through array - for each loop.
+// Syntax:          for (type variable : arrayname) {}
+int[] arr10 = new int[10];
+for (int num : arr10) {
+    System.out.println(num);
+}
+
+//**********************************************************************************************************************
+// Loop through array - basic for loop.
+int[] arr9 = new int[10];
+for (int i = 0; i < arr9.length; ++i) {
+    System.out.println(arr9[i]);
+}
+
+//**********************************************************************************************************************
+// Trick for using arrays in loops and other code.
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+for (int i : new int[]{1, 2, 3, 4, 5}) System.out.println(i);
+for (int i : new int[5]) System.out.println(i);
+
+//**********************************************************************************************************************
+// Arrays.asList(arr)
+// Takes array, returns list view of the array
+int[] ar12 = {1, 2, 3};
+List l = Arrays.asList(ar12);
+Arrays.asList(1, 2, 3);
+
+//**********************************************************************************************************************
+// Arrays.stream(arr)
+// Returns sequential stream with the specified array as its source
+int[] arr21 = {1, 2, 3, 4, 5};
+Arrays.stream(arr21);
+
+//**********************************************************************************************************************
+// 1st way to create multidimentional array.
+int[][] arr17 = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
+System.out.println(arr17[1][2]);                    // Acess elements
+
+// 2nd way to create multidimentional array.
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+int[][] arr18 = new int[3][3];
+for (int i = 0; i < arr18.length; ++i) for (int j = 0; j < arr18[i].length; ++j) arr18[i][j] = 5;
+
+// Looping through multidimentional array with two for-each loops
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+for (int[] i : arr18) for (int j : i) System.out.println(j);
+
+//**********************************************************************************************************************
+// Printing array - Arrays.toString(arr)
+int[] ar19 = {1, 2, 3};
+System.out.println(ar19);       // WRONG - Simply printing array prints its memory address
+Arrays.toString(ar19);          // RIGHT - Nicely prints contents of the array
+
+// Printing multidimintional array - Arrays.deepToString(arr)
+int[][] ar20 = {{1, 2, 3}, {1, 2, 3}, {1, 2, 3}};
+Arrays.toString(ar20);          // WRONG - Prints out contents of first array (memory addresses)
+Arrays.deepToString(ar20);      // RIGHT - Nicely prints contents of all inner arrays
+
+//**********************************************************************************************************************
+// Class names for arrays of different types.
+System.out.println(new byte[5].getClass());     // byte [B
+System.out.println(new short[5].getClass());    // short [S
+System.out.println(new int[5].getClass());      // int [I
+System.out.println(new long[5].getClass());     // long [J
+System.out.println(new float[5].getClass());    // float [F
+System.out.println(new double[5].getClass());   // double [D
+System.out.println(new boolean[5].getClass());  // boolean [Z
+System.out.println(new char[5].getClass());     // char [C
+System.out.println(new String[5].getClass());   // String [Ljava.lang.String
+
+//**********************************************************************************************************************
+// Creating arrays of objects
+// CAREFUL - braces {} can be ommitted only if there is a single statement within the loop to be executed.
+// First, create array. Second create each object in the array using 'new' and constructor. As example, array of sets:
+HashSet<Character>[] hash = new HashSet[15];
+for (int i = 0; i < hash.length; ++i) {hash[i] = new HashSet<Character>();}
+
+}}

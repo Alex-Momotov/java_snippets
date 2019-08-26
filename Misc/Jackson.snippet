@@ -1,0 +1,33 @@
+// @JsonProperty                                Maps JSON field to java field for both serialisation and deserialisation.
+// @JsonIgnoreProperties(ignoreUnknown = true)  When deserialising from JSON, all JSON fields must have corresponding
+//                                              java object fields, else error occurs. This line ignores this error.
+// @JsonIgnore                                  Ignore the field for serialisation/deserialisation
+// @JsonSetter("field")                         When deserialising from JSON, the setter annotated with this annotation
+//                                              is called to initialise java field.
+// @JsonGetter("field")                         When serialising to JSON, the JSON field "field" will be created with
+//                                              the result of what the annotated getter method returns.
+// @JsonInclude(JsonInclude.Include.NON_NULL)   The annotated field will only be included in created JSON if the field
+//                                              is not null. Variation with JsonInclude.Include.NON_NULL
+// @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)      Translates camelCase java into underscore_style and
+//                                                                  back during serialisation/deserialisation
+// @JsonDeserialize(converter = RequestParamsValidator.SMS.class)   Runs converter class RequestParamsValidator.SMS
+//                                                                  against each JSON received.
+
+
+// The below is used for JSON to decide which class (in the hierarchy of classes) it should be deserialised into.
+// PRODUCT_PARAM_NAME which is "product" in the JSON can have many values, such as "SMS", "VOICE-CALL", etc...
+// Depending on what is the value of this property, Jackson decides which class SmsRequestParams.class, or etc
+// the JSON will be deserialised into.
+//
+// @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.EXISTING_PROPERTY, property = PRODUCT_PARAM_NAME, visible = true)
+// @JsonSubTypes({
+//         @JsonSubTypes.Type(value = SmsRequestParams.class, name=Product.ProductNames.SMS_NAME),
+//         @JsonSubTypes.Type(value = VoiceRequestParams.class, name=Product.ProductNames.VOICE_CALL_NAME),
+//         @JsonSubTypes.Type(value = VerifyRequestParams.class, name=Product.ProductNames.NUMBER_VERIFY_NAME),
+//         @JsonSubTypes.Type(value = VerifySdkRequestParams.class, name=Product.ProductNames.VERIFY_SDK_NAME),
+//         @JsonSubTypes.Type(value = HlrRequestParams.class, name=Product.ProductNames.HLR_LOOKUP_NAME),
+//         @JsonSubTypes.Type(value = IPVoiceRequestParams.class, name=Product.ProductNames.IP_VOICE_NAME),
+//         @JsonSubTypes.Type(value = MessagesRequestParams.class, name=Product.ProductNames.MESSAGES)
+// })
+// @JsonTypeName(Product.ProductNames.SMS_NAME) Decorates each subclass of the class hierarchy decorated with
+//                                              @JsonTypeInfo

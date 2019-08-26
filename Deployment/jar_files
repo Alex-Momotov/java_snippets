@@ -1,0 +1,37 @@
+//**********************************************************************************************************************
+Packaging in a JAR file. v option is "verbose" meaning files are printed to terminal as they are added.
+
+jar cf jar-file file1 file2 file3
+jar cfv jar-file *
+
+//**********************************************************************************************************************
+Viewing contents of JAR file.
+
+jar tf jar-file
+
+//**********************************************************************************************************************
+Extracting the Contents of a JAR File. Caution: When it extracts files, the Jar tool will overwrite any existing files
+having the same pathname as the extracted files.
+
+jar xf jar-file
+jar xf jar-file [classes to extract]
+
+//**********************************************************************************************************************
+Running JAR-Packaged Software
+
+java -jar program.jar
+
+//**********************************************************************************************************************
+Adding info to Manifest File
+
+1. Create txt file with manifest info. Txt file must end with new line:
+Main-Class: classname
+
+2. Run the command:
+jar cfm MyJar.jar Manifest.txt input-files
+
+
+//**********************************************************************************************************************
+
+
+

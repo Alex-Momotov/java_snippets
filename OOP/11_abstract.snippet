@@ -1,0 +1,81 @@
+//**********************************************************************************************************************
+// An abstract class is a class that is declared 'abstract'.
+abstract class Example1 {}
+
+//**********************************************************************************************************************
+// Abstract class may or may not include abstract methods.
+// An abstract method is a method that is declared 'abstract'. It does not have a body and is terminated by semicolon.
+abstract class Example2 {
+    abstract void method();     // abstract method
+}
+
+//**********************************************************************************************************************
+// Just like concrete classes, abstract classes may include normal methods and fields
+abstract class Example3 {
+    int field;                 // instance variable
+    static int field2;         // class variable
+    void method() {}           // normal method
+    static void method2 () {}  // static method
+}
+
+//**********************************************************************************************************************
+// Abstract classes cannot be instantiated, but they can be subclassed.
+abstract class Example4 {}
+Example3 exa = new Example3();  // error
+
+//**********************************************************************************************************************
+// If a class includes abstract methods, then the class itself must be declared abstract.
+class Example4 {
+    abstract void method();     // error
+}
+
+//**********************************************************************************************************************
+// A class that subclasses an abstract class, must either implement all its abstract methods or itself be abstract.
+abstract class Animal {
+    abstract void roar();
+}
+class Cat extends Animal {
+    void roar() {System.out.println("Meow!");}
+}
+abstract class Mammal extends Animal {}
+
+//**********************************************************************************************************************
+// Usually a class that implements an interface must implement all its abstract methods.
+// But if that class is abstract, it does not have to implement any of them - instead, it delegates this task to the
+// first concrete class that subclasses it.
+interface A {void method();}
+abstract class B implements A {}             // class does not implement abstract methods of the interface, yet no error
+class C extends B {public void method() {}}  // first concrete class down the chain - must implement interface methods
+
+//**********************************************************************************************************************
+// Abstract Classes vs Interfaces
+
+// Similarities:
+// 1. Both cannot be instantiated.
+// 2. Both contain a mixture of methods with and without implementation.
+
+// Differences:
+// 1. Abstract classes can have fields with any modifier. Interfaces can only have fields that are public, static, final.
+// 2. Abstract classes can have concrete methods with any modifier. Interfaces can only have public methods.
+// 3. A class can subclass only one other class (whether abstract or not), but can implement multiple interfaces.
+
+// Use abstract classes when:
+// 1. You want to share code among several closely related classes. Push methods with same implementation to abstract
+//    class and make them concrete. Then declare methods with different implementations 'abstract' and let classes
+//    in the group implement such methods differently in their own class bodies.
+// 2. You expect that classes that extend your abstract class have many common methods or fields, or require access
+//    modifiers other than public (such as protected and private).
+// 3. You want to declare non-static or non-final fields. This enables you to define methods that can access and modify
+//    the state of the object to which they belong.
+
+// Use interfaces when:
+// 1. You expect that unrelated classes would implement your interface. For example, the interfaces Comparable and
+//    Cloneable are implemented by many unrelated classes.
+// 2. You want to specify the behavior of a particular data type, but not concerned about who implements its behavior.
+// 3. You want to take advantage of multiple inheritance of type.
+
+//**********************************************************************************************************************
+
+
+
+
