@@ -11,9 +11,10 @@ On mac default jdk is determined by the value of JAVA_HOME env var.
 /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home    - Example value of $JAVA_HOME on mac.
 
 $JAVA_HOME/bin                  - Contains executables such as java and javac.
-$JAVA_HOME/lib/ext/             - add JAR files here for system wide extensions (not recommended for mac).
-/Library/Java/Extensions/       - add JAR files here for system wide extensions (recommended way for mac).
-~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (recommended way for mac).
+
+$JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions (not recommended).
+/Library/Java/Extensions/       - add JAR files here for system wide extensions (prefered way).
+~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (prefered way).
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -53,28 +54,22 @@ To change version of java on Linux, simply install different JDKs, then do:
 And select desired JDK version.
 
 //----------------------------------------------------------------------------------------------------------------------
-    PATH - for Linux
-
-
-The PATH environment variable is a series of directories separated by semicolons (;). Microsoft Windows looks for
-programs in the PATH directories in order, from left to right. You should have only one bin directory for the JDK in the
-path at a time (those following the first are ignored), so if one is already present, you can update that entry.
-
-Alternatively, PATH environment variable may start with another environment variable, such as JAVA_HOME. If this is the
-case it is enough to update JAVA_HOME variable to point to current jdk, or get rid of JAVA_HOME and set full path to
-jdk in the PATH variable.
-
-On Linux server Open Java is installed in:
-/usr/lib/jvm/java-11-openjdk-amd64
-
-On Levelo laptop Java is installed in:
-C:\Program Files\Java\jdk-11.0.1
-
-//----------------------------------------------------------------------------------------------------------------------
 CLASSPATH
-The CLASSPATH variable is one way to tell applications, including the JDK tools, where to look for user classes.
 
+The CLASSPATH variable is a way to tell applications where to look for user classes.
 
+The default value of class path is "." meaning that only the current directory is searched.
+Specifying either the CLASSPATH variable or the -cp command line switch overrides this value.
+
+To modify CLASSPATH for one user, add those lines to ~/.bashrc
+        CLASSPATH=/usr/local/jdk1.7.0/bin:$CLASSPATH
+        export CLASSPATH
+
+Alternatively use -cp command to specify class path just before running a java command.
+
+If the CLASSPATH environment variable is set, and doesn't include the current directory, the launcher can no longer find
+classes in the current directory. The solution is to change the CLASSPATH variable to include the current directory.
+For example, CLASSPATH value should be .:/home/me/newLibrary.jar (note that we now include current directory '.')
 
 
 
