@@ -1,24 +1,5 @@
 //----------------------------------------------------------------------------------------------------------------------
- Creating Packages
- 1. To create a package, put package statement with the package name as a first line of every source file you wish to
-    be included in the package.
- 2. The package statement must be the first line in the source file.
- 3. There can be only one package statement in each source file and it applies to all types in the file.
- 4. If you put multiple types in a single source file, only one can be public, and it must have the same name as the
-    source file.
- 5. A new package creates a new namespace, meaning two packages can have classes with same names without a conflict.
- 6. You can let types within a package have unrestricted access to each other, then restrict access for outside types.
- 7. If you do not use a package statement, your type ends up in an unnamed package. Generally speaking, classes and
-    interfaces should be in named packages.
- 8. A fully qualified name of a class includes the package name. For Example java.util.HashMap, not just HashMap.
-
-//----------------------------------------------------------------------------------------------------------------------
- Package Example
- For example, all classes in a package GUIcode should have the following first line.
-package GUIcode;
-
-//----------------------------------------------------------------------------------------------------------------------
- Package Naming Conventions
+    Package Naming Conventions
  1. Naming conventions exist to prevent developers creating two packages with same name which would share namespace.
  2. Package names are written in all lower case to avoid conflict with the names of classes or interfaces.
  3. Companies use their reversed Internet domain name to begin their package names - com.example.mypackage for a
@@ -32,7 +13,7 @@ package GUIcode;
     "123example.com" becomes "com._123example"
 
 //----------------------------------------------------------------------------------------------------------------------
- Using Packages
+    Using Packages
  - You can use a package member's simple name from the same package or if that member has been imported.
  - With the import statement, you generally import only a single package member or an entire package.
  - For convenience, Java always automatically imports java.lang package and the package for the current file.
@@ -43,7 +24,7 @@ package GUIcode;
  3. Import the member's entire package.
 
 //----------------------------------------------------------------------------------------------------------------------
- 1. Using Fully Qualified Name
+    1. Using Fully Qualified Name
  By using fully qualified name, you can use a public member from another package without importing it.
  This works well if needed class is used infrequently in your code, otherwise it should really be imported.
 
@@ -54,21 +35,21 @@ java.util.Arrays.equals(new int[] {1, 2, 3}, new int[] {1, 2, 3});
 java.util.HashMap<String, Integer> myMap = new java.util.HashMap<String, Integer>();
 
 //----------------------------------------------------------------------------------------------------------------------
- 2. Importing Single Class
+    2. Importing Single Class
  To import a specific member into the current class, put import statement after the package statement but before any
  type definitions. After doing this, you can refer to the class by its simple name "import packageName.className;".
  This works well if you use just a few members from the package, otherwise you should import the entire package.
 import java.util.HashMap;
 
 //----------------------------------------------------------------------------------------------------------------------
- 3. Importing Entire Package
+    3. Importing Entire Package
  If we want to import all classes from a given package we need to use * symbol "import packageName.*;".
  After this we can refer to any class within the package by its simple name.
  This should be used when our code uses a lot of the package classes.
 import java.lang.*;
 
 //----------------------------------------------------------------------------------------------------------------------
- 4. Importing Nested Classes
+    4. Importing Nested Classes
  You can import a public nested class from a class in another package. If Example is a public class in another package,
  and Inner is the nested public class within Example, the syntax would be "import Example.*". Importing nested public
  classes in this way does not import the enclosing class itself, however.
@@ -80,19 +61,19 @@ import Example;
 Example.Inner a = new Example.Inner();
 
 //----------------------------------------------------------------------------------------------------------------------
- Package Hierarchy
+    Package Hierarchy
  Just because name of one package is prepended with another package does not mean the latter includes it. For example,
  importing java.awt.* imports all of the types in the java.awt package, but it does not import java.awt.color,
  java.awt.font, or any other java.awt.xxxx packages. Therefore you must import each package individually, regardless
  of their hierarchy.
 
 //----------------------------------------------------------------------------------------------------------------------
- Name Ambiguity
+    Name Ambiguity
  If a member in one package shares its name with a member in another package and both packages are imported, you must
  refer to each member by its qualified name.
 
 //----------------------------------------------------------------------------------------------------------------------
- Static Imports
+    Static Imports
  Frequently accessing constants and static methods of a class by prepending them with class name can clutter code.
  Static import statements let you use constants and static methods without prepending them with class name.
  Members imported via static import statemetns must either be "public static final" fields, or static methods.
@@ -105,7 +86,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.*;
 
 //----------------------------------------------------------------------------------------------------------------------
- Packages, File Names, Directory Names
+    Packages, File Names, Directory Names
  Even though Java does not require this, the convention is as follows:
  1. Put source code for a class/enum/interface/annotation into text file of same name as the class, and with ".java" extension.
     So put class Cat into Cat.java file.
@@ -113,15 +94,3 @@ import static java.lang.Math.*;
     So com.example.project package becomes a directory structure com/example/project/...
 
 //----------------------------------------------------------------------------------------------------------------------
- .class and CLASSPATH
- 1. Like the .java files, the compiled .class files should be in a series of directories that reflect the package name.
- 2. However, the path to the .class files does not have to be the same as the path to the .java source files.
- 3. Classpath is the the full path to the classes directory, <path>/classes, it is set by the CLASSPATH system variable.
- 4. JVM constructs path to your .class files by adding package name to the class path. So if <path>/classes is your
-    CLASSPATH, and your package is com.example.project, then JVM looks for .class files in <path>/classes/com/example/project.
- 5. A class path may include several paths, separated by a semicolon (Windows) or colon (UNIX).
- 6. By default, JVM search current directory and the JAR file containing Java platform classes so these directories
-    are automatically in your class path.
-
-//----------------------------------------------------------------------------------------------------------------------
-
