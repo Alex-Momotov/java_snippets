@@ -53,7 +53,9 @@ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`    - Line in .bash_profile to s
 The CLASSPATH variable is a way to tell applications where to look for user classes.
 The default value of class path is "." meaning that only the current directory is searched.
 Specifying either the CLASSPATH variable or the -cp command line option overrides this value.
-If you set CLASSPATH env var, ensure it includes current dir '.', or launcher won't find classes in current dir.
+
+If you set CLASSPATH env var, ensure it includes current dir '.', or launcher won't find classes in current dir:
+"Error: Could not find or load main class Cat"
 
 1. Add to ~/.bashrc:
         CLASSPATH=/usr/local/jdk1.7.0/bin:$CLASSPATH
