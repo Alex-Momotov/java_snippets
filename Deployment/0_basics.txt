@@ -10,8 +10,6 @@ On mac default jdk is determined by the value of JAVA_HOME env var.
 /Library/Java/JavaVirtualMachines/                                  - Where mac typically stores JDKs and JREs.
 /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home    - Example value of $JAVA_HOME on mac.
 
-$JAVA_HOME/bin                  - Contains executables such as java and javac.
-
 $JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions (not recommended).
 /Library/Java/Extensions/       - add JAR files here for system wide extensions (prefered way).
 ~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (prefered way).
@@ -40,36 +38,31 @@ export JAVA_HOME=`/usr/libexec/java_home -v 1.8`    - Line in .bash_profile to s
 
 1. First, install Openjava.
 2. sudo update-alternatives --config java          - command that lists java installations
-3. Add those lines to ~/.bashrc
-        PATH=/usr/local/jdk1.7.0/bin:$PATH
-        export PATH
-4. Alternatively set JAVA_HOME for all users by doing:
+3. To change version of java on Linux, simply install different JDKs, then do:
+       sudo update-alternatives --config java
+   And select desired JDK version.
+4. Set JAVA_HOME for all users by doing:
         sudo nano /etc/environment
     Then append as last line:
         JAVA_HOME="path to jre"
     Then source the file
 
-To change version of java on Linux, simply install different JDKs, then do:
-    sudo update-alternatives --config java
-And select desired JDK version.
-
 //----------------------------------------------------------------------------------------------------------------------
-CLASSPATH
+    CLASSPATH
 
 The CLASSPATH variable is a way to tell applications where to look for user classes.
-
 The default value of class path is "." meaning that only the current directory is searched.
-Specifying either the CLASSPATH variable or the -cp command line switch overrides this value.
+Specifying either the CLASSPATH variable or the -cp command line option overrides this value.
+If you set CLASSPATH env var, ensure it includes current dir '.', or launcher won't find classes in current dir.
 
-To modify CLASSPATH for one user, add those lines to ~/.bashrc
+1. Add to ~/.bashrc:
         CLASSPATH=/usr/local/jdk1.7.0/bin:$CLASSPATH
         export CLASSPATH
 
-Alternatively use -cp command to specify class path just before running a java command.
+2. OR use -cp command:
+        java -cp ... Cat
 
-If the CLASSPATH environment variable is set, and doesn't include the current directory, the launcher can no longer find
-classes in the current directory. The solution is to change the CLASSPATH variable to include the current directory.
-For example, CLASSPATH value should be .:/home/me/newLibrary.jar (note that we now include current directory '.')
+
 
 
 
