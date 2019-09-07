@@ -1,12 +1,12 @@
 //----------------------------------------------------------------------------------------------------------------------
     Fundamentals
-
 JRE - Java Runtime Environment. JVM, Java Class Library, the java command.
 JDK - Superset of JRE. Contains everything JRE does, plus Java SDK and compiler.
 
-Many programs written using Java use the JAVA_HOME environment variable to determine the Java installation location.
-On mac default jdk is determined by the value of JAVA_HOME env var.
+JAVA_HOME - Many programs use the JAVA_HOME environment variable to determine the Java installation location.
 
+//----------------------------------------------------------------------------------------------------------------------
+    Java on Mac
 /Library/Java/JavaVirtualMachines/                                  - Where mac typically stores JDKs and JREs.
 /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home    - Example value of $JAVA_HOME on mac.
 
@@ -14,10 +14,8 @@ $JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions 
 /Library/Java/Extensions/       - add JAR files here for system wide extensions (prefered way).
 ~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (prefered way).
 
-
 //----------------------------------------------------------------------------------------------------------------------
     java_home - Apple tool
-
 /usr/libexec/java_home          - A built-in macOs tool for locating java home. Simply executing it prints current location
                                   of java home. On mac $JAVA_HOME points to this tool, which then gets executed and points
                                   to current java home.
@@ -25,70 +23,53 @@ $JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions 
 
 /usr/libexec/java_home -v 1.6   - Prints location of specific version of JDK installation
 
-/usr/libexec/java_home --exec <command>         - Execute jdk bin command of default JDK version (e.g. java or javac)
-
-/usr/libexec/java_home -v 1.6 --exec <connamd>  - Execute jdk bin command of specidic JDK version (e.g. java or javac)
-
     Proper way to set JAVA_HOME on mac:
 export JAVA_HOME=`/usr/libexec/java_home`           - Line in .bash_profile to set JAVA_HOME equal to default JDK (newest)
 export JAVA_HOME=`/usr/libexec/java_home -v 1.8`    - Line in .bash_profile to set JAVA_HOME equal to specific version of JDK
 
 //----------------------------------------------------------------------------------------------------------------------
-    Set up java on Liux
+    Java on Liux
+Lists java installations:
+sudo update-alternatives --config java
 
-1. First, install Openjava.
-2. sudo update-alternatives --config java          - command that lists java installations
-3. To change version of java on Linux, simply install different JDKs, then do:
-       sudo update-alternatives --config java
-   And select desired JDK version.
-4. Set JAVA_HOME for all users by doing:
-        sudo nano /etc/environment
-    Then append as last line:
-        JAVA_HOME="path to jre"
-    Then source the file
+Switch java version:
+sudo update-alternatives --config java
+
+Set JAVA_HOME for all users by doing:
+sudo nano /etc/environment
+JAVA_HOME="path to jre"
 
 //----------------------------------------------------------------------------------------------------------------------
     CLASSPATH
+CLASSPATH means "class search path", is where JVM looks for .class files, JAR files, and named packages.
+The default value of class path is "." - current dir.
+Both 'java' and 'javac' need class path.
 
-CLASSPATH means "class search path", is where JVM looks for .class files.
-The default value of class path is "." - only current directory is searched.
-
-You can set CLASSPATH by using -classpath, -cp option, or setting CLASSPATH env var.
-If you set CLASSPATH env var, ensure var value includes '.', as in ".:" or launcher won't find classes in current dir:
-"Error: Could not find or load main class Cat"
-
-Add to ~/.bashrc:
+Options:
+1. Set CLASSPATH env var - remember to include current dir, since it won't be included by default anymore.
         CLASSPATH=.:/some/dir/
         export CLASSPATH
+2. Set class path using -cp option "java -cp .:/some/dir/:/another/dir Cat". Remember to include current dir '.'.
+   This is prefered over env var change.
+3. Put files in location which is always on classpath:
+        $JAVA_HOME/jre/lib/ext/
+        /Library/Java/Extensions/
 
-OR use -cp command:
-        java -cp .:/some/dir/:/another/dir Cat
-
--cp or -classpath option:
-Specifies  a  list  of directories, JAR archives, and ZIP archives to search for class files. Class path entries are
-separated by colons (:). Specifying -classpath or -cp overrides any setting of the CLASSPATH environment variable.
-If -classpath and -cp are not used and CLASSPATH is not set, the user class path consists of the current directory (.).
-
--cp option is prefered over env var change, because this way class path of different applications is set independently.
-Specifying classpath is needed for both compiling .java files and running .class files.
-
-How to correctly specify classpath depends on target file:
-- For .class files in unnamed package, class path should end with the directory that contains .class files.
-- For .class files in named package, class path should end with directory that contains the root package, which is the
-  first package in the full package name.
-- For .jar or .zip files that contain .class files, class path should end with name of the .zip or .jar file, or a
-  wildcard my_directory/* meaning all .jar and .zip files in that directory will be included (but not subdirectories).
+Correctly specifying cp:
+- Unnamed package - cp ends with dir containing .class files.
+- Named package - cp ends with dir containing root package (first package in the full package name).
+- JAR - cp ends with name of .jar file. Or cp ends with .../* to include all .jar files in that dir.
 
 //----------------------------------------------------------------------------------------------------------------------
     Package basics
  1. To create a package, put package statement with the package name as a first line of every source file you wish to
     be included in the package.
- 2. The package statement must be the first line in the source file.
- 3. There can be only one package statement in each source file and it applies to all types in the file.
- 4. If you put multiple types in a single source file, only one can be public, and it must have the same name as the
+ 2. Both .java files, the compiled .class files should be in a series of directories that reflect the package name.
+ 3. The package statement must be the first line in the source file.
+ 4. There can be only one package statement in each source file and it applies to all types in the file.
+ 5. If you put multiple types in a single source file, only one can be public, and it must have the same name as the
     source file.
- 5. A new package creates a new namespace, meaning two packages can have classes with same names without a conflict.
- 6. Like the .java files, the compiled .class files should be in a series of directories that reflect the package name.
+ 6. A new package creates a new namespace, meaning two packages can have classes with same names without a conflict.
  7. JVM constructs path to your .class files by adding package name to the class path. So if <path>/classes is your
     CLASSPATH, and your package is com.example.project, then JVM looks for .class files in <path>/classes/com/example/project.
  8. You can let types within a package have unrestricted access to each other, then restrict access for outside types.
@@ -102,10 +83,19 @@ If root directory of named package is added to classpath, we can run a class fro
 name of the class.
 
 Directory structure: animals/birds/Falcon.java
-First line: package animals.birds;
+First line in Falcon.java: package animals.birds;
 
 Invocation: java animals/birds/Falcon
         OR: java animals.birds.Falcon
+
+//----------------------------------------------------------------------------------------------------------------------
+    Compiling - javac
+1. Can compile all .java files in a dir using .../*.java syntax
+2. Can do "javac dir_1/*.java dir_2/.java"
+3. Can combine find command with javac:
+    find . -name *.java > sources.txt
+    javac @sources.txt
+4. Can use javac -d out/ src/*.java to save compiled .class files in a different dir
 
 //----------------------------------------------------------------------------------------------------------------------
 
