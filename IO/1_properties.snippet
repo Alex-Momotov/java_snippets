@@ -7,7 +7,7 @@ import java.util.Properties;
 import java.util.Set;
 
 static class Cat {
-    static final String PATH = "/Users/omomotov/Documents/my_projects/learning_java/resources/";
+    static final String PATH = "/Users/omomotov/Downloads/";
 
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -180,7 +180,7 @@ static class Cat {
 //  Load from file
     void loadFromFile() throws IOException {
         Properties prop = new Properties();
-        try (FileInputStream in = new FileInputStream(PATH + "appProperties")) {
+        try (FileInputStream in = new FileInputStream(PATH + "myProperties")) {
             prop.load(in);
         }
         prop.list(System.out);

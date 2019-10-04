@@ -1,0 +1,33 @@
+//----------------------------------------------------------------------------------------------------------------------
+    Basics
+Extension mechanism allows including packages to applications without specifying class path.
+Packages added via the mechanism are available to any java application running on that platform.
+This is similar to how we don't need to set class path for core java libraries.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Installed Extensions
+Installed extensions means jars that are put in specific directories that are searched for extensions.
+System property System.getProperty("java.ext.dirs") refers to the list of searched directories.
+
+For example:
+.../jdk/jre/lib/ext/                    Any java application run from that jre.
+~/Library/Java/Extensions/              Any java application run my the user.
+/Library/Java/Extensions/               Any java application run on the platform.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Downloaded Extensions
+Downloaded extensions are jar files specified under Class-Path in the manifest of some jar file.
+It's just a fancy name for them.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Extension Search Priority
+When trying to find a class by name, java searches the following places in this order.
+When a class is found, it stops searching down the list and uses that class.
+Hence, ensure class names in installed extensions dont hide those in class path.|
+    1. Bootstrap classes - the runtime classes in rt.jar, internationalization classes in i18n.jar and others.
+    2. Installed extensions
+    3. Class path
+
+//----------------------------------------------------------------------------------------------------------------------
+
+

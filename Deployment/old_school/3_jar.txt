@@ -1,0 +1,98 @@
+//----------------------------------------------------------------------------------------------------------------------
+    Basics
+JAR stands for Java ARchive. Jar file contains .class files and auxiliary resources. First compile, then jar .class files.
+You can not combine -cp and -jar in the same command. So must use other options.
+Jar files cannot be executed by setting class path (either -cp or env var), remaining options are:
+    1. put jars in directory searched by default
+    2. set Class-Path in manifest to space separated list of jars (directories or wildcards don't work).
+
+//----------------------------------------------------------------------------------------------------------------------
+    Commands
+The e, f, and m options must appear in the same order on the command line as the entrypoint, jarfile, and manifest.
+
+jar cf jar_name files           Create jar from space separated list of files or directories. Path to each file is
+                                packaged together with the file, use -C option to avoid this behaviour. Default manifest.
+                                    v - verbose
+                                    e - application entry point as fully qualified class name
+                                    m - manifest info from text file
+                                    -C layer/layer dir - exclude layers of dirs from being packaged
+                                Examples:
+                                    jar cfm jar_name manifest.txt files
+                                    jar cfe jar_name entry.point files
+                                    jar cfe jar_name entry.point files -C some_dir files
+
+jar tf  jar_name                List contents of jar
+jar xf  jar_name                Extract contents of jar
+jar uf  jar_name files          Add space separated list of files to existing jar file
+jar cf -J-option jar_name files Sets the specified JVM option to be used when the JRE runs the JAR file.
+                                For example, -J-Xms48m sets the startup memory to 48 MB.
+
+java -jar jar_name              Run java program from jar file. Manifest must contain 'Main-Class' header
+                                specifying fully qualified name of the main method.
+
+
+//----------------------------------------------------------------------------------------------------------------------
+    Manifest file
+Path to manifest file within jar is always META-INF/MANIFEST.MF where 'MANIFEST.MF' is manifest file name.
+Manifest's entries take the form of "header: value" pairs.
+
+    "Main-Class"
+1. Create .txt file with following: "Main-Class: animals.birds.Falcon"
+2. jar -cfm jar_name manifest.txt files
+
+    "Class-Path\"
+1. Create .txt file with following: "Class-Path: firstJar.jar secondJar.jar dir/thirdJar.jar".
+   Space separated list of jar files or named/unnammed packages. No need to include current dir '.'.
+   There is no way to specify multiple jars with * or directory, must list jars one by one.
+   However if too many jars, they won't fit into same line, workaround is to put each on new line, with leading 2 spaces.
+   E.g:
+   Main-Class: mytesting.Testing
+   Class-Path:
+     nexmo-java-5.1.0/annotations-13.0.jar
+     nexmo-java-5.1.0/client-5.1.0.jar
+     nexmo-java-5.1.0/commons-codec-1.11.jar
+     nexmo-java-5.1.0/commons-io-2.5.jar
+   This specifies external jar files that are not within the jar file being created.
+   Those external jars will be expected to be present when running the created jar file.
+2. jar -cfm manifest.txt app.jar files
+
+//----------------------------------------------------------------------------------------------------------------------
+    Package meta info
+Add this set of lines per each package, to manifest. 'Name' is the package name and must end with '/'.
+Those sets of info per package are separated by a blank line.
+
+Name: java/util/
+Specification-Title: Java Utility Classes
+Specification-Version: 1.2
+Specification-Vendor: Example Tech, Inc.
+Implementation-Title: java.util
+Implementation-Version: build57
+Implementation-Vendor: Example Tech, Inc.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Sealing packages in JARs
+Sealing package means a program can only import classes of the sealed package classes from this jar and not other jars.
+SecurityException is raised if a program tries to import two classes from the same package but from two different jars.
+
+Add this set of lines per each package to manifest. Those sets of info per package are separated by a blank line.
+    Name: com.company.package_name
+    Sealed: true
+
+To seal all packages in a jar add this line to the manifest:
+    Sealed: true
+
+//----------------------------------------------------------------------------------------------------------------------
+    Different ways to run
+From .jar
+1. Package your app in jar then run from jar if no dependencies
+2. Package your app in jar and specify path to dependency jars using Class-Path header in manifest.
+3. Pachage your app in jar and place dependency jars into ~/Library/Java/Extensions/
+4. Pachage your app in jar together with .class files extracted from dependency jars, then run your jar normally
+
+From .class
+1. Run app normally if no dependencies
+2. Specify path to jar dependencies or .class dependencies using -cp
+3. Specify path to jar dependencies or .class dependencies using CLASSPATH env var
+4. Place jar dependencies into ~/Library/Java/Extensions/ and run normally
+
+//----------------------------------------------------------------------------------------------------------------------

@@ -1,0 +1,19 @@
+//----------------------------------------------------------------------------------------------------------------------
+    Simple old school
+1. src/ contains .java source files in a package-directory hierarchy.
+   out/ contains .class compiled files in the same package-directory hierarchy.
+   lib/ contains .jar dependency files.
+2. Once finished coding:
+    a. copy contents of src/ to out/
+    b. compile everything in out/ using "find . -name *.java > sources.txt" and then "javac -cp .:/lib/*.jar @sources.txt"
+    c. recurvively delete left-over .java files from out/ using "find . -name *.java -exec rm -rf {} \;"
+3. Package contents of out/ into a jar.
+    a. create manifest with "Main-Class : entry.point.ClassName", and "Class-Path : lib/jar_1.jar lib/jar_2.jar ..."
+    b. create jar file with "jar cfm jar_name.jar manifest.txt -C out com"
+4. Ship your jar and your lib with dependency jars to a remote server
+5. Place lib where your application jar expects to find it according to Class-Path header.
+6. Launch your app from jar with "java -jar my_app.jar"
+
+//----------------------------------------------------------------------------------------------------------------------
+
+

@@ -10,6 +10,8 @@ JAVA_HOME - Many programs use the JAVA_HOME environment variable to determine th
 /Library/Java/JavaVirtualMachines/                                  - Where mac typically stores JDKs and JREs.
 /Library/Java/JavaVirtualMachines/jdk1.8.0_201.jdk/Contents/Home    - Example value of $JAVA_HOME on mac.
 
+//----------------------------------------------------------------------------------------------------------------------
+    Extension Mechanism
 $JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions (not recommended).
 /Library/Java/Extensions/       - add JAR files here for system wide extensions (prefered way).
 ~/Library/Java/Extensions/      - add JAR files here for user speicfic extensions (prefered way).
@@ -42,15 +44,14 @@ JAVA_HOME="path to jre"
 //----------------------------------------------------------------------------------------------------------------------
     CLASSPATH
 CLASSPATH means "class search path", is where JVM looks for .class files, JAR files, and named packages.
-The default value of class path is "." - current dir.
-Both 'java' and 'javac' need class path.
+Both 'java' and 'javac' need class path. The default value of class path is "." - current dir.
 
 Options:
 1. Set CLASSPATH env var - remember to include current dir, since it won't be included by default anymore.
         CLASSPATH=.:/some/dir/
         export CLASSPATH
 2. Set class path using -cp option "java -cp .:/some/dir/:/another/dir Cat". Remember to include current dir '.'.
-   This is prefered over env var change.
+   This is prefered over env var change. This also overrides value of CLASSPATH env var.
 3. Put files in location which is always on classpath:
         $JAVA_HOME/jre/lib/ext/
         /Library/Java/Extensions/
@@ -64,7 +65,7 @@ Correctly specifying cp:
     Package basics
  1. To create a package, put package statement with the package name as a first line of every source file you wish to
     be included in the package.
- 2. Both .java files, the compiled .class files should be in a series of directories that reflect the package name.
+ 2. Both .java files and the compiled .class files should be in a series of directories that reflect the package name.
  3. The package statement must be the first line in the source file.
  4. There can be only one package statement in each source file and it applies to all types in the file.
  5. If you put multiple types in a single source file, only one can be public, and it must have the same name as the
