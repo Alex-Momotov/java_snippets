@@ -1,0 +1,130 @@
+//----------------------------------------------------------------------------------------------------------------------
+    Basics
+When creating new project, no need to create empty dir beforehand.
+You can safely delete out/ directory, it will be recreated on build or rebuild.
+Artifact is a jar built from your project.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Creating Project
+Use 'Create new project' to create a new project from scratch.
+Use 'Import project' or 'Project From Existing Sources...' to create a project from pre-existing codebase.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Run
+Clicking green arrow 'Run' does three things:
+    1. Creates temporary run configuration.
+    2. Compiles code with 'javac' and places it into 'out/' directory.
+    3. Runs the bytecode.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Build
+If "Clear output directory on rebuild" is enabled, the entire directories under out/monule_name/... will be deleted
+when doing 'Rebuild' but not when doing 'Build'.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Packaging Applications in JAR
+
+    Create JAR Config
+Project Structure -> Artifacts -> '+' -> 'JAR' -> 'From modules with dependencies...'
+Select main class under 'Main Class' (if your app has one) -> 'OK'
+    - 'extract to the target JAR' does ...
+    - 'copy to the output directory and link via manifest' does ...
+Config menu opens -> further customise jar structure if necessary.
+
+    Build JAR
+Build -> Build Artifacts -> select jar config -> jar can now be found under out/artifacts/
+OR simply 'build project' if include in project build' was selected.
+
+    Run From JAR
+'Edit Configurations...' -> '+' -> 'JAR Application' -> specify 'Path to JAR'.
+Optionally, under 'Before launch' -> '+' -> 'Build Artifacts' -> select the jar (Will build the jar before running).
+Select and run the new configuration.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Modules
+.iml file is a module file, it is created for each module in the project.
+A module consists of a module root dir (aka content root) and a module file (.iml).
+A module contains subdirectories for source code, unit tests, resource files, and so on.
+Grouping modules together makes it easier to navigate a large project.
+
+    Creating Module:
+To create a new module, right click on top-level module -> 'New...' -> 'Module' -> Select module type
+    Grouping/Ungrouping Modules:
+Project Structure -> Modules -> Select multiple modules and right click -> 'Change Module Names...' -> type common prefix
+Project Structure -> Modules -> Select multiple modules and right click -> 'Change Module Names...' -> remove any prefix
+
+You can configure directory categories for each module from: Project Structure -> Modules -> Sources.
+You can also do that by: Right click dir on project menu -> 'Mark directory as...'
+To exclude files by a name pattern, e.g. '*.class', from a dir: Project Structure -> Modules -> Sources -> Exclude files.
+Use Project Structure -> Modules -> Sources -> <pen symbol next to resource dir> To set path where resource dir is copied.
+
+    Directory Types:
+Sources         Those will be compiled.
+Tests           Source code for tests.
+Resources       Copied to out/ as is.
+Excluded        Ignored for code completion, navigation and inspection. Compiled out/ directory is normally excluded.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Module Dependencies
+Module dependencies can be SDKs, JAR files (libraries) and other modules.
+List of dependencies for a module are used to create class path for running or compiling that module.
+
+    Add dependency
+Project Structure -> Modules -> Dependencies tab -> '+' -> select of of below:
+    - 'JARs or directories'     JAR file or dir with bytecode on your computer.
+    - 'Library'                 Existing library or create new library.
+    - 'Module Dependency'       Another module in the project.
+
+    Remove dependency
+Project Structure -> Modules -> Dependencies tab -> Right click a dependency -> Find usages ->
+-> (ensure no other module uses that dependency) -> Right click again -> Remove
+
+    Dependency scope
+Compile:    required to build, test, and run a project (the default scope).
+Test:       required to compile and run unit tests.
+Runtime:    part of the classpath to test and run a project.
+Provided:   used for building and testing a project.
+
+    Analysing dependency
+To check whether a dependency still exists, you can run a dependency analysis:
+Project Structure -> Modules -> Dependencies tab -> Right click a dependency -> 'Analyse This Dependency'
+
+    Sorting dependencies
+Dependency order determines order of classes that are put on the classpath. To change dependency order:
+Project Structure -> Modules -> Dependencies tab -> Select a dependency -> (use arrow icons to move up or down)
+
+//----------------------------------------------------------------------------------------------------------------------
+    Facets
+Facets are framework specific addons such as Spring, Kotlin, Groovy, which can be registered with a module.
+
+    Add Facet To A Module
+Project Structure -> Modules -> right click a module -> Add -> (select a framework)
+OR Project Structure -> Facets -> '+' -> (select a module)
+
+//----------------------------------------------------------------------------------------------------------------------
+    Log files
+Run/Debug Configurations -> Logs tab -> '+' -> (specify location of log file)
+'Is Active' checkbox - toggles whether those logs are used for next configuration run.
+'Skip Content' checkbox - will skip previous content of a selected log file.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Debugging
+Breakpoint settings - (Shift + Command + F8)
+Suspend code execution when field is accessed for read or write - (click getter next to field)
+Evaluate expression without suspending code - (Shift + click gutter) - as a substitute to printing out things
+Temporary breakpoint (dissapears once hit) - (Option + click gutter)
+Disable breakpoint without removing it - (Option + click gutter)
+
+//----------------------------------------------------------------------------------------------------------------------
+    Testing
+JUnit is included with intelliJ by default at:
+<IntelliJ IDEA directory>/lib/hamcrest-core-1.3.jar
+<IntelliJ IDEA directory>/lib/junit-4.12.jar
+
+Add a test to class - (place cursor on class name -> bring up intentions menu (Command + 1)) -> 'Create Test'
+
+
+
+
+
+
