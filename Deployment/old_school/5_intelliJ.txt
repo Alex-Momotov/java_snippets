@@ -2,7 +2,8 @@
     Basics
 When creating new project, no need to create empty dir beforehand.
 You can safely delete out/ directory, it will be recreated on build or rebuild.
-Artifact is a jar built from your project.
+Artifact is a jar built from your project, or used by your project as a jar dependency.
+IntelliJ IDEA can load libraries from Maven even if you don't use Maven as a build tool for your project.
 
 //----------------------------------------------------------------------------------------------------------------------
     Creating Project
@@ -22,7 +23,19 @@ If "Clear output directory on rebuild" is enabled, the entire directories under 
 when doing 'Rebuild' but not when doing 'Build'.
 
 //----------------------------------------------------------------------------------------------------------------------
-    Packaging Applications in JAR
+    Artifact Naming
+Artifact is a packaged code which are usually JAR file.
+Example of artifact name 'com.nexmo:client:5.1.0'.
+
+Artifact name structure - Group_ID:Artifact_ID:Version
+Combination of group id, artifact id, and version uniquly identify an artifact.
+
+    Group_ID        Usually a reversed domain name      e.g. 'com.nexmo'
+    Artifact_ID     Just a name                         e.g. 'client'
+    Version         Version strung                      e.g. '5.1.0'
+
+//----------------------------------------------------------------------------------------------------------------------
+    Artifacts
 
     Create JAR Config
 Project Structure -> Artifacts -> '+' -> 'JAR' -> 'From modules with dependencies...'
@@ -101,6 +114,65 @@ Facets are framework specific addons such as Spring, Kotlin, Groovy, which can b
 Project Structure -> Modules -> right click a module -> Add -> (select a framework)
 OR Project Structure -> Facets -> '+' -> (select a module)
 
+//----------------------------------------------------------------------------------------------------------------------
+    SDKs
+Supported SDKs are JDK, Android SDK, Google App Engine SDK, Flex SDK, Air SDK, IntelliJ Platform Plugin SDK.
+To define a global SDK means to tell IntelliJ where installation is. Once defined, the SDK can be used by many modules.
+
+    Register Global SDK
+Project Structure -> SDKs -> '+'.
+
+    Change Project SDK
+Project Structure -> Project -> Project SDK
+
+    Change Module SDK
+Project Structure -> Modules -> Dependencies -> Module SDK
+
+//----------------------------------------------------------------------------------------------------------------------
+    Libraries
+A library can be: .class files, directory with .class files, or JAR file.
+Libraries can be defined at three levels:
+    1. global       available for many projects
+    2. project      available for all modules within a project
+    3. module       available for one module
+
+    Add Global Library
+Project Structure -> Global Libraries -> '+'
+    Add Project Library
+Project Structure -> Libraries -> '+'
+    Add Module Library
+Project Structure -> Modules -> Dependencies -> '+' -> 'Library...'
+
+Global and project libraries are not available to modules until you add them as module dependencies.
+Project Structure -> Modules -> Dependencies -> '+' -> 'Library...' -> (select project or global library)
+
+    Ways To Add Library
+When adding a library, you have a choice:
+ - 'Java' means you select JAR or class files from your computer
+ - 'From Maven...' means you download a library from Maven repository
+
+    Download From Maven
+In the window that opens, you can specify exact artifact name e.g. 'com.nexmo:client:5.1.0' OR enter a keyword and search.
+If you tick the 'Download to...' option, the library jars will be downloaded where you specify.
+Otherwise the libraries will be saved in your local maven repository which is at '~/.m2/repository/'.
+If you tick 'Transitive dependencies', all dependencies of the library will be downloaded too.
+
+    Customise Inclusion Of Transitive Dependencies
+Project Structure -> Libraries -> Edit -> Configure -> (select the dependencies you want to include in the library)
+
+    Add Remote Repository
+Preferences -> Remote Jar Repositories -> Add
+
+    Move Library To Different Level
+Right click a library -> 'Move to Project libraries'
+Right click a library -> 'Move to Global libraries'
+Right click a library -> 'Copy to Module libraries' (will be copied to .../module_name/lib/)
+
+//----------------------------------------------------------------------------------------------------------------------
+    Running Configuration
+VM options - optional JVM arguments, for example the heap size, garbage collection options, file encoding, etc.
+Program arguments - optional list of parameters that should be passed to the main() method.
+\
 //----------------------------------------------------------------------------------------------------------------------
     Log files
 Run/Debug Configurations -> Logs tab -> '+' -> (specify location of log file)
