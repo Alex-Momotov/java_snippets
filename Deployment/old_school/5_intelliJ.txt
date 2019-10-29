@@ -262,7 +262,13 @@ To automatically generate test method/set up/tear down - press Command + G (Gene
 Write your tests describing what you want to achieve on classes which don't exist yet(TDD), then press Command + 1 on
 any and select "Create class/method". This will create a minimum implementation to keep the compiler happy.
 //----------------------------------------------------------------------------------------------------------------------
+    Tools
 
+    Idea Diff
+You can use IntelliJ's diff view on two arbitrary files outside your project, using commnad line tool. First, IntelliJ will open.
+"idea diff file_1 file_2"
+
+//----------------------------------------------------------------------------------------------------------------------
 
 
 
