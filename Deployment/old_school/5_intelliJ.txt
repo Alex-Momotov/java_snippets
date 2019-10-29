@@ -18,6 +18,12 @@ Clicking green arrow 'Run' does three things:
     3. Runs the bytecode.
 
 //----------------------------------------------------------------------------------------------------------------------
+    'Out/' Directory
+Sources:    <ProjectFolder>/out/production/<ModuleName>/<PackageName>/
+Tests:      <ProjectFolder>/out/test/<ModuleName>/<PackageName>/
+Artifacts:  <ProjectFolder>/out/artifacts/<ArtifactName>/
+
+//----------------------------------------------------------------------------------------------------------------------
     Build
 
     Build Process Steps
