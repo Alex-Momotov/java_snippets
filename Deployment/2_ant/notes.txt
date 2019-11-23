@@ -1,0 +1,62 @@
+------------------------------------------------------------------------------------------------------------------------
+    Basics
+Ant uses build.xml file. An Ant build script can include or execute other Ant build scripts.
+Thus you can split your Ant project into multiple Ant build scripts.
+A relative path is resolved relative to the directory containing the build file.
+
+Ant defines targets, just like make.
+A target is a set of tasks you want to be executed.
+A task can have multiple attributes (or arguments, if you prefer). The value of an attribute might contain references to a property.
+
+Tasks can be assigned an id attribute, which must be unique <taskname id="taskID" ... />
+You can refer to the corresponding task object in scripts or other tasks via this taskID.
+
+------------------------------------------------------------------------------------------------------------------------
+	Example 1
+Example 1 shows simplest ant build file with following targets:
+- clean			deletes build directory
+- compile 		creates build/classes directories
+  				compiles everything in src/ directory into build/classes keeping directory structure the same
+- jar 			creates build/jar directory
+				creates jar at build/jar/HelloWorld.jar and puts everything in build/classes in it.
+				sets Main-Class attribute of the manifest to com.company.product.HelloWorld
+- run			runs the jar file at build/jar/HelloWorld.jar
+
+To run respective targets in build.xml, simply type: 'ant compile', 'ant jar', 'ant run'
+You can run all three with one command: 'ant compile jar run'
+
+------------------------------------------------------------------------------------------------------------------------
+	Example 2
+'ant' with no argumetns executes default target.
+We can specify the default target within the project tag like so: <project default="main">
+Hence, when we type 'ant', then "main" target gets executed, which depends on clean and run targets.
+
+	Properties
+Use properties to avoid hard coding names and values. Examples:
+<property name="src.dir"     value="src"/>
+<property name="build.dir"   value="build"/>
+<property name="classes.dir" value="${build.dir}/classes"/>
+<property name="jar.dir"     value="${build.dir}/jar"/>
+
+Just like in make, ${property_name} returns value of the property.
+${ant.project.name} evaluates to whatever we set in <project name="XXX">
+
+	'depends' keyword
+If a target lists other targets in it's 'depends' attribute, they will get executed before this target.
+The clean-build target depends on clean and jar, jar depends on compile. So when we run the task, first the build dir is
+deleted, then code is compiled to build/classes/ then contents of build/classes/ are jared into build/classes/jar/HelloWorld.jar
+
+	Copying resources
+The following lines within the compile target copy resources (all files except .java) to build/classes/
+<copy todir="${classes.dir}">
+	<fileset dir="${src.dir}" excludes="**/*.java"/>
+</copy>
+
+------------------------------------------------------------------------------------------------------------------------
+    Ivy
+Ivy dependencies are declared in ivy.xml
+Then a resolve target is added to build.xml, which when run - will download jars to local ivy cache
+On mac, local ivy cache is located at ~/.ivy2/
+
+------------------------------------------------------------------------------------------------------------------------
+

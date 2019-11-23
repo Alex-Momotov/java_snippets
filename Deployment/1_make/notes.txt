@@ -1,0 +1,61 @@
+------------------------------------------------------------------------------
+	Basics
+Make is an automated tool that determines what files need to be recompiled based on timestamps and the dependencies
+between files. Even in 2018 some companies use make for everything. For automating every project's weird "do A, then
+do B, then do C, and if you're on osx do D" it feels lot better then a bunch of a free shell scripts.
+
+File must be named 'Makefile' or 'makefile'.
+You must use tabs instead of spaces, else error.
+
+------------------------------------------------------------------------------
+	Commands
+
+'make'
+Executes makefile in current directory.
+
+'make <target>'
+Executes a given target from makefile.
+
+By default, 'make' only executes the first target in the makefile.
+That's why often first target is called 'all' and it calles all other targets in it's dependencies.
+To override this behaviour, we can set ".DEFAULT_GOAL := <target_name>" in the beginning of makefile.
+
+Phony targets are targets that do not represent files, instead they simply perform some action, like echo or cleaning up.
+Clean targets should not be included in 'all', but rather called manually via 'make clean'.
+
+------------------------------------------------------------------------------
+	Variables
+
+	Recursive variables:
+myvar = javac		# setting variable
+myvar = ${myvar}	# setting variable as another variable (recursively)
+${myvar}			# using var in a recepie, $(myvar) also works
+
+	Simple variables:
+myvar := javac		# setting variable
+myvar := ${myvar}	# setting variable as another variable (recursively)
+${myvar}			# using var in a recepie, $(myvar) also works
+
+------------------------------------------------------------------------------
+	Syntax of a Rule
+
+Makefile consists of functions, known as rules. Syntax is shown below.
+The target, prerequisites, and recipes together make a rule.
+
+target: prerequisites
+<TAB> recipe
+
+Target 			- might be a binary file that depends on prerequisites (usually source files).
+Prerequisites 	- aka dependencies, those can be source files or other targets with it's own prerequisites.
+Recipe 			- command that uses prerequisites to make a target.
+
+------------------------------------------------------------------------------
+	@ symbol
+Putting @ before recipe will suppress printing out recipe line before execution.
+
+say_hello:
+	@echo "hello world"
+
+------------------------------------------------------------------------------
+
+
