@@ -1,0 +1,51 @@
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
+import java.util.Base64;
+class Cat {{
+
+    // Theory
+    // Often we cannot stream binary data over the internet, instead we encode it as base64 string and send that.
+    // There are url safe variants, meaning the encoded base64 string doesn't have special url characters like '=', '&'
+
+    // String to bytes UTF-8
+    byte[] message = "some text".getBytes(StandardCharsets.UTF_8);
+
+    // Bytes to string UTF-8
+    String text = new String(message, StandardCharsets.UTF_8);
+
+    // Any byte data encoded as Base64 string
+    String encoded = Base64.getEncoder().encodeToString(message);   // as string
+    byte[] encodedStrBytes = Base64.getEncoder().encode(message);   // bytes of encoded string
+
+    // Base64 string decoded back to byte data
+    byte[] decodedFromString = Base64.getDecoder().decode(encoded);
+    byte[] decodedFromBytes = Base64.getDecoder().decode(encodedStrBytes);
+
+    System.out.println(new String(decodedFromString, StandardCharsets.UTF_8));
+    System.out.println(new String(decodedFromBytes, StandardCharsets.UTF_8));
+
+    // Byte data to Base64 string (url-safe)
+    String urlSafeBase64encoded = Base64.getUrlEncoder().withoutPadding().encodeToString(message);
+    byte[] urlSafeBase64encoded2 = Base64.getUrlEncoder().withoutPadding().encode(message);
+
+//----------------------------------------------------------------------------------------------------------------------
+//  Temp
+    KeyGenerator keyGen = KeyGenerator.getInstance("AES");
+    keyGen.init(256); // for example
+    SecretKey secretKey = keyGen.generateKey();
+
+    byte[] key = secretKey.getEncoded();
+    String encodedKey = Base64.getEncoder().encodeToString(key);
+
+    byte[] decodedKey = Base64.getDecoder().decode(encodedKey);
+    SecretKey secretKey2 = new SecretKeySpec(decodedKey, "AES");
+
+    Arrays.equals(secretKey.getEncoded(), secretKey2.getEncoded());
+
+//----------------------------------------------------------------------------------------------------------------------
+
+}}

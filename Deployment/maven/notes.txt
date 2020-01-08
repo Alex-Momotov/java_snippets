@@ -1,15 +1,33 @@
+//----------------------------------------------------------------------------------------------------------------------
+    General Info
 Maven is a plugin driven build tool.
 Dependency management out of the box.
 Large repository of libraries.
 Maven is extensible, plugins can be written in Java.
 
+//----------------------------------------------------------------------------------------------------------------------
+    New Project
+Archetype - template for a project.
+
+Create simplest project with this archetype
+mvn archetype:generate -DgroupId=com.mycompany \
+-DartifactId=myartifact  \
+-DarchetypeArtifactId=maven-archetype-quickstart \
+-DinteractiveMode=false
 
 //----------------------------------------------------------------------------------------------------------------------
     Commands
-mvn --version               Maven version
-mvn help:effective-pom      Print effective pom
-mvn <PLUGIN>:help           Print all goals in a plugin
-mvn <PLUGIN>:<GOAL>         Runs specific goal without executing entire phase and preceding phases
+mvn <PHASE>             Executes given phase and all phases before it (in same lifecycle)
+mvn <PLUGIN>:<GOAL>     Runs specific goal without executing entire phase and preceding phases
+
+mvn compile             Compiles source code but not tests
+mvn test                Compiles and runs unit tests
+mvn test-compile        Compiles but does not execute unit tests
+mvn package             Creates a JAR/WAR/etc file
+mvn install             Install created JAR into local mvn repo
+
+mvn dependency:tree     Print dependency tree
+mvn enforcer:enforce    Show conflicting dependency versions in the dependency tree
 
 //----------------------------------------------------------------------------------------------------------------------
     Convention Over Configuration
@@ -100,11 +118,381 @@ Company's custom repository containing libraries and projects developed at the c
 Local Repo -> Central Repo -> (if specified) Remote Repo
 If a dependency is not found in none of those, Maven throws an error.
 
+There are exactly 2 types of repositories: local and remote (central is remote too). Remote repos can be for public or
+for company's internal use.
+
+Downloading to local repo from central is triggered by specifying project dependency that is not in local repo.
+
+To add a remote repository to your build, add the following:
+  <repositories>
+    <repository>
+      <id>my-internal-site</id>
+      <url>http://myserver/repo</url>
+    </repository>
+  </repositories>
+Where, if your repo requires credentials, those can be specified in settings file using the id reference.
+
 //----------------------------------------------------------------------------------------------------------------------
     Plugins
 Maven is just core framework for a collection of plugins which execute actual tasks.
 Plugins is where the real action is performed - compiling code, creating jars, testing.
 Almost any action you can think of, performed on the project is implemented as Maven plugin.
+
+Plugin is a collection of one or more goals with a general common purpose.
 Plugins are a central feature of Maven which allow for reuse of common build logic across projects.
 Plugins define parameters which can be used to customise plugin behaviour - e.g. for clean plugin it's the path to dir to be cleaned.
+
+You can implement your own plugin in Java, by creating Mojo (Maven Old Java Object) that implements certain interfaces.
+Your custom plugin would be like a standalone Maven project with pom.xml.
+Once done you would 'install' that plugin (move it to local Maven repo) and optionally move it to remote/central repos.
+
+Adding a plugin:
+<build>
+  <plugins>
+    <plugin>
+      <groupId>org.apache.maven.plugins</groupId>
+      <artifactId>maven-compiler-plugin</artifactId>
+      <version>3.3</version>
+      <configuration>
+        <source>1.5</source>
+        <target>1.5</target>
+      </configuration>
+    </plugin>
+  </plugins>
+</build>
+
+Some plugins dont map to a particular phase by default. You can specify which phase a plugin's goal is run in with the
+<executions> element inside <phase> element like so:
+ <plugin>
+   <groupId>com.mycompany.example</groupId>
+   <artifactId>display-maven-plugin</artifactId>
+   <version>1.0</version>
+   <executions>
+     <execution>
+       <phase>process-test-resources</phase>
+       <goals>
+         <goal>time</goal>
+       </goals>
+     </execution>
+   </executions>
+ </plugin>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Adding goals to life cycle phases
+To add a goal to a phase in some life cycle, specify goal element in the plugin. Also, if the plugin does not have a
+default phase to bind to, you must also specify the phase element in the plugin. All this is within te executions element.
+See example below.
+
+<plugin>
+   <groupId>com.vogella.example</groupId>
+   <artifactId>vogella-some-maven-plugin</artifactId>
+   <version>1.0</version>
+   <executions>
+     <execution>
+       <phase>verify</phase>
+       <goals>
+         <goal>checklinks</goal>
+       </goals>
+     </execution>
+   </executions>
+ </plugin>
+//----------------------------------------------------------------------------------------------------------------------
+    Standard Directory Layout
+
+This standard layout is specified in super POM.
+
+app/
+  ├── src/
+  │   ├── main/
+  │   │   ├── java/          source code
+  │   │   └── resources/
+  │   └── test/
+  │       ├── java/          source code for tests
+  │       └── resources/
+  └── target/
+       └── classes/          .class files for source code
+       └── test-classes/     .class files for tests
+       └── app-1.0.jar       JAR file
+
+//----------------------------------------------------------------------------------------------------------------------
+    Multi Module Project - Inheritance
+Inheritance means subproject's pom inherits configurations from it's parent project's pom. Use it when you have several
+projects and you want to extract their common configuration into parent pom.
+
+1. Each submodule's pom lists the parent:
+    <project>
+      <parent>
+        <groupId>com.mycompany.app</groupId>
+        <artifactId>my-app</artifactId>
+        <version>1</version>
+      </parent>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-module</artifactId>
+      <version>1</version>
+    </project>
+2. If parent project is not strictly one dir above, or not installed in local repo, specify relative path to parent proj:
+    <project>
+      <parent>
+        <groupId>com.mycompany.app</groupId>
+        <artifactId>my-app</artifactId>
+        <version>1</version>
+        <relativePath>../parent/pom.xml</relativePath>
+      </parent>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-module</artifactId>
+      <version>1</version>
+    </project>
+3. If you wish subproject to inherit groupId and version, omit this info in subproject's pom, but still include artifactId:
+    <project>
+      <parent>
+        <groupId>com.mycompany.app</groupId>
+        <artifactId>my-app</artifactId>
+        <version>1</version>
+      </parent>
+      <modelVersion>4.0.0</modelVersion>
+      <artifactId>my-module</artifactId>
+    </project>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Multi Module Project - Aggretation
+Project aggregation means if a maven command is called on parent project, the command will be executed on the subprojects
+(parent's modules) too. Instead of subprojects specifying its parent, the parent specifies it's modules:
+
+1. Parent project declares packaging as 'pom'
+2. Parent project lists submodules
+    <project>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-app</artifactId>
+      <version>1</version>
+      <packaging>pom</packaging>
+
+      <modules>
+        <module>my-module</module>
+      </modules>
+    </project>
+3. If subproject dir is not strictly one dir level inside parent dir, we must specify relative path as part of module name:
+    <project>
+      <modelVersion>4.0.0</modelVersion>
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-app</artifactId>
+      <version>1</version>
+      <packaging>pom</packaging>
+
+      <modules>
+        <module>../my-module</module>       // relative path
+      </modules>
+    </project>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Multi Module Project - Inheritance and Aggretation
+We can have both project inheritance and project aggregation together. That is, subprojects inherit parent project's
+pom config and calling maven commands on parent project executes them for subprojects too. To achieve this we simply
+combine the steps for inheritance and aggregation:
+
+1. Parent project declares packaging as 'pom'
+2. Parent pom lists its modules (with relative path, if needed)
+3. Subprojects list their parent (with relative path, if needed)
+
+Submodules can list each other as dependencies, which will cause Maven to build them in the correct order. The typical
+scenario is when a web app depends on core app.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Variables
+Any field in pom or super pom that is a single value element can be referenced as a variable.
+For example, value of <groupId> can be accessed as ${project.groupId} and value of <version> as ${project.version}.
+An example of accessing an element from super pom is ${project.build.sourceDirectory}.
+
+    Special variables:
+${project.basedir}	            The directory that the current project resides in.
+${project.baseUri}	            The directory that the current project resides in, represented as an URI.
+
+    Properties:
+You are also able to reference any properties defined in the project as a variable. For example:
+    <project>
+      ...
+      <properties>
+        <mavenVersion>3.0</mavenVersion>
+      </properties>
+      <dependencies>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-artifact</artifactId>
+          <version>${mavenVersion}</version>
+        </dependency>
+        <dependency>
+          <groupId>org.apache.maven</groupId>
+          <artifactId>maven-core</artifactId>
+          <version>${mavenVersion}</version>
+        </dependency>
+      </dependencies>
+      ...
+    </project>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Snapshot Version
+Snapshot version means a version that is not yet released, but is currently under development. For example, a development
+version 1.0-SNAPSHOT is released as version 1.0, and the new development version becomes 1.1-SNAPSHOT. You can tell Maven
+that your project is a snapshot version simply by appending -SNAPSHOT to the version number in the beginning of the POM.
+For example:
+
+<version>1.0-SNAPSHOT</version>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Dependencies
+To include a dependency:
+  <dependencies>
+    ...
+    <dependency>
+      <groupId>com.mycompany.app</groupId>
+      <artifactId>my-app</artifactId>
+      <version>1.0-SNAPSHOT</version>
+      <scope>compile</scope>
+    </dependency>
+    ...
+  </dependencies>
+
+Scope of dependency can be 'compile', 'test', 'runtime'.
+Maven includes transitive dependencies automatically, thereby saving you the work of discovering and specifying them.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Transitive Dependencies
+If your project depends on a dependency, say Dependency ABC, and Dependency ABC itself depends on another dependency,
+say Dependency XYZ, then your project has a transitive dependency on Dependency XYZ.
+
+//----------------------------------------------------------------------------------------------------------------------
+    External Dependencies
+The name external dependencies doesn't mean external to the project, since all dependencies are external to the project,
+instead it means external to the Maven's repository system. That is, external dependencies are those that cannot be found
+in local, central or repote repos - instead they are found on local computer in a form of a jar. Example of external
+dependency, is below. Scope element is set to 'system' and systemPath element points to the location of the jar on local
+machine.
+
+<dependency>
+  <groupId>mydependency</groupId>
+  <artifactId>mydependency</artifactId>
+  <scope>system</scope>
+  <version>1.0</version>
+  <systemPath>${basedir}\war\WEB-INF\lib\mydependency.jar</systemPath>
+</dependency>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Snapshot Dependencies
+Appending '-SNAPSHOT' to the dependency version tells Maven that this will be a snapshot version of the dependency.
+For example:
+
+<dependency>
+    <groupId>com.jenkov</groupId>
+    <artifactId>java-web-crawler</artifactId>
+    <version>1.0-SNAPSHOT</version>
+</dependency>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Optional dependencies
+Say project A depends on projects B, C, D, E. Your own project X depends on A. Normally when you
+declare A as a dependency in your pom, B, C, D, E also become your project's dependencies (transitive dependencies), so
+you'd have to download their JARs to compile X. But if A declares B, C, D, E as 'optional' dependencies, they are not
+automatically downloaded when you put A as dependency of your project. Say B, C, D, E correspond to 4 different
+functionalities that A offers, but you are unlikely to use all 4 of them in X. Therefore to use those optional dependencies
+you must directly specify them as dependencies in X. Example is Hibernate (A) that supports different databases like
+MySQL, PostgreSQL, and so on (B, C, D, E) and where you're unlikely to need all of them in your project (X). Therefore,
+if you're using MySQL you'd need to directly declare MySQL as dependency in the pom of your project X, alongside Hibernate.
+How to mark dependency as optional:
+    <dependency>
+      <groupId>sample.ProjectA</groupId>
+      <artifactId>Project-A</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+      <optional>true</optional>
+    </dependency>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Transitive dependencies
+Since Maven resolves dependencies transitively, it is possible for unwanted dependencies to be
+included in your project's classpath. Maven allows you to exclude those specific dependencies. Exclusions are set on a
+specific dependency (groupId, artifactId) in your POM. When you build your project, the excluded transitive dependency
+will not be added to your projects calsspath via the dependency in which the exclusion was declared. That is, the excluded
+transitive dependency may still slip through via some other dependency. To exclude transitive dependency, add an
+<exclusions> element in the <dependency> as follows:
+    <dependency>
+      <groupId>sample.ProjectA</groupId>
+      <artifactId>Project-A</artifactId>
+      <version>1.0</version>
+      <scope>compile</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>sample.ProjectB</groupId>
+          <artifactId>Project-B</artifactId>
+        </exclusion>
+      </exclusions>
+    </dependency>
+If your project X depends on project A that comes with transitive dependency B, and B depends on E. You can exclude E
+in the same exact way, by specifying it in the exclusions list of dependency A in the pom of your X project.
+
+//----------------------------------------------------------------------------------------------------------------------
+    More On Dependencies
+You can include a dependency directly in your project even if your project doesn't directly use it, to override the
+version of transitive dependency.
+
+Since maven includes transitive dependencies automatically, the dependency tree can grow very large very quickly. It can
+occur that the tree includes different versions of same transitive dependency. E.g. A -> B -> C -> D 2.0 and
+A -> E -> D 1.0. In this case maven chooses dependency version of the dependency that is closes to current project.
+Since path A -> E -> D 1.0 is shorter than A -> B -> C -> D 2.0, maven will choose to include 1.0 version of D. You could
+explicitly add D 2.0 as direct dependency in A to force the use of D 2.0.
+
+If your project X directly uses some library Z, and Z is alredy added as transitive dependency of some other dependency Y,
+(X -> Y -> Z) it is a good practice to declare Z as direct dependency of X. We must not rely on the fact that Y will keep
+Z as dependency. Y may suddenly update/remove its dependency on Z which will cause your build to fail.
+
+//----------------------------------------------------------------------------------------------------------------------
+    Dependency Management - <dependencyManagement>
+<dependencyManagement> section is used in a parent pom (inheritance) to specify some information about dependencies of
+its children poms. If parent project uses dependencyManagement to define a dependency on junit:junit:4.12 with scope
+'test' and some excluded libraries, then POMs inheriting from it should only set dependency on groupId=junit and
+artifactId=junit while version, scope, and excluded libs will be taken as specified in parent. This has two benefits:
+first - dependency info can be set in one central location and propagated to all inheriting poms; second - dependency
+blocks of children poms are shorter.
+
+Potential problem - version and scope of artifacts which imported from transitive dependencies are also controlled by
+info in <dependencyManagement> section. Say your project A -> C and A -> B -> C. Where B requires a particular minimum
+version of C to function. If version of C used by your project is lower, B will be forced to use that version of C and
+will fail. Check the dependency tree with "mvn dependency:tree"
+
+//----------------------------------------------------------------------------------------------------------------------
+    Minimal POM
+
+Min required info in a pom is model version, groupId, artifactId, and version.
+
+<project>
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.mycompany.app</groupId>
+  <artifactId>my-app</artifactId>
+  <version>1</version>
+</project>
+
+//----------------------------------------------------------------------------------------------------------------------
+    Dependency Problems and Solutions
+
+Problem 1 - Version and scope of artifacts which imported from transitive dependencies are also controlled by
+info in <dependencyManagement> section. Say your project A -> C and A -> B -> C. Where B requires a particular minimum
+version of C to function. If version of C used by your project is lower, B will be forced to use that version of C and
+will fail. Check the dependency tree with "mvn dependency:tree".
+
+Problem 2 - Conflicting dependency. In other words in two places in dependency tree there exists same dependency with
+different versions. To find this problem do "mvn enforcer:enforce" with plugin config as below. Assuming the conflicting
+dependency is backward compatible, you can declare latest version of this lib as direct dependency of your project.
+<plugin>
+    <groupId>org.apache.maven.plugins</groupId>
+    <artifactId>maven-enforcer-plugin</artifactId>
+    <version>1.4.1</version>
+    <configuration>
+        <rules><dependencyConvergence/></rules>
+    </configuration>
+</plugin>
+
+
+//----------------------------------------------------------------------------------------------------------------------
+
 
