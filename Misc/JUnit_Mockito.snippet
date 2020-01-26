@@ -16,11 +16,11 @@ class Cat {
 class CatTest {
 
     // Method annotated with @Test can be executed as a test method
-    @BasicIO
+    @Test
     public void test1() {assertEquals(1, 1);}
 
     // @Test with annotation parameter 'expected' is used to check that the test is throwing specified exception
-    @BasicIO(expected=IllegalArgumentException.class)
+    @Test(expected=IllegalArgumentException.class)
     public void test13() {}
 
     // Runs before each test method

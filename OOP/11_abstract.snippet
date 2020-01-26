@@ -21,11 +21,11 @@ abstract class Example3 {
 //**********************************************************************************************************************
 // Abstract classes cannot be instantiated, but they can be subclassed.
 abstract class Example4 {}
-Example3 exa = new Example3();  // error
+Example4 exa = new Example4();  // error
 
 //**********************************************************************************************************************
 // If a class includes abstract methods, then the class itself must be declared abstract.
-class Example4 {
+class Example5 {
     abstract void method();     // error
 }
 

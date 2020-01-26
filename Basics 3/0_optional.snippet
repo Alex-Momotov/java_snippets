@@ -1,0 +1,106 @@
+
+import java.util.Optional;
+
+class Fox {
+    Optional<String> name;
+
+    public Fox(String name) {
+        this.name = Optional.ofNullable(name);
+    }
+
+    public Optional<String> getName() {
+        return name;
+    }
+}
+
+class Cat {
+
+    void method0() {
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Creating optional
+
+        // Optional.empty()
+        // Creates empty optional
+        Optional<String> op = Optional.empty();
+
+        // Optional.of(value)
+        // Creates optional containing a value. If value is null, Optional.of(value) throws NullPointerException.
+        String value = null;
+        Optional<String> op1 = Optional.of(value);
+
+        // Optional.ofNullable(value)
+        // Creates optional containing a value. If value is null, creates empty optional.
+        String value1 = null;
+        Optional<String> op2 = Optional.ofNullable(value1);
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Getting value
+
+        // optional.get()
+        // Returns value of optional. If optional is empty, throws NoSuchElementException.
+        Optional<String> op4 = Optional.of("123");
+        op4.get();
+
+        // optional.isPresent()
+        // Returns true if the value is present.
+        Optional<String> op5 = Optional.ofNullable("123");
+        op5.isPresent();
+
+        // if (optional.isPresent) optional.get()
+        // Useful combination
+        Optional<String> op6 = Optional.ofNullable("123");
+        if (op6.isPresent()) System.out.println(op6.get());
+
+        // optional.ifPresent(consumer)
+        // Performs a consumer action if value present.
+        String value2 = "123";
+        Optional<String> op3 = Optional.ofNullable(value2);
+        op3.ifPresent(System.out::println);
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Default values and actions
+
+        // optional.orElse(defaultValue)
+        // Returns value of optional. If it's empty, returns specified default value.
+        Optional<String> opt = Optional.ofNullable("123");
+        String result = opt.orElse("some dafault value");
+
+        // optional.orElseGet(supplier)
+        // Returns value of optional. If it's empty, returns value provided by supplier.
+        Optional<String> opt1 = Optional.ofNullable(null);
+        String result1 = opt1.orElseGet(() -> "some dafault value");
+
+        // optional.orElseThrow(exception supplier)
+        // Returns value of optional. If it's empty, throws an exception using supplier.
+        Optional<String> opt2 = Optional.ofNullable(null);
+        String result2 = opt2.orElseThrow(() -> new ArrayIndexOutOfBoundsException());
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Filtering
+
+        // optional.filter(predicate)
+        // Returns same optional value, which can now be empty as a result of filtering.
+        Optional<Integer> opt3 = Optional.of(new Integer(10));
+        opt3.filter(val -> val < 10).ifPresent(System.out::println);
+
+        //----------------------------------------------------------------------------------------------------------------------
+        // Transforming
+
+        // optional.map(function)
+        // If optional is empty, nothing happens and empty optional is returned. If not empty, applies mapping function
+        // and returns the optional containing mapped value. If result of mapping is null, returns empty optional.
+        Optional<String> opt4 = Optional.of("some string");
+        opt4.map(val -> val.length()).get();
+
+        // optional.flatMap(function)
+        // Same as map but if the function returns another optional the nested optional is avoided. I.e. we get an
+        // Optional<String> instead of Optional<Optional<String>>.
+        Optional<Fox> maybeFox = Optional.of(new Fox("Jack"));
+        maybeFox.flatMap(Fox::getName).ifPresent(System.out::println);
+
+        //----------------------------------------------------------------------------------------------------------------------
+
+    }
+}
+
