@@ -44,7 +44,7 @@ JAVA_HOME="path to jre"
 //----------------------------------------------------------------------------------------------------------------------
     CLASSPATH
 CLASSPATH means "class search path", is where JVM looks for .class files, JAR files, and named packages.
-Both 'java' and 'javac' need class path. The default value of class path is "." - current dir.
+Both 'javac' and 'java' commands need class path. The default value of class path is "." - current dir.
 
 Options:
 1. Set CLASSPATH env var - remember to include current dir, since it won't be included by default anymore.
@@ -56,7 +56,7 @@ Options:
         $JAVA_HOME/jre/lib/ext/
         /Library/Java/Extensions/
 
-Correctly specifying cp:
+Correctly specifying cp to include:
 - Unnamed package - cp ends with dir containing .class files.
 - Named package - cp ends with dir containing root package (first package in the full package name).
 - JAR - cp ends with name of .jar file. Or cp ends with .../* to include all .jar files in that dir.
@@ -71,8 +71,8 @@ Correctly specifying cp:
  5. If you put multiple types in a single source file, only one can be public, and it must have the same name as the
     source file.
  6. A new package creates a new namespace, meaning two packages can have classes with same names without a conflict.
- 7. JVM constructs path to your .class files by adding package name to the class path. So if <path>/classes is your
-    CLASSPATH, and your package is com.example.project, then JVM looks for .class files in <path>/classes/com/example/project.
+ 7. JVM constructs path to your .class files by adding package name to the class path. So if <path>/classes/ is your
+    CLASSPATH, and your package is com.example.project, then JVM looks for .class files in <path>/classes/com/example/project/.
  8. You can let types within a package have unrestricted access to each other, then restrict access for outside types.
  9. If you do not use a package statement, your type ends up in an unnamed package. Generally speaking, classes and
     interfaces should be in named packages.
@@ -92,7 +92,7 @@ Invocation: java animals/birds/Falcon
 //----------------------------------------------------------------------------------------------------------------------
     Compiling - javac
 1. Can compile all .java files in a dir using .../*.java syntax
-2. Can do "javac dir_1/*.java dir_2/.java"
+2. Can do "javac dir_1/*.java dir_2/*.java"
 3. Can combine find command with javac:
     find . -name *.java > sources.txt
     javac @sources.txt

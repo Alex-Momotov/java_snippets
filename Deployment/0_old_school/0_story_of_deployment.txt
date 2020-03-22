@@ -1,7 +1,7 @@
 //----------------------------------------------------------------------------------------------------------------------
     Simple old school
 1. src/ contains .java source files in a package-directory hierarchy.
-   out/ contains .class compiled files in the same package-directory hierarchy.
+   out/ contains .class compiled files in an identical package-directory hierarchy.
    lib/ contains .jar dependency files.
 2. Once finished coding:
     a. copy contents of src/ to out/
