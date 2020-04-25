@@ -72,15 +72,15 @@ Project Structure -> Modules -> Paths -> Use module compile output path
 
 //----------------------------------------------------------------------------------------------------------------------
     Artifact Naming
-Artifact is a packaged code which are usually JAR file.
+Artifact is a packaged code which is usually a JAR file.
 Example of artifact name 'com.nexmo:client:5.1.0'.
 
 Artifact name structure - Group_ID:Artifact_ID:Version
 Combination of group id, artifact id, and version uniquly identify an artifact.
 
-    Group_ID        Usually a reversed domain name      e.g. 'com.nexmo'
-    Artifact_ID     Just a name                         e.g. 'client'
-    Version         Version strung                      e.g. '5.1.0'
+    Group_ID        Company reversed domain name and project group      e.g. 'com.nexmo'
+    Artifact_ID     Project name                                        e.g. 'client'
+    Version         Project version                                     e.g. '5.1.0'
 
 //----------------------------------------------------------------------------------------------------------------------
     Artifacts
@@ -110,6 +110,7 @@ Grouping modules together makes it easier to navigate a large project.
 
     Creating Module:
 To create a new module, right click on top-level module -> 'New...' -> 'Module' -> Select module type
+
     Grouping/Ungrouping Modules:
 Project Structure -> Modules -> Select multiple modules and right click -> 'Change Module Names...' -> type common prefix
 Project Structure -> Modules -> Select multiple modules and right click -> 'Change Module Names...' -> remove any prefix
@@ -131,8 +132,8 @@ Module dependencies can be SDKs, JAR files (libraries) and other modules.
 List of dependencies for a module are used to create class path for running or compiling that module.
 
     Add dependency
-Project Structure -> Modules -> Dependencies tab -> '+' -> select of of below:
-    - 'JARs or directories'     JAR file or dir with bytecode on your computer.
+Project Structure -> Modules -> Dependencies tab -> '+' -> select one of below:
+    - 'JARs or directories'     JAR file or dir with .class files on your computer.
     - 'Library'                 Existing library or create new library.
     - 'Module Dependency'       Another module in the project.
 
@@ -178,7 +179,7 @@ Project Structure -> Modules -> Dependencies -> Module SDK
 
 //----------------------------------------------------------------------------------------------------------------------
     Libraries
-A library can be: .class files, directory with .class files, or JAR file.
+A library can be: .class file, directory with .class files, JAR file, directory with JAR files.
 Libraries can be defined at three levels:
     1. global       available for many projects
     2. project      available for all modules within a project

@@ -5,6 +5,7 @@ You can not combine -cp and -jar in the same command. So must use other options.
 Jar files cannot be executed by setting class path (either -cp or env var), remaining options are:
     1. put jars in directory searched by default
     2. set Class-Path in manifest to space separated list of jars (directories or wildcards don't work).
+    3. package dependency jars together with the original
 
 //----------------------------------------------------------------------------------------------------------------------
     Commands
