@@ -23,7 +23,7 @@ $JAVA_HOME/jre/lib/ext/         - add JAR files here for system wide extensions 
                                   to current java home.
 /usr/libexec/java_home -V       - Lists all installed JDKs on mac
 
-/usr/libexec/java_home -v 1.6   - Prints location of specific version of JDK installation
+/usr/libexec/java_home -v 1.8   - Prints location of specific version of JDK installation
 
     Proper way to set JAVA_HOME on mac:
 export JAVA_HOME=`/usr/libexec/java_home`           - Line in .bash_profile to set JAVA_HOME equal to default JDK (newest)

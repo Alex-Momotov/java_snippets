@@ -29,13 +29,15 @@ mvn install             Install created JAR into local mvn repo
 mvn dependency:tree     Print dependency tree
 mvn enforcer:enforce    Show conflicting dependency versions in the dependency tree
 
+mvn help:effective-pom  Print effective pom (current pom + super pom)
+
 //----------------------------------------------------------------------------------------------------------------------
     Convention Over Configuration
 Maven is about convention over configuration.
 
 Source code	            /src/main/java
 Resources	            /src/main/resources
-Tests	                /src/test
+Tests	                /src/test/java
 Complied byte code	    /target
 distributable JAR	    /target/classes
 //----------------------------------------------------------------------------------------------------------------------
@@ -178,7 +180,7 @@ Some plugins dont map to a particular phase by default. You can specify which ph
  </plugin>
 
 //----------------------------------------------------------------------------------------------------------------------
-    Adding goals to life cycle phases
+    Adding goals to phases
 To add a goal to a phase in some life cycle, specify goal element in the plugin. Also, if the plugin does not have a
 default phase to bind to, you must also specify the phase element in the plugin. All this is within te executions element.
 See example below.
